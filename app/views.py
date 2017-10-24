@@ -1,7 +1,7 @@
 from flask import render_template,flash, redirect,request
 from app import app, db
-from app.models import Shortto
-from app.forms import Url_form
+from app.models import Shortto, User
+from app.forms import Url_form, Login
 
 
 @app.route('/',methods=['GET','POST'])
@@ -29,3 +29,25 @@ def routeit(short_data):
         url = temp.big_url
         return redirect(url,code=302)
     return "Url Not There"
+
+@app.route('/login',methods=['GET','POST'])
+def login():
+    if request.method == 'POST':
+        form_temp = Login(request.form)
+        if form_temp.validate():
+            email = request.form['email']
+            password = request.form['password']
+            user = User.query.filter_by(email=request.form['email']).first()
+            if user and user.check_pass(password):
+                flash('Logged In')
+                return redirect('/success/',code=302)
+            else:
+                flash('Wrong Credentials')
+                return render_template('failed.html',code=500)
+        else:
+            flash('Not Valid Data')
+            form = Login()
+            return render_template('login.html',form=form)
+    elif request.method == 'GET':
+        form = Login()
+        return render_template('login.html',form=form)
