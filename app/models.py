@@ -1,3 +1,4 @@
+import datetime
 from sqlalchemy.orm import relationship
 
 from app import app
@@ -10,6 +11,10 @@ class User(db.Model):
     password = db.Column(db.String(400),nullable=False)
 
     shorttos = db.relationship('Shortto', backref='User', lazy='dynamic')
+
+    active = db.Column(db.Boolean, default=False)
+    tokens = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow())
 
     def check_pass(self,password):
         if self.password == password:

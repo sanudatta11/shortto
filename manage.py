@@ -9,6 +9,9 @@ from app import app, db
 login_manager = LoginManager()
 
 login_manager.init_app(app)
+login_manager.login_view = "login"
+login_manager.session_protection = "strong"
+
 migrate = Migrate(app, db)
 manager = Manager(app)
 

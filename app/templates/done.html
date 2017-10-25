@@ -7,14 +7,6 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/style.css') }}">
     <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Josefin+Slab" rel="stylesheet">
-    <style>
-        .error-url-class {
-            border-color: red;
-            -webkit-border-start: #ef5350;
-            border-width: 1px 1px;
-            box-shadow: 2px 1px 1px #ef5350;
-        }
-    </style>
 </head>
 <body>
 <nav class="navbar navbar-default navbar-static-top give-gradient">
@@ -37,38 +29,16 @@
                 unlimited number of shortened URLs? <br> We are here to solve all your URL issues. Made by <b>Vertos</b>
                 for Vertos and the world! </p>
         </div>
-        <form action="/" method="post" enctype="multipart/form-data">
             <div class="col-xs-6">
-                <label for="basic-url-2" class="label-style">Enter long URL to shorten it</label>
+
+                <label for="basic-url-2" class="label-style">Your Short URL is made.</label>
                 <div class="input-group" style="; padding-right: 20px">
-                    <span class="input-group-addon" id="basic-addon3">Long URL: </span>
-                    <input type="url" class="form-control" id="from_url" name="from_url"
-                           aria-describedby="basic-addon3"
-                           placeholder="Place your long URL here" required>
+                    <span class="input-group-addon" id="basic-addon3">Your URL: </span>
+                    <input type="text" class="form-control" id="from_url" name="from_url" aria-describedby="basic-addon3"
+                           placeholder="Place your long URL here" value="{{ short_url }}" disabled>
                 </div>
                 <br> <br>
-                <label for="basic-url" class="label-style" style="padding-top: 0">Your custom URL
-                    {% if error_url %}
-                        {{ '(Try Again.Url is taken)' }}
-                    {% endif %}
-                </label>
-                <div class="input-group" style="; padding-right: 20px">
-                    <span class="input-group-addon" id="basic-addon3">https://shortto.com/</span>
-                    <input type="text" class="form-control
-                    {% if error_url %}
-                    {{ 'error-url-class' }}
-                    {% endif %}
-                    " id="to_url" name="to_url" aria-describedby="basic-addon3"
-                           placeholder="Place your custom URL here(Optional)">
-                </div>
-                <br>
-                <button type="submit" class="btn btn-default"><b>Shorten my URL</b></button>
-                <div class="suggestions" style="padding-top: 20px">
-                    <span class="badge">Suggestion 1</span>
-                    <span class="badge">Suggestion 2</span>
-                </div>
             </div>
-        </form>
         <br><br>
 
     </div>
