@@ -71,10 +71,10 @@ def login():
         return render_template('login.html', form=form)
 
 
-@app.route('/success')
-@app.route('/success/')
-def success():
-    return "Succeded Auth"
+# @app.route('/success')
+# @app.route('/success/')
+# def success():
+#     return "Succeded Auth"
 
 
 @app.errorhandler(404)
