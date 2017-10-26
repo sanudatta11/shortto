@@ -7,5 +7,5 @@ flask_migrate
 wtforms
 gunicorn
 ConfigParser
-MySQL-python
+mysql-python
 mysqlclient
