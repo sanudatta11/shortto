@@ -1,5 +1,6 @@
 
 Flask
+flask_wtf
 Flask-SQLAlchemy
 flask_login
 flask_script
