@@ -78,8 +78,8 @@ def success():
 
 
 @app.errorhandler(404)
-def not_found():
-    return render_template('error404.html')
+def not_found(error):
+    return render_template('error404.html') , 404
 
 
 @app.errorhandler(CSRFError)
