@@ -4,3 +4,4 @@ flask_login
 flask_script
 flask_migrate
 wtforms
+gunicorn
