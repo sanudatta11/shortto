@@ -6,6 +6,5 @@ flask_script
 flask_migrate
 wtforms
 gunicorn
-mysql-connector-python
 MySQL-python
 mysqlclient
