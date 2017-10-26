@@ -82,6 +82,11 @@ def not_found(error):
     return render_template('error404.html') , 404
 
 
+@app.errorhandler(500)
+def not_found(error):
+    return render_template('error500.html'), 500
+
+
 @app.errorhandler(CSRFError)
 def handle_csrf_error(e):
     return render_template('csrf_error.html', reason=e.description), 400
