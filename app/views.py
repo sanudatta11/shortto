@@ -4,6 +4,7 @@ from app.models import Shortto, User
 from sqlalchemy import func
 from app.forms import Url_form, Login
 from app.helper import idtoshort_url
+from flask_wtf.csrf import CSRFError
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
@@ -78,4 +79,9 @@ def success():
 
 @app.errorhandler(404)
 def not_found():
-    return render_template('')
+    return render_template('error404.html')
+
+
+@app.errorhandler(CSRFError)
+def handle_csrf_error(e):
+    return render_template('csrf_error.html', reason=e.description), 400

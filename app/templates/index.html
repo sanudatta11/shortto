@@ -40,6 +40,7 @@
         </div>
         <form action="/" method="post" enctype="multipart/form-data">
             <div class="col-xs-6">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                 <label for="basic-url-2" class="label-style">Enter long URL to shorten it</label>
                 <div class="input-group" style="; padding-right: 20px">
                     <span class="input-group-addon" id="basic-addon3">Long URL: </span>
