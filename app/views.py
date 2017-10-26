@@ -45,7 +45,7 @@ def routeit(short_data):
     if temp is not None:
         url = temp.big_url
         return redirect(url, code=302)
-    return "Url Not There"
+    return render_template('notfound.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
