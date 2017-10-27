@@ -1,5 +1,9 @@
+import os
+
 import validators
 from flask import render_template, flash, redirect, request,session
+from flask import send_from_directory
+
 from app import app, db
 from app.models import Shortto
 from sqlalchemy import func
@@ -87,6 +91,10 @@ def routeit(short_data):
 # def success():
 #     return "Succeded Auth"
 
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'images/favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 @app.errorhandler(404)
 def not_found(error):
