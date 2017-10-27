@@ -10,6 +10,9 @@ from sqlalchemy import func
 from app.forms import Url_form, Login
 from app.helper import idtoshort_url
 from flask_wtf.csrf import CSRFError
+from sqlalchemy.sql import func
+from config import COOKIE_VAR
+
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
@@ -45,8 +48,19 @@ def index():
             temp = Shortto(big_url=request.form['from_url'], short_url=short_url)
             db.session.add(temp)
             db.session.commit()
-            return render_template('done.html',code=200,short_url=app.config['BASE_URL'] + short_url)
-    return render_template('index.html', form=form)
+            prev_url_data = request.cookies.get(COOKIE_VAR)
+            prev_url_data_split = []
+            if prev_url_data:
+                prev_url_data_split = prev_url_data.split('#')
+                #THis variable has previous data
+            resp = render_template('done.html',code=200,short_url=app.config['BASE_URL'] + short_url)
+            resp.set_cookie(COOKIE_VAR, '#'.join(prev_url_data_split))
+            return resp
+    #Just Index Render get analytics data
+    tot_urls = Shortto.query.count()
+    tot_clicks_obj = db.session.query(Shortto, db.func.sum(Shortto.clicks))
+    tot_clicks = tot_clicks_obj[0][1]
+    return render_template('index.html', form=form,tot_clicks=tot_clicks,tot_urls=tot_urls)
 
 
 @app.route('/<string:short_data>', methods=['GET'])
@@ -54,7 +68,7 @@ def index():
 def routeit(short_data):
     temp = Shortto.query.filter_by(short_url=short_data).first()
     if temp is not None:
-        temp.clicks = temp.clicks + 1
+        temp.clicks += 1
         db.session.commit()
         url = temp.big_url
         if not validators.url(url):
