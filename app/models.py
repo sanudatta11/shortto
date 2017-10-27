@@ -4,7 +4,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 
 from app import app
-from manage import db, login_manager
+from app import db, login_manager
 
 class Shortto(db.Model):
     id = db.Column(db.Integer, primary_key=True,autoincrement=True)

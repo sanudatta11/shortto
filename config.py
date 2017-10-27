@@ -19,5 +19,6 @@ class Config:
 
 DEBUG = True
 SQLALCHEMY_DATABASE_URI = 'mysql://root:mysqlmysql@shortto.co8zric1dcsi.us-east-1.rds.amazonaws.com:3306/shortto'
+# SQLALCHEMY_DATABASE_URI = 'mysql://root:mysql@127.0.0.1:3306/shortto'
 BASE_URL = 'https://www.shortto.com/'
 SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
