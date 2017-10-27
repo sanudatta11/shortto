@@ -1,3 +1,4 @@
+import validators
 from flask import render_template, flash, redirect, request,session
 from app import app, db
 from app.models import Shortto
@@ -17,11 +18,16 @@ def index():
                 # Already Used Short Url
                 error_url = True
                 return render_template('index.html', code=320, error_url=error_url)
+
+            short_url = request.form['to_url']
+
+            if not validators.url(request.form['from_url']):
+                return render_template('index.html', url_error=True)
+
             # Url Not Present
             temp = Shortto(big_url=request.form['from_url'], short_url=request.form['to_url'])
             db.session.add(temp)
             db.session.commit()
-            short_url = request.form['to_url']
             return render_template('done.html', code=200, short_url=app.config['BASE_URL'] + short_url)
         else:
             rows = Shortto.query.count()
@@ -44,12 +50,11 @@ def index():
 def routeit(short_data):
     temp = Shortto.query.filter_by(short_url=short_data).first()
     if temp is not None:
-        click_val = temp.clicks + 1
-        update = Shortto.query.filter_by(id=temp.id).update({
-            'clicks' : click_val
-        })
+        temp.clicks = temp.clicks + 1
         db.session.commit()
         url = temp.big_url
+        if not validators.url(url):
+            return render_template('index.html',url_error=True)
         return redirect(url, code=302)
     return render_template('notfound.html')
 
