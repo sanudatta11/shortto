@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Short To</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/style.css') }}">
-    <link rel="stylesheet" type="text/css" href="../static/css/style.css">
-    <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Josefin+Slab" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/main.css') }}">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Comfortaa" rel="stylesheet">
     <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
     <style>
         .error-url-class {
@@ -17,52 +18,81 @@
         }
     </style>
 </head>
+
 <body>
-<nav class="navbar navbar-default navbar-static-top give-gradient">
-    <div class="container give-gradient">
-        <p class="navbar-heading-one">
-        <p class="secondary-heading-text"><b>Short To!
-        </b></p>
+<!-- Navbar Start -->
+<nav>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-1 col-sm-12 col-xs-12 text-center">
+                <h1 class="logo">ShortTo </h1>
+            </div>
+            <div class="col-md-6"></div>
+            <div class="col-md-5 text-center colorChange" style="margin-top: 25px;">
+                <ul class="list-inline">
+                    <li onclick="changeColor('red');">
+                        <button id="red">Red</button>
+                    </li>
+                    <li onclick="changeColor('meridian');">
+                        <button id="meridian">Meridian</button>
+                    </li>
+                    <li onclick="changeColor('sunset');">
+                        <button id="sunset">Sunset</button>
+                    </li>
+                    <li onclick="changeColor('timbr');">
+                        <button id="timbr">Timbr</button>
+                    </li>
+                    <li onclick="changeColor('random');">
+                        <button id="random">Random</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
     </div>
 </nav>
-<br> <br>
-<div class="row" class="secondary-heading">
-    <div class="col-xs-12">
-    </div>
-</div>
-<div class="large-grad">
+<!-- Navbar End -->
+<!-- Main Body Start -->
+<div class="container-fluid" id="main" style="color: white">
     <div class="row">
-        <div class="col-xs-6">
-            <h1 class="basic-heading">Get custom URL</h1>
-            <p class="sub-heading"> Want customized URLs for your long URLs? Want analytics for your URLs? Want
-                unlimited number of shortened URLs? <br> We are here to solve all your URL issues. Made by <b>Vertos</b>
-                for Vertos and the world! </p>
+        <div class="col-md-6 col-sm-12 col-xs-12 center">
+            <h1 class="basic-heading">Get Custom URL</h1>
+            <ul class="main-point">
+                <li>
+                    <p>Want customized URLs for your long URLs?</p>
+                </li>
+                <li>
+                    <p>Want analytics for your URLs?</p>
+                </li>
+                <li>
+                    <p>Want unlimited number of shortened URLs?</p>
+                </li>
+            </ul>
+            <p class="sub-heading">We are here to solve all your URL issues.</p>
         </div>
-        <form action="/" method="post" enctype="multipart/form-data">
-            <div class="col-xs-6">
+        <div class="col-md-6 col-sm-12 col-xs-12 main-div" id="main-div">
+            <form action="/" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                 <label for="basic-url-2" class="label-style">Enter long URL to shorten it
                 {% if url_error %}
                         {{ '(Try Again! Invalid Url Given)' }}
                 {% endif %}
                 </label>
-                <div class="input-group" style="; padding-right: 20px">
+                <div class="input-group" style=" padding-right: 20px">
                     <span class="input-group-addon" id="basic-addon3">Long URL: </span>
                     <input type="url" class="form-control
                     {% if url_error %}
                     {{ 'error-url-class' }}
                     {% endif %}
-                    " id="from_url" name="from_url"
-                           aria-describedby="basic-addon3"
+                    " id="from_url" name="from_url" aria-describedby="basic-addon3"
                            placeholder="Place your long URL here" required>
                 </div>
-                <br> <br>
-                <label for="basic-url" class="label-style" style="padding-top: 0">Your custom URL
-                    {% if error_url %}
-                        {{ '(Try Again.Url is taken)' }}
-                    {% endif %}
+                <br>
+                <br>
+                <label for="basic-url" class="label-style" style="padding-top: 0">Your custom URL {% if error_url %}
+                    {{ '(Try Again.Url is taken)' }} {% endif %}
                 </label>
-                <div class="input-group" style="; padding-right: 20px">
+                <div class="input-group" style=" padding-right: 20px">
                     <span class="input-group-addon" id="basic-addon3">https://www.shortto.com/</span>
                     <input type="text" class="form-control
                     {% if error_url %}
@@ -72,22 +102,39 @@
                            placeholder="Place your custom URL here(Optional)">
                 </div>
                 <br>
-                <button type="submit" class="btn btn-default"><b>Shorten my URL</b></button>
+                <div class="row">
+                    <div class="col-md-4">
+                        <button type="submit" class="btn-sbmt"><b>Shorten my URL</b></button>
+                    </div>
+                    <div class="col-md-5">
+                        <b>Links Shortened: </b> {{ tot_urls }} <br>
+                        <b>Link Clicks: </b> {{ tot_clicks }} times
+                    </div>
+                    <!-- <div class="col-md-3" style="padding-top: 10px">
+                        <button  class="shorted_url" onclick="showMyLinks()">My short URLs</button>
+                    </div> -->
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<footer class="footer">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <span><p class="text-center">A Project by <a href="http://microsoftlpu.com/">Microsoft Technical Community LPU</a></p></span>
+                <p class="text-center"> © 2017 Copyright
+                    <a href="https://shortto.com ">ShortTo Inc.</a> All Rights Reserved.</p>
+                <p class="text-center" style="font-size: 19px;"><i>Making Links Shorter</i></p>
             </div>
-        </form>
-        <br><br>
-
+        </div>
     </div>
-</div>
-<div class="navbar navbar-fixed-bottom">
-    <div class="container-fluid" style="font-weight: bold; text-align: center;">
+</footer>
+<!-- Footer End -->
 
-        <br>
-        <p style="color: white"> © 2017 Copyright: <a href="https://shortto.com" style="color: white"><b>ShortTo.com :
-            Making Links Shorter </b> </a></p>
-    </div>
-</div>
-
-
+<script type="text/javascript" src="{{ url_for('static',filename='js/app.js') }}"></script>
 </body>
+
 </html>
