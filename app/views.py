@@ -1,5 +1,5 @@
 import os
-
+import re
 import validators
 from flask import render_template, flash, redirect, request,session
 from flask import send_from_directory
@@ -25,6 +25,10 @@ def index():
             return render_template('index.html', url_error=True, tot_clicks=tot_clicks, tot_urls=tot_urls)
 
         if request.form['to_url']:
+            if not re.match("^[A-Za-z0-9-]+$",request.form['to_url']):
+                return render_template('index.html', code=320, error_url_type=True, tot_clicks=tot_clicks,
+                                       tot_urls=tot_urls)
+
             # Check if unique or not
             if Shortto.query.filter_by(short_url=request.form['to_url']).count() > 0:
                 # Already Used Short Url
