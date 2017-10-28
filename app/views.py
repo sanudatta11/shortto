@@ -21,6 +21,9 @@ def index():
     tot_clicks_obj = db.session.query(Shortto, db.func.sum(Shortto.clicks))
     tot_clicks = tot_clicks_obj[0][1]
     if request.method == 'POST' and request.form['from_url']:
+        if not validators.url(request.form['from_url']):
+            return render_template('index.html', url_error=True, tot_clicks=tot_clicks, tot_urls=tot_urls)
+
         if request.form['to_url']:
             # Check if unique or not
             if Shortto.query.filter_by(short_url=request.form['to_url']).count() > 0:
@@ -29,10 +32,6 @@ def index():
                 return render_template('index.html', code=320, error_url=error_url,tot_clicks=tot_clicks, tot_urls=tot_urls)
 
             short_url = request.form['to_url']
-
-
-            if not validators.url(request.form['from_url']):
-                return render_template('index.html', url_error=True,tot_clicks=tot_clicks, tot_urls=tot_urls)
 
             # Url Not Present
             temp = Shortto(big_url=request.form['from_url'], short_url=request.form['to_url'])
