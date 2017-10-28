@@ -15,6 +15,7 @@
         gtag('config', 'UA-108877136-1');
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Welcome to Short To. We are URL Shortening Company. Big URLs are now a big problem for everyone. We try to make URLs shorter and smarter. Now get your custom short URL or a random one. We provide analytics and easy copy feature for your links. Now no more hustling for long links. We are here.">
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/main.css') }}">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300" rel="stylesheet">
@@ -84,7 +85,7 @@
         <div class="col-md-6 col-sm-12 col-xs-12 main-div" id="main-div">
             <form action="/" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                <label for="basic-url-2" class="label-style">Enter long URL to shorten it
+                <label for="basic-url-2" class="label-style-2">Enter long URL to shorten it
                     {% if url_error %}
                         {{ '(Try Again! Invalid Url Given)' }}
                     {% endif %}
@@ -100,7 +101,7 @@
                 </div>
                 <br>
                 <br>
-                <label for="basic-url" class="label-style" style="padding-top: 0">Your custom URL {% if error_url %}
+                <label for="basic-url" class="label-style-2" style="padding-top: 0">Your custom URL {% if error_url %}
                     {{ '(Try Again.Url is taken)' }} {% endif %}
                     {% if error_url_type %}
                     {{ '(Try Again.Invalid Url)' }} {% endif %}
@@ -140,7 +141,7 @@
                 <span><p class="text-center">A Project by <a href="http://microsoftlpu.com/">Microsoft Technical Community LPU</a></p></span>
                 <p class="text-center"> © 2017 Copyright
                     <a href="https://shortto.com ">ShortTo Inc.</a> All Rights Reserved.</p>
-                <p class="text-center" style="font-size: 19px;"><i>Making Links Shorter</i></p>
+                <p class="text-center" style="font-size: 19px;"><i>Making Links Smarter</i></p>
             </div>
         </div>
     </div>
