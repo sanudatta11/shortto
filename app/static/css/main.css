@@ -1,5 +1,5 @@
 body {
-	overflow: hidden;
+	overflow-x: hidden;
 	color : white;
 	background: #159957;
 	/* fallback for old browsers */
