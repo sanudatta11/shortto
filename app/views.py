@@ -41,22 +41,21 @@ def index():
         else:
             rows = Shortto.query.count()
             rows = int(rows)
-            short_url = idtoshort_url(rows + 1)
-            i = 2
+            rows+=1
+            short_url = idtoshort_url(int(rows))
             while Shortto.query.filter_by(short_url=short_url).count() > 0:
-                short_url = idtoshort_url(rows + i)
-                i = i + 1
-
+                rows+=1
+                short_url = idtoshort_url(rows)
             temp = Shortto(big_url=request.form['from_url'], short_url=short_url)
             db.session.add(temp)
             db.session.commit()
-            prev_url_data = request.cookies.get(COOKIE_VAR)
-            prev_url_data_split = []
-            if prev_url_data:
-                prev_url_data_split = prev_url_data.split('#')
+            # prev_url_data = request.cookies.get(COOKIE_VAR)
+            # prev_url_data_split = []
+            # if prev_url_data:
+            #     prev_url_data_split = prev_url_data.split('#')
                 # THis variable has previous data
             resp = render_template('done.html', code=200, short_url=app.config['BASE_URL'] + short_url)
-            resp.set_cookie(COOKIE_VAR, '#'.join(prev_url_data_split))
+            # resp.set_cookie(COOKIE_VAR, '#'.join(prev_url_data_split))
             return resp
     # Just Index Render get analytics data
     return render_template('index.html', form=form, tot_clicks=tot_clicks, tot_urls=tot_urls)
