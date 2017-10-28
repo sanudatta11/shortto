@@ -3,6 +3,17 @@
 
 <head>
     <title>Short To</title>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-108877136-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-108877136-1');
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/main.css') }}">
@@ -72,11 +83,11 @@
         </div>
         <div class="col-md-6 col-sm-12 col-xs-12 main-div" id="main-div">
             <form action="/" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <label for="basic-url-2" class="label-style">Enter long URL to shorten it
-                {% if url_error %}
+                    {% if url_error %}
                         {{ '(Try Again! Invalid Url Given)' }}
-                {% endif %}
+                    {% endif %}
                 </label>
                 <div class="input-group" style=" padding-right: 20px">
                     <span class="input-group-addon" id="basic-addon3">Long URL: </span>

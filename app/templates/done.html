@@ -3,6 +3,18 @@
 
 <head>
     <title>Short To</title>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-108877136-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-108877136-1');
+    </script>
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/main.css') }}">
@@ -20,95 +32,100 @@
 </head>
 
 <body>
-    <!-- Navbar Start -->
-    <nav>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-1 col-sm-12 col-xs-12 text-center">
-                    <h1 class="logo">ShortTo</h1>
-                </div>
-                <div class="col-md-6"></div>
-                <div class="col-md-5 text-center colorChange" style="margin-top: 25px;">
-                    <ul class="list-inline">
-                        <li onclick="changeColor('red');">
-                            <button id="red">Red</button>
-                        </li>
-                        <li onclick="changeColor('meridian');">
-                            <button id="meridian">Meridian</button>
-                        </li>
-                        <li onclick="changeColor('sunset');">
-                            <button id="sunset">Sunset</button>
-                        </li>
-                        <li onclick="changeColor('timbr');">
-                            <button id="timbr">Timbr</button>
-                        </li>
-                        <li onclick="changeColor('random');">
-                            <button id="random">Random</button>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-        </div>
-    </nav>
-    <!-- Navbar End -->
-    <!-- Main Body Start -->
-    <div class="container-fluid" id="main" style="color: white;">
+<!-- Navbar Start -->
+<nav>
+    <div class="container">
         <div class="row">
-            <div class="col-md-6 col-sm-12 col-xs-12 center ">
-                <h1 class="basic-heading">Get Custom URL</h1>
-                <ul class="main-point">
-                    <li>
-                        <p>Want customized URLs for your long URLs?</p>
+            <div class="col-md-1 col-sm-12 col-xs-12 text-center">
+                <h1 class="logo">ShortTo</h1>
+            </div>
+            <div class="col-md-6"></div>
+            <div class="col-md-5 text-center colorChange" style="margin-top: 25px;">
+                <ul class="list-inline">
+                    <li onclick="changeColor('red');">
+                        <button id="red">Red</button>
                     </li>
-                    <li>
-                        <p>Want analytics for your URLs?</p>
+                    <li onclick="changeColor('meridian');">
+                        <button id="meridian">Meridian</button>
                     </li>
-                    <li>
-                        <p>Want unlimited number of shortened URLs?</p>
+                    <li onclick="changeColor('sunset');">
+                        <button id="sunset">Sunset</button>
+                    </li>
+                    <li onclick="changeColor('timbr');">
+                        <button id="timbr">Timbr</button>
+                    </li>
+                    <li onclick="changeColor('random');">
+                        <button id="random">Random</button>
                     </li>
                 </ul>
-                <p class="sub-heading ">We are here to solve all your URL issues.</p>
-            </div>
-            <div class="col-md-6 col-sm-12 col-xs-12 main-div">
-                    <label for="basic-url-2 " class="label-style" id="label_done">Your Short URL is made.</label>
-                    <div class="row">
-                        <div class="col-md-10">
-                            <input type="url" class="form-control" id="short_url" name="short_url" aria-describedby="basic-addon3" placeholder="Place your long URL here" style="background: transparent !important;" value="{{ short_url }}" readonly>
-                        </div>
-                        <div class="col-md-2">
-                            <button alt="Copy" class="shorted_url" onclick="copy()"><i class="glyphicon glyphicon-copy"></i></button>
-                        </div>
-                    </div>
-                    <br>
-
-                    <button type="button" class="btn-sbmt" style="padding-top: 10px;" onclick="location.href='https://www.shortto.com/'">
-                        <b>Shorten another URL</b>
-                    </button>
-
-                    </div>
             </div>
         </div>
 
+    </div>
+</nav>
+<!-- Navbar End -->
+<!-- Main Body Start -->
+<div class="container-fluid" id="main" style="color: white;">
+    <div class="row">
+        <div class="col-md-6 col-sm-12 col-xs-12 center ">
+            <h1 class="basic-heading">Get Custom URL</h1>
+            <ul class="main-point">
+                <li>
+                    <p>Want customized URLs for your long URLs?</p>
+                </li>
+                <li>
+                    <p>Want analytics for your URLs?</p>
+                </li>
+                <li>
+                    <p>Want unlimited number of shortened URLs?</p>
+                </li>
+            </ul>
+            <p class="sub-heading ">We are here to solve all your URL issues.</p>
+        </div>
+        <div class="col-md-6 col-sm-12 col-xs-12 main-div">
+            <label for="basic-url-2 " class="label-style" id="label_done">Your Short URL is made.</label>
+            <div class="row">
+                <div class="col-md-10">
+                    <input type="url" class="form-control" id="short_url" name="short_url"
+                           aria-describedby="basic-addon3" placeholder="Place your long URL here"
+                           style="background: transparent !important;" value="{{ short_url }}" readonly>
+                </div>
+                <div class="col-md-2">
+                    <button alt="Copy" class="shorted_url" onclick="copy()"><i class="glyphicon glyphicon-copy"></i>
+                    </button>
+                </div>
+            </div>
+            <br>
 
-    <footer class="footer ">
-        <div class="container-fluid ">
-            <div class="row ">
-                <div class="col-md-12 col-sm-12 col-xs-12 ">
+            <button type="button" class="btn-sbmt" style="padding-top: 10px;"
+                    onclick="location.href='https://www.shortto.com/'">
+                <b>Shorten another URL</b>
+            </button>
+
+        </div>
+    </div>
+</div>
+
+
+<footer class="footer ">
+    <div class="container-fluid ">
+        <div class="row ">
+            <div class="col-md-12 col-sm-12 col-xs-12 ">
                 <span>
                     <p class="text-center">A Project by
                         <a href="http://microsoftlpu.com/">Microsoft Technical Community LPU</a>
                     </p>
                 </span>
-                <p class="text-center"> © 2017 Copyright <a href="https://shortto.com ">ShortTo Inc.</a> All Rights Reserved.</p>
+                <p class="text-center"> © 2017 Copyright <a href="https://shortto.com ">ShortTo Inc.</a> All Rights
+                    Reserved.</p>
                 <p class="text-center" style="font-size: 19px; "><i>Making Links Shorter</i></p>
             </div>
-            </div>
         </div>
-    </footer>
-   <!-- Footer End -->
+    </div>
+</footer>
+<!-- Footer End -->
 
-   <script type="text/javascript " src="{{ url_for('static',filename='js/app.js') }}"></script>
+<script type="text/javascript " src="{{ url_for('static',filename='js/app.js') }}"></script>
 </body>
 
 </html>
