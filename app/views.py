@@ -1,6 +1,7 @@
 import os
 import re
 import validators
+from flask import make_response
 from flask import render_template, flash, redirect, request,session
 from flask import send_from_directory
 from flask import url_for
@@ -14,9 +15,36 @@ from flask_wtf.csrf import CSRFError
 from sqlalchemy.sql import func
 from config import blacklist
 
+@app.route('/url/self',methods=['GET'])
+@app.route('/url/self/',methods=['GET'])
+def self_urls():
+    prev_url = request.cookies.get('__shortto__')
+    prev_url_list = []
+    send_list = []
+    if prev_url:
+        prev_url_list = prev_url.split('#')
+    for items in prev_url_list:
+        temp_list = []
+        temp = Shortto.query.filter_by(short_url=items).first()
+        if temp is not None:
+            temp_list.append(temp.big_url)
+            temp_list.append(items)
+            temp_list.append(temp.clicks)
+            send_list.append(temp_list)
+    return render_template('analytics.html',prev_url_list=send_list)
+
 @app.route('/url/done',methods=['GET'])
+@app.route('/url/done/',methods=['GET'])
 def short_done():
-    return render_template('done.html', code=200, short_url=app.config['BASE_URL'] + request.args.get('short_url'))
+    resp = make_response(render_template('done.html', code=200, short_url=app.config['BASE_URL'] + request.args.get('short_url')))
+    prev_url = request.cookies.get('__shortto__')
+    prev_url_list = []
+    if prev_url:
+        prev_url_list = prev_url.split('#')
+    prev_url_list.append(request.args.get('short_url'))
+    prev_url = '#'.join(prev_url_list)
+    resp.set_cookie('__shortto__',prev_url)
+    return resp
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])

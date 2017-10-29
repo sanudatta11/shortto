@@ -3,7 +3,6 @@
 
 <head>
     <title>Short To</title>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-108877136-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -14,7 +13,6 @@
 
         gtag('config', 'UA-108877136-1');
     </script>
-
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/main.css') }}">
@@ -37,7 +35,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-1 col-sm-12 col-xs-12 text-center">
-                <h1 class="logo">ShortTo</h1>
+                <h1 class="logo">ShortTo </h1>
             </div>
             <div class="col-md-6"></div>
             <div class="col-md-5 text-center colorChange" style="margin-top: 25px;">
@@ -65,11 +63,11 @@
 </nav>
 <!-- Navbar End -->
 <!-- Main Body Start -->
-<div class="container-fluid" id="main" style="color: white;">
+<div class="container-fluid" id="main" style="color: white">
     <div class="row">
-        <div class="col-md-6 col-sm-12 col-xs-12 center ">
+        <div class="col-md-6 col-sm-12 col-xs-12 center">
             <h1 class="basic-heading">Get Custom URL</h1>
-            <ul class="main-point">
+            <ul class="main-point" id="small-it">
                 <li>
                     <p>Want customized URLs for your long URLs?</p>
                 </li>
@@ -80,52 +78,53 @@
                     <p>Want unlimited number of shortened URLs?</p>
                 </li>
             </ul>
-            <p class="sub-heading ">We are here to solve all your URL issues.</p>
-        </div>
-        <div class="col-md-6 col-sm-12 col-xs-12 main-div">
-            <label for="basic-url-2 " class="label-style" id="label_done">Your Short URL is made.</label>
-            <div class="row">
-                <div class="col-md-10">
-                    <input type="url" class="form-control" id="short_url" name="short_url"
-                           aria-describedby="basic-addon3" placeholder="Place your long URL here"
-                           style="background: transparent !important;" value="{{ short_url }}" readonly>
-                </div>
-                <div class="col-md-2">
-                    <button alt="Copy" class="shorted_url" onclick="copy()"><i class="glyphicon glyphicon-copy"></i>
-                    </button>
-                </div>
-            </div>
+            <p class="sub-heading">We are here to solve all your URL issues.</p>
             <br>
+        </div>
+        <div class="col-md-6 col-sm-12 col-xs-12 main-div" id="main-div">
+            <table class="table " style="overflow-y: scroll">
+                <thead>
+                <tr>
+                    <th>Original URL</th>
+                    <th>Short URL</th>
+                    <th>Number of clicks</th>
+                </tr>
+                </thead>
 
-            <button type="button" class="btn-sbmt" style="padding-top: 10px;"
-                    onclick="location.href='/'">
-                <b>Shorten another URL</b>
-            </button>
+                <tbody>
+                {% if prev_url_list %}
+                    {% for items in prev_url_list %}
+                        <tr>
+                            <td>{{ items[0] }}</td>
+                            <td>https://shortto.com/{{ items[1] }}</td>
+                            <td>{{ items[2] }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
 
+                </tbody>
+            </table>
+            <p class="text-center">
+                <button type="button" class="shorted_url" onclick="window.location.href='/'"><b>Shorten my URL</b></button>
+            </p>
         </div>
     </div>
 </div>
-
-
-<footer class="footer ">
-    <div class="container-fluid ">
-        <div class="row ">
-            <div class="col-md-12 col-sm-12 col-xs-12 ">
-                <span>
-                    <p class="text-center">A Project by
-                        <a href="http://microsoftlpu.com/">Microsoft Technical Community LPU</a>
-                    </p>
-                </span>
-                <p class="text-center"> © 2017 Copyright <a href="https://shortto.com ">ShortTo Inc.</a> All Rights
-                    Reserved.</p>
-                <p class="text-center" style="font-size: 19px; "><i>Making Links Shorter</i></p>
+<!-- Main Body End -->
+<!-- Footer Start -->
+<footer class="footer">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <span><p class="text-center">A Project by <a href="http://microsoftlpu.com/">Microsoft Technical Community LPU</a></p></span>
+                <p class="text-center"> © 2017 Copyright
+                    <a href="https://shortto.com ">ShortTo Inc.</a> All Rights Reserved.</p>
+                <p class="text-center" style="font-size: 19px;"><i>Making Links Shorter</i></p>
             </div>
         </div>
     </div>
 </footer>
 <!-- Footer End -->
-
-<script type="text/javascript " src="{{ url_for('static',filename='js/app.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='js/app.js') }}"></script>
 </body>
-
 </html>

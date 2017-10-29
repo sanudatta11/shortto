@@ -122,18 +122,19 @@
                 </div>
                 <br>
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-xs-4">
                         <button type="submit" class="btn-sbmt"><b>Shorten my URL</b></button>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-xs-4">
                         <b>Links Shortened: </b> {{ tot_urls }} <br>
                         <b>Link Clicks: </b> {{ tot_clicks }} times
                     </div>
-                    <!-- <div class="col-md-3" style="padding-top: 10px">
-                        <button  class="shorted_url" onclick="showMyLinks()">My short URLs</button>
-                    </div> -->
+                    <div class="col-xs-4" style="">
+                        <button class="shorted_url" onclick="location.href='/url/self/'" type="button">My short URLs</button>
+                    </div>
                 </div>
             </form>
+
         </div>
     </div>
 </div>
