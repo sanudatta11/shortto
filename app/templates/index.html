@@ -15,7 +15,8 @@
         gtag('config', 'UA-108877136-1');
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Welcome to Short To. We are URL Shortening Company. Big URLs are now a big problem for everyone. We try to make URLs shorter and smarter. Now get your custom short URL or a random one. We provide analytics and easy copy feature for your links. Now no more hustling for long links. We are here.">
+    <meta name="description"
+          content="Welcome to Short To. We are URL Shortening Company. Big URLs are now a big problem for everyone. We try to make URLs shorter and smarter. Now get your custom short URL or a random one. We provide analytics and easy copy feature for your links. Now no more hustling for long links. We are here.">
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/main.css') }}">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300" rel="stylesheet">
@@ -89,6 +90,10 @@
                     {% if url_error %}
                         {{ '(Try Again! Invalid Url Given)' }}
                     {% endif %}
+                    {% if blacklist_url %}
+                        {{ '(The URL you entered is Blacklisted!)' }}
+                    {% endif %}
+
                 </label>
                 <div class="input-group" style=" padding-right: 20px">
                     <span class="input-group-addon" id="basic-addon3">Long URL: </span>
@@ -104,7 +109,7 @@
                 <label for="basic-url" class="label-style-2" style="padding-top: 0">Your custom URL {% if error_url %}
                     {{ '(Try Again.Url is taken)' }} {% endif %}
                     {% if error_url_type %}
-                    {{ '(Try Again.Invalid Url)' }} {% endif %}
+                        {{ '(Try Again.Invalid Url)' }} {% endif %}
                 </label>
                 <div class="input-group" style=" padding-right: 20px">
                     <span class="input-group-addon" id="basic-addon3">https://www.shortto.com/</span>

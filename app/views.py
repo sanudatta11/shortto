@@ -12,7 +12,7 @@ from app.forms import Url_form, Login
 from app.helper import idtoshort_url
 from flask_wtf.csrf import CSRFError
 from sqlalchemy.sql import func
-from config import COOKIE_VAR
+from config import blacklist
 
 @app.route('/url/done',methods=['GET'])
 def short_done():
@@ -26,10 +26,16 @@ def index():
     tot_clicks_obj = db.session.query(Shortto, db.func.sum(Shortto.clicks))
     tot_clicks = tot_clicks_obj[0][1]
     if request.method == 'POST' and request.form['from_url']:
+
+        for url_s in blacklist:
+            if url_s in (request.form['from_url']).lower():
+                return render_template('index.html', blacklist_url=True, tot_clicks=tot_clicks, tot_urls=tot_urls)
+
         if not validators.url(request.form['from_url']):
             return render_template('index.html', url_error=True, tot_clicks=tot_clicks, tot_urls=tot_urls)
 
         if request.form['to_url']:
+
             if not re.match("^[A-Za-z0-9-]+$",request.form['to_url']):
                 return render_template('index.html', code=320, error_url_type=True, tot_clicks=tot_clicks,
                                        tot_urls=tot_urls)
