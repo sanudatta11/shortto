@@ -3,6 +3,7 @@ import re
 import validators
 from flask import render_template, flash, redirect, request,session
 from flask import send_from_directory
+from flask import url_for
 
 from app import app, db
 from app.models import Shortto
@@ -12,6 +13,10 @@ from app.helper import idtoshort_url
 from flask_wtf.csrf import CSRFError
 from sqlalchemy.sql import func
 from config import COOKIE_VAR
+
+@app.route('/url/done',methods=['GET'])
+def short_done():
+    return render_template('done.html', code=200, short_url=app.config['BASE_URL'] + request.args.get('short_url'))
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
@@ -41,7 +46,7 @@ def index():
             temp = Shortto(big_url=request.form['from_url'], short_url=request.form['to_url'])
             db.session.add(temp)
             db.session.commit()
-            return render_template('done.html', code=200, short_url=app.config['BASE_URL'] + short_url)
+            return redirect(url_for('short_done', short_url=short_url))
         else:
             rows = Shortto.query.count()
             rows = int(rows)
@@ -58,11 +63,12 @@ def index():
             # if prev_url_data:
             #     prev_url_data_split = prev_url_data.split('#')
                 # THis variable has previous data
-            resp = render_template('done.html', code=200, short_url=app.config['BASE_URL'] + short_url)
+            return redirect(url_for('short_done',short_url=short_url))
             # resp.set_cookie(COOKIE_VAR, '#'.join(prev_url_data_split))
-            return resp
+
     # Just Index Render get analytics data
     return render_template('index.html', form=form, tot_clicks=tot_clicks, tot_urls=tot_urls)
+
 
 @app.route('/<string:short_data>', methods=['GET'])
 @app.route('/<string:short_data>/', methods=['GET'])
