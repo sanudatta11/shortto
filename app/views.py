@@ -56,7 +56,9 @@ def index():
     if request.method == 'POST' and request.form['from_url']:
 
         for url_s in blacklist:
-            if url_s in (request.form['from_url']).lower():
+            url_s_1 = '://' + url_s
+            url_s_2 = 'www.' + url_s
+            if (url_s_1 in (request.form['from_url']).lower()) or (url_s_2 in (request.form['from_url']).lower()):
                 return render_template('index.html', blacklist_url=True, tot_clicks=tot_clicks, tot_urls=tot_urls)
 
         if not validators.url(request.form['from_url']):
