@@ -1,3 +1,4 @@
+requests
 validators
 Flask
 flask_wtf

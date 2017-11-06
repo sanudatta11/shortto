@@ -69,7 +69,8 @@ def index():
         # Recaptcha Verify
 
         g_captcha_response = request.form['g-recaptcha-response']
-        post_obj = requests.post("https://www.google.com/recaptcha/api/siteverify", data={'secret': '6LeFWDYUAAAAAAP1FaIZ8Q6NtJxHO9n3Sa1l6RKu', 'response': g_captcha_response, 'remoteip': request.remote_addr})
+        data = {'secret': '6LeFWDYUAAAAAAP1FaIZ8Q6NtJxHO9n3Sa1l6RKu', 'response': g_captcha_response,'remoteip': request.remote_addr}
+        post_obj = requests.post("https://www.google.com/recaptcha/api/siteverify", data=data)
 
         if post_obj.status_code == 200:
             #All Fine
