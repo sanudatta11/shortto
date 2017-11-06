@@ -14,6 +14,7 @@
 
         gtag('config', 'UA-108877136-1');
     </script>
+    <script src='https://www.google.com/recaptcha/api.js'></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description"
           content="Welcome to Short To. We are URL Shortening Company. Big URLs are now a big problem for everyone. We try to make URLs shorter and smarter. Now get your custom short URL or a random one. We provide analytics and easy copy feature for your links. Now no more hustling for long links. We are here.">
@@ -123,14 +124,16 @@
                 <br>
                 <div class="row">
                     <div class="col-xs-4">
-                        <button type="submit" class="btn-sbmt"><b>Shorten my URL</b></button>
+                        <button class="btn-sbmt g-recaptcha" data-sitekey="6LeFWDYUAAAAAGNFMu6GFSbChEd7D8HnliPYMuYB" data-callback="final_click"><b>Shorten my URL</b></button>
+                        <button type="submit" id="final_click" hidden></button>
                     </div>
                     <div class="col-xs-4">
                         <b>Links Shortened: </b> {{ tot_urls }} <br>
                         <b>Link Clicks: </b> {{ tot_clicks }} times
                     </div>
                     <div class="col-xs-4" style="">
-                        <button class="shorted_url" onclick="location.href='/url/self/'" type="button">My short URLs</button>
+                        <button class="shorted_url" onclick="location.href='/url/self/'" type="button">My short URLs
+                        </button>
                     </div>
                 </div>
             </form>
@@ -155,6 +158,11 @@
 <!-- Footer End -->
 
 <script type="text/javascript" src="{{ url_for('static',filename='js/app.js') }}"></script>
+<script>
+    function final_click() {
+        document.getElementById('final_click').click()
+    }
+</script>
 </body>
 
 </html>

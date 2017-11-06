@@ -1,7 +1,9 @@
 import os
 import re
+import requests
 import validators
-from flask import make_response
+from flask import json
+from flask import make_response, jsonify
 from flask import render_template, flash, redirect, request,session
 from flask import send_from_directory
 from flask import url_for
@@ -14,6 +16,10 @@ from app.helper import idtoshort_url
 from flask_wtf.csrf import CSRFError
 from sqlalchemy.sql import func
 from config import blacklist
+
+@app.route("/get_my_ip", methods=["GET"])
+def get_my_ip():
+    return jsonify({'ip': request.remote_addr}), 200
 
 @app.route('/url/self',methods=['GET'])
 @app.route('/url/self/',methods=['GET'])
@@ -32,6 +38,11 @@ def self_urls():
             temp_list.append(temp.clicks)
             send_list.append(temp_list)
     return render_template('analytics.html',prev_url_list=send_list)
+
+@app.route('/make/url')
+@app.route('/make/url/')
+def index2():
+    return render_template('index.html')
 
 @app.route('/url/done',methods=['GET'])
 @app.route('/url/done/',methods=['GET'])
@@ -55,6 +66,22 @@ def index():
     tot_clicks = tot_clicks_obj[0][1]
     if request.method == 'POST' and request.form['from_url']:
 
+        # Recaptcha Verify
+
+        g_captcha_response = request.form['g-recaptcha-response']
+        post_obj = requests.post("https://www.google.com/recaptcha/api/siteverify", data={'secret': '6LeFWDYUAAAAAAP1FaIZ8Q6NtJxHO9n3Sa1l6RKu', 'response': g_captcha_response, 'remoteip': request.remote_addr})
+
+        if post_obj.status_code == 200:
+            #All Fine
+            json_data = json.loads(post_obj.text)
+            if json_data['success'] == True:
+                #Passed
+                done = True
+            else:
+                return redirect(url_for('index2',error_code=str(json_data['error-codes'][0])))
+        else:
+                return redirect('/',320)
+        # Recaptcha End
         for url_s in blacklist:
             url_s_1 = '://' + url_s
             url_s_2 = 'www.' + url_s
@@ -118,35 +145,6 @@ def routeit(short_data):
             return render_template('index.html',url_error=True)
         return redirect(url, code=302)
     return render_template('notfound.html')
-
-
-# @app.route('/login', methods=['GET', 'POST'])
-# def login():
-#     if request.method == 'POST':
-#         form_temp = Login(request.form)
-#         if form_temp.validate():
-#             email = request.form['email']
-#             password = request.form['password']
-#             user = User.query.filter_by(email=request.form['email']).first()
-#             if user and user.check_pass(password):
-#                 flash('Logged In')
-#                 return redirect('/success/', code=302)
-#             else:
-#                 flash('Wrong Credentials')
-#                 return render_template('failed.html', code=500)
-#         else:
-#             flash('Not Valid Data')
-#             form = Login()
-#             return render_template('login.html', form=form)
-#     elif request.method == 'GET':
-#         form = Login()
-#         return render_template('login.html', form=form)
-
-
-# @app.route('/success')
-# @app.route('/success/')
-# def success():
-#     return "Succeded Auth"
 
 @app.route('/favicon.ico')
 def favicon():
