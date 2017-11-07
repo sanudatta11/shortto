@@ -10,11 +10,9 @@ from flask import url_for
 
 from app import app, db
 from app.models import Shortto
-from sqlalchemy import func
-from app.forms import Url_form, Login
+from app.forms import Url_form
 from app.helper import idtoshort_url
 from flask_wtf.csrf import CSRFError
-from sqlalchemy.sql import func
 from config import blacklist
 
 @app.route("/get_my_ip", methods=["GET"])

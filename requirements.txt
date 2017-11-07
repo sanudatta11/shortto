@@ -9,4 +9,3 @@ flask_migrate
 wtforms
 gunicorn
 mysqlclient
-flask-talisman
