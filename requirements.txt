@@ -9,3 +9,5 @@ flask_migrate
 wtforms
 gunicorn
 mysqlclient
+Flask-Mitten
+flask-kvsession

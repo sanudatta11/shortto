@@ -86,7 +86,7 @@
         </div>
         <div class="col-md-6 col-sm-12 col-xs-12 main-div" id="main-div">
             <form action="/" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}" />
                 <label for="basic-url-2" class="label-style-2">Enter long URL to shorten it
                     {% if url_error %}
                         {{ '(Try Again! Invalid Url Given)' }}
