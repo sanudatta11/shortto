@@ -9,3 +9,6 @@ flask_migrate
 wtforms
 gunicorn
 mysqlclient
+Flask-JWT
+flask-restful
+flask_jwt_extended

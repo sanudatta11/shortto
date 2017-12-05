@@ -7,17 +7,47 @@ from flask import make_response, jsonify
 from flask import render_template, flash, redirect, request,session
 from flask import send_from_directory
 from flask import url_for
+from werkzeug.security import safe_str_cmp
 
 from app import app, db
-from app.models import Shortto
+from app.models import Shortto,Client_auth, api_auth
 from app.forms import Url_form
 from app.helper import idtoshort_url
-from flask_wtf.csrf import CSRFError
 from config import blacklist
+from flask_restful import Resource, Api
+from flask_jwt import JWT, jwt_required
+from flask_jwt_extended import (
+    JWTManager, jwt_required, create_access_token,
+    get_jwt_identity
+)
 
-@app.route("/get_my_ip", methods=["GET"])
-def get_my_ip():
-    return jsonify({'ip': request.remote_addr}), 200
+@app.route('/api/v1/login',methods=['POST'])
+@app.route('/api/v1/login/',methods=['POST'])
+def api_auth_function():
+    if not request.is_json:
+        return jsonify({"msg": "Missing JSON in request"}), 400
+    client_id = request.json.get('client_id', None)
+    client_secret = request.json.get('client_secret', None)
+
+    if not client_id:
+        return jsonify({"msg": "Missing client_id parameter"}), 400
+    if not client_secret:
+        return jsonify({"msg": "Missing client_secret parameter"}), 400
+    
+    if not (api_auth.query.filter_by(client_id=client_id,client_secret=client_secret).count() > 0):
+        return jsonify({"msg": "Bad Client id or Client Secret"}), 401
+
+    #Identity is made as Client Secret as it is unique
+    access_token = create_access_token(identity=client_secret)
+    return jsonify(access_token=access_token), 200
+
+@app.route('/api/v1/create_url',methods=['GET'])
+@app.route('/api/v1/create_url/',methods=['GET'])
+@jwt_required
+def protected():
+    # Access the identity of the current user with get_jwt_identity
+    current_user = get_jwt_identity()
+    return jsonify(logged_in_as=current_user), 200
 
 @app.route('/url/self',methods=['GET'])
 @app.route('/url/self/',methods=['GET'])
@@ -158,8 +188,3 @@ def not_found(error):
 @app.errorhandler(500)
 def not_found(error):
     return render_template('error500.html'), 500
-
-
-@app.errorhandler(CSRFError)
-def handle_csrf_error(e):
-    return render_template('csrf_error.html', reason=e.description), 400
