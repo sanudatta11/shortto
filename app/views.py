@@ -52,7 +52,7 @@ def protected():
     long_url = request.form['long_url'] or ""
 
     if not long_url:
-        return jsonify(code=400,error="Long URL not found",message="Please pass the Long URL as a POST Form Parameter along with your JWT Auth Header"), 400
+        return jsonify(code=402,error="Long URL not found",message="Please pass the Long URL as a POST Form Parameter along with your JWT Auth Header")
 
     return jsonify(test=long_url,code=322), 200
 
