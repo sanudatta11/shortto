@@ -49,10 +49,12 @@ def protected():
     # Access the identity of the current user with get_jwt_identity
     current_secret = get_jwt_identity()
 
-    long_url = request.form['long_url'] or ""
 
-    if not long_url:
+
+    if not request.form['long_url']:
         return jsonify(message="Nothing here") , 200
+
+    long_url = request.form['long_url']
 
     return jsonify(test=long_url,code=322), 200
 
