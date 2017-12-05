@@ -197,11 +197,3 @@ def not_found(error):
 @limiter.exempt
 def not_found(error):
     return render_template('error500.html'), 500
-
-@app.error_handlers(429)
-def too_many_requests(error):
-    return jsonify({
-        "Code" : 429,
-        "Message" : "Too Many Requests",
-        "Limit" : "100 Per Hour"
-    })
