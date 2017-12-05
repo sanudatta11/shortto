@@ -55,27 +55,27 @@ def protected():
         url_s_1 = '://' + url_s
         url_s_2 = 'www.' + url_s
         if (url_s_1 in (long_url).lower()) or (url_s_2 in (long_url).lower()):
-            return jsonify(code=430,error="Blacklist URL Request",message="The URL you entered to shorten is Blacklisted")
+            return jsonify(code=430,error="Blacklist URL Request",message="The URL you entered to shorten is Blacklisted"),200
 
     if not validators.url(long_url):
-        return jsonify(code=510,error="Invalid URL",message="The Long URL you entered is Invalid!")
+        return jsonify(code=510,error="Invalid URL",message="The Long URL you entered is Invalid!"),200
 
     if request.form['short_url']:
         short_url = request.form['short_url']
 
         if not re.match("^[A-Za-z0-9-]+$", short_url):
-            return jsonify(code=520,error="Invalid URL Request",message="The Shortened URL character you entered is invalid")
+            return jsonify(code=520,error="Invalid URL Request",message="The Shortened URL character you entered is invalid") ,200
 
             # Check if unique or not
         if Shortto.query.filter_by(short_url=request.form['to_url']).count() > 0:
         # Already Used Short Url
-           return jsonify(code=320,error="Short URL Already Used",message="Please select another short URL")
+           return jsonify(code=320,error="Short URL Already Used",message="Please select another short URL") , 200
 
         temp = Shortto(big_url=long_url, short_url=short_url)
         db.session.add(temp)
         db.session.commit()
 
-        return jsonify(code=200,error="None",message="Short URL is made",url=app.config['BASE_URL']+short_url)
+        return jsonify(code=200,error="None",message="Short URL is made",url=app.config['BASE_URL']+short_url),200
     else:
         rows = Shortto.query.count()
         rows = int(rows)
@@ -88,7 +88,7 @@ def protected():
         db.session.add(temp)
         db.session.commit()
 
-        return jsonify(code=200, error="None", message="Short URL is made", url=app.config['BASE_URL'] + short_url)
+        return jsonify(code=200, error="None", message="Short URL is made", url=app.config['BASE_URL'] + short_url),200
 
 @app.route('/url/self',methods=['GET'])
 @app.route('/url/self/',methods=['GET'])
