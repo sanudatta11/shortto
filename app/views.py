@@ -60,6 +60,8 @@ def protected():
     if not validators.url(long_url):
         return jsonify(code=510,error="Invalid URL",message="The Long URL you entered is Invalid!"),200
 
+    return jsonify(done=True),200
+
     if request.form['short_url']:
         short_url = request.form['short_url']
 
