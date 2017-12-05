@@ -5,7 +5,7 @@ SECRET_KEY = os.urandom(24)
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 COOKIE_VAR = '__shortto_url__'
-JWT_HEADER_NAME = 'JWT_AUTH'
+JWT_HEADER_NAME = 'Auth'
 
 DEBUG = True
 SQLALCHEMY_DATABASE_URI = 'mysql://root:mysqlmysql@shortto.co8zric1dcsi.us-east-1.rds.amazonaws.com:3306/shortto'
