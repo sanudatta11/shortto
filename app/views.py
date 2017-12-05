@@ -50,10 +50,11 @@ def protected():
     current_secret = get_jwt_identity()
 
     long_url = request.form['long_url'] or ""
-    return jsonify(test=long_url) , 200
 
     if not long_url:
-        return jsonify(code=400,error="Long URL not found",message="Please pass the Long URL as a POST Form Parameter along with your JWT Auth Header")
+        return jsonify(code=400,error="Long URL not found",message="Please pass the Long URL as a POST Form Parameter along with your JWT Auth Header"), 400
+
+    return jsonify(test=long_url), 200
 
     for url_s in blacklist:
         url_s_1 = '://' + url_s
