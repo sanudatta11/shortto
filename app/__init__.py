@@ -15,7 +15,7 @@ app = Flask(__name__)
 limiter = Limiter(
     app,
     key_func=get_remote_address,
-    default_limits=["500 per day", "10 per hour"]
+    default_limits=["500 per day", "50 per hour"]
 )
 
 # Setup the Flask-JWT-Extended extension
