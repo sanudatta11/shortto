@@ -54,7 +54,7 @@ def protected():
     if not long_url:
         return jsonify(code=400,error="Long URL not found",message="Please pass the Long URL as a POST Form Parameter along with your JWT Auth Header"), 400
 
-    return jsonify(test=long_url), 200
+    return jsonify(test=long_url,code=322), 200
 
     for url_s in blacklist:
         url_s_1 = '://' + url_s
