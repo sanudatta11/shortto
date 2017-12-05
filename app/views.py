@@ -52,7 +52,7 @@ def protected():
     long_url = request.form['long_url'] or ""
 
     if not long_url:
-        return jsonify(message="Nothing here")
+        return jsonify(message="Nothing here") , 200
 
     return jsonify(test=long_url,code=322), 200
 
