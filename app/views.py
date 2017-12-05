@@ -51,8 +51,6 @@ def protected():
 
     long_url = request.form['long_url']
 
-    return jsonify(test=long_url,code=322), 200
-
     for url_s in blacklist:
         url_s_1 = '://' + url_s
         url_s_2 = 'www.' + url_s
@@ -61,8 +59,7 @@ def protected():
 
     if not validators.url(long_url):
         return jsonify(code=510,error="Invalid URL",message="The Long URL you entered is Invalid!")
-    
-    
+
     if request.form['short_url']:
         short_url = request.form['short_url']
 
