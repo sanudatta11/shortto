@@ -60,9 +60,9 @@ def protected():
     if not validators.url(long_url):
         return jsonify(code=510,error="Invalid URL",message="The Long URL you entered is Invalid!"),200
 
-    return jsonify(done=True),200
 
     if request.form['short_url']:
+        return jsonify(done=True), 200
         short_url = request.form['short_url']
 
         if not re.match("^[A-Za-z0-9-]+$", short_url):
@@ -79,6 +79,7 @@ def protected():
 
         return jsonify(code=200,error="None",message="Short URL is made",url=app.config['BASE_URL']+short_url),200
     else:
+        return jsonify(done=False), 200
         rows = Shortto.query.count()
         rows = int(rows)
         rows += 1
