@@ -49,9 +49,16 @@ def protected():
     # Access the identity of the current user with get_jwt_identity
     current_secret = get_jwt_identity()
 
+    if not request.is_json:
+        return jsonify({"msg": "Missing JSON in request"}), 400
+
     try:
-        long_url = request.form['long_url']
+        long_url = request.json.get('long_url', None)
+        short_url = request.json.get('short_url', None)
     except:
+        return jsonify(code=400, error="Empty Long URL", message="Please provide URL to Shorten!"), 200
+
+    if not long_url:
         return jsonify(code=400, error="Empty Long URL", message="Please provide URL to Shorten!"), 200
 
     for url_s in blacklist:
@@ -64,8 +71,7 @@ def protected():
         return jsonify(code=510,error="Invalid URL",message="The Long URL you entered is Invalid!"),200
 
     try:
-        if request.form['short_url']:
-            short_url = request.form['short_url']
+        if short_url:
 
             if not re.match("^[A-Za-z0-9-]+$", short_url):
                 return jsonify(code=520,error="Invalid URL Request",message="The Shortened URL character you entered is invalid") ,200
@@ -80,6 +86,20 @@ def protected():
             db.session.commit()
 
             return jsonify(code=200,error="None",message="Short URL is made",url=app.config['BASE_URL']+short_url),200
+        else:
+            rows = Shortto.query.count()
+            rows = int(rows)
+            rows += 1
+            short_url = idtoshort_url(int(rows))
+            while Shortto.query.filter_by(short_url=short_url).count() > 0:
+                rows += 1
+                short_url = idtoshort_url(rows)
+            temp = Shortto(big_url=long_url, short_url=short_url)
+            db.session.add(temp)
+            db.session.commit()
+
+            return jsonify(code=200, error="None", message="Short URL is made",
+                           url=app.config['BASE_URL'] + short_url), 200
     except:
         rows = Shortto.query.count()
         rows = int(rows)
