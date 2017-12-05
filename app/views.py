@@ -42,13 +42,55 @@ def api_auth_function():
     access_token = create_access_token(identity=client_secret)
     return jsonify(access_token=access_token), 200
 
-@app.route('/api/v1/create_url',methods=['GET'])
-@app.route('/api/v1/create_url/',methods=['GET'])
+@app.route('/api/v1/create_url',methods=['POST'])
+@app.route('/api/v1/create_url/',methods=['POST'])
 @jwt_required
 def protected():
     # Access the identity of the current user with get_jwt_identity
-    current_user = get_jwt_identity()
-    return jsonify(logged_in_as=current_user), 200
+    current_secret = get_jwt_identity()
+    if not request.form['long_url']:
+        return jsonify(code=400,error="Long URL not found",message="Please pass the Long URL as a POST Form Parameter along with your JWT Auth Header")
+    long_url = request.form['long_url']
+
+    for url_s in blacklist:
+        url_s_1 = '://' + url_s
+        url_s_2 = 'www.' + url_s
+        if (url_s_1 in (long_url).lower()) or (url_s_2 in (long_url).lower()):
+            return jsonify(code=430,error="Blacklist URL Request",message="The URL you entered to shorten is Blacklisted")
+
+    if not validators.url(long_url):
+        return jsonify(code=510,error="Invalid URL",message="The Long URL you entered is Invalid!")
+    
+    
+    if request.form['short_url']:
+        short_url = request.form['short_url']
+
+        if not re.match("^[A-Za-z0-9-]+$", short_url):
+            return jsonify(code=520,error="Invalid URL Request",message="The Shortened URL character you entered is invalid")
+
+            # Check if unique or not
+        if Shortto.query.filter_by(short_url=request.form['to_url']).count() > 0:
+        # Already Used Short Url
+           return jsonify(code=320,error="Short URL Already Used",message="Please select another short URL")
+
+        temp = Shortto(big_url=long_url, short_url=short_url)
+        db.session.add(temp)
+        db.session.commit()
+
+        return jsonify(code=200,error="None",message="Short URL is made",url=app.config['BASE_URL']+short_url)
+    else:
+        rows = Shortto.query.count()
+        rows = int(rows)
+        rows += 1
+        short_url = idtoshort_url(int(rows))
+        while Shortto.query.filter_by(short_url=short_url).count() > 0:
+            rows += 1
+            short_url = idtoshort_url(rows)
+        temp = Shortto(big_url=request.form['from_url'], short_url=short_url)
+        db.session.add(temp)
+        db.session.commit()
+
+        return jsonify(code=200, error="None", message="Short URL is made", url=app.config['BASE_URL'] + short_url)
 
 @app.route('/url/self',methods=['GET'])
 @app.route('/url/self/',methods=['GET'])
