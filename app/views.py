@@ -48,9 +48,11 @@ def api_auth_function():
 def protected():
     # Access the identity of the current user with get_jwt_identity
     current_secret = get_jwt_identity()
-    if not request.form['long_url']:
+
+    long_url = request.form['long_url'] or ""
+
+    if not long_url:
         return jsonify(code=400,error="Long URL not found",message="Please pass the Long URL as a POST Form Parameter along with your JWT Auth Header")
-    long_url = request.form['long_url']
 
     for url_s in blacklist:
         url_s_1 = '://' + url_s
