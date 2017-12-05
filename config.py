@@ -1,4 +1,7 @@
 import os
+
+import datetime
+
 WTF_CSRF_ENABLED = True
 SECRET_KEY = os.urandom(24)
 
@@ -6,6 +9,8 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 COOKIE_VAR = '__shortto_url__'
 JWT_HEADER_NAME = 'Auth'
+JWT_EXPIRATION_DELTA = datetime.timedelta(minutes=15)
+JWT_NOT_BEFORE_DELTA = datetime.timedelta(seconds=1)
 
 DEBUG = True
 SQLALCHEMY_DATABASE_URI = 'mysql://root:mysqlmysql@shortto.co8zric1dcsi.us-east-1.rds.amazonaws.com:3306/shortto'

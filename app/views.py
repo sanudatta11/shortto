@@ -9,7 +9,7 @@ from flask import send_from_directory
 from flask import url_for
 from werkzeug.security import safe_str_cmp
 
-from app import app, db
+from app import app, db,limiter
 from app.models import Shortto,Client_auth, api_auth
 from app.forms import Url_form
 from app.helper import idtoshort_url
@@ -23,6 +23,7 @@ from flask_jwt_extended import (
 
 @app.route('/api/v1/login',methods=['POST'])
 @app.route('/api/v1/login/',methods=['POST'])
+@limiter.limit("1000 per day")
 def api_auth_function():
     if not request.is_json:
         return jsonify({"msg": "Missing JSON in request"}), 400
@@ -51,6 +52,7 @@ def protected():
 
 @app.route('/url/self',methods=['GET'])
 @app.route('/url/self/',methods=['GET'])
+@limiter.exempt
 def self_urls():
     prev_url = request.cookies.get('__shortto__')
     prev_url_list = []
@@ -69,11 +71,13 @@ def self_urls():
 
 @app.route('/make/url')
 @app.route('/make/url/')
+@limiter.exempt
 def index2():
     return render_template('index.html')
 
 @app.route('/url/done',methods=['GET'])
 @app.route('/url/done/',methods=['GET'])
+@limiter.exempt
 def short_done():
     resp = make_response(render_template('done.html', code=200, short_url=app.config['BASE_URL'] + request.args.get('short_url')))
     prev_url = request.cookies.get('__shortto__')
@@ -87,6 +91,7 @@ def short_done():
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
+@limiter.exempt
 def index():
     form = Url_form(request.form)
     tot_urls = Shortto.query.count()
@@ -164,6 +169,7 @@ def index():
 
 @app.route('/<string:short_data>', methods=['GET'])
 @app.route('/<string:short_data>/', methods=['GET'])
+@limiter.exempt
 def routeit(short_data):
     temp = Shortto.query.filter_by(short_url=short_data).first()
     if temp is not None:
@@ -176,15 +182,18 @@ def routeit(short_data):
     return render_template('notfound.html')
 
 @app.route('/favicon.ico')
+@limiter.exempt
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'images/favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 @app.errorhandler(404)
+@limiter.exempt
 def not_found(error):
     return render_template('error404.html') , 404
 
 
 @app.errorhandler(500)
+@limiter.exempt
 def not_found(error):
     return render_template('error500.html'), 500

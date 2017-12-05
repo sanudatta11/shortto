@@ -12,3 +12,4 @@ mysqlclient
 Flask-JWT
 flask-restful
 flask_jwt_extended
+flask_limiter

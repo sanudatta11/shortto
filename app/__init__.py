@@ -8,8 +8,15 @@ from flask_jwt_extended import (
 
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 app = Flask(__name__)
+limiter = Limiter(
+    app,
+    key_func=get_remote_address,
+    default_limits=["500 per day", "10 per hour"]
+)
 
 # Setup the Flask-JWT-Extended extension
 app.config['JWT_SECRET_KEY'] = os.urandom(24)  # Change this!
