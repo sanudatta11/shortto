@@ -1,4 +1,6 @@
-
+.idea/*
+.vs/*
+.*/*
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
