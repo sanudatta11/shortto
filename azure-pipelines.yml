@@ -18,4 +18,5 @@ steps:
   - script: |
       docker build -f Dockerfile -t $(imageName) .
       docker login -u $(dockerId) -p $(pswd)
+      docker tag $(imageName) $(dockerId)/$(imageName)
       docker push $(dockerId)/$(imageName)
