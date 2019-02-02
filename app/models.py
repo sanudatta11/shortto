@@ -9,7 +9,7 @@ from app import db, login_manager
 
 class Shortto(db.Model):
     id = db.Column(db.Integer, primary_key=True,autoincrement=True)
-    big_url = db.Column(db.String(500),nullable=False)
+    big_url = db.Column(db.String(1000),nullable=False)
     short_url = db.Column(db.String(50),nullable=False,unique=True)
 
     # user_id = db.Column(db.Integer,db.ForeignKey('user.id'))

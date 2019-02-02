@@ -5,11 +5,13 @@ flask_wtf
 Flask-SQLAlchemy
 flask_login
 flask_script
+flask_jwt_extended
 flask_migrate
 wtforms
 gunicorn
-mysqlclient
 Flask-JWT
 flask-restful
 flask_jwt_extended
 flask_limiter
+pymysql
+# mysqlclient
