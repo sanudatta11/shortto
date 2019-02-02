@@ -13,7 +13,5 @@ RUN pip install -r requirements.txt
 
 COPY . /app
 
-ENTRYPOINT [ "python" ]
-
-CMD [ "application.py" ]
+CMD ["python", "application.py" ]
 EXPOSE 5000
