@@ -1,10 +1,8 @@
 FROM ubuntu:16.04
-
-MAINTANER Soumyajit Dutta "sanudatta11@gmail.com"
-
+LABEL maintainer Soumyajit Dutta "sanudatta11@gmail.com"
 RUN apt-get update -y && \
-    apt-get install -y python-pip python-dev && \
-    apt install libmysqlclient-dev
+    apt-get install python-pip python-dev -y && \
+    apt install libmysqlclient-dev -y
 
 # We copy just the requirements.txt first to leverage Docker cache
 COPY ./requirements.txt /app/requirements.txt
