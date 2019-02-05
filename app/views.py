@@ -2,6 +2,8 @@ import os
 import re
 import requests
 import validators
+from flask_cors import CORS, cross_origin
+import sys
 from flask import json
 from flask import make_response, jsonify
 from flask import render_template, flash, redirect, request,session
@@ -21,6 +23,7 @@ from flask_jwt_extended import (
     get_jwt_identity
 )
 
+@cross_origin()
 @app.route('/api/v1/login',methods=['POST'])
 @app.route('/api/v1/login/',methods=['POST'])
 @limiter.limit("1000 per day")
@@ -42,12 +45,13 @@ def api_auth_function():
     access_token = create_access_token(identity=client_secret)
     return jsonify(access_token=access_token), 200
 
+@cross_origin()
 @app.route('/api/v1/create_url',methods=['POST'])
 @app.route('/api/v1/create_url/',methods=['POST'])
 @jwt_required
 def protected():
     #Verifying Recaptcha
-    g_captcha_response = request.form['g-recaptcha-response']
+    g_captcha_response = request.json.get('g-recaptcha-response',None)
     data = {'secret': '6LeFWDYUAAAAAAP1FaIZ8Q6NtJxHO9n3Sa1l6RKu', 'response': g_captcha_response,'remoteip': request.remote_addr}
     post_obj = requests.post("https://www.google.com/recaptcha/api/siteverify", data=data)
     recaptcha_done = False

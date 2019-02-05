@@ -11,7 +11,7 @@ COOKIE_VAR = '__shortto_url__'
 JWT_HEADER_NAME = 'Auth'
 JWT_EXPIRATION_DELTA = datetime.timedelta(minutes=15)
 JWT_NOT_BEFORE_DELTA = datetime.timedelta(seconds=1)
-
+SQLALCHEMY_TRACK_MODIFICATIONS = False
 DEBUG = True
 SQLALCHEMY_DATABASE_URI = 'mysql://root:y125zmZ75DO8n5k@shortto.co8zric1dcsi.us-east-1.rds.amazonaws.com:3306/shortto'
 # SQLALCHEMY_DATABASE_URI = 'mysql://root:mysql@127.0.0.1:3306/shortto'

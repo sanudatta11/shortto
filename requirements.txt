@@ -9,7 +9,9 @@ flask_jwt_extended
 flask_migrate
 wtforms
 gunicorn
+flask_cors
 Flask-JWT
+flask_debug
 flask-restful
 flask_jwt_extended
 flask_limiter
