@@ -46,47 +46,76 @@ def api_auth_function():
 @app.route('/api/v1/create_url/',methods=['POST'])
 @jwt_required
 def protected():
+    #Verifying Recaptcha
+    g_captcha_response = request.form['g-recaptcha-response']
+    data = {'secret': '6LeFWDYUAAAAAAP1FaIZ8Q6NtJxHO9n3Sa1l6RKu', 'response': g_captcha_response,'remoteip': request.remote_addr}
+    post_obj = requests.post("https://www.google.com/recaptcha/api/siteverify", data=data)
+    recaptcha_done = False
+    if post_obj.status_code == 200:
+            #All Fine
+            json_data = json.loads(post_obj.text)
+            if json_data['success'] == True:
+                #Passed
+                recaptcha_done = True
+            else:
+                return jsonify(code=320,error="Recaptcha Incorrect",message="Validation failed")
+    else:
+            return jsonify(code=310,error="Recaptcha invalid")
+    
     # Access the identity of the current user with get_jwt_identity
-    current_secret = get_jwt_identity()
+    if(recaptcha_done):
+        current_secret = get_jwt_identity()
+        if not request.is_json:
+            return jsonify({"msg": "Missing JSON in request"}), 400
 
-    if not request.is_json:
-        return jsonify({"msg": "Missing JSON in request"}), 400
+        try:
+            long_url = request.json.get('long_url', None)
+            short_url = request.json.get('short_url', None)
+        except:
+            return jsonify(code=400, error="Empty Long URL", message="Please provide URL to Shorten!"), 200
 
-    try:
-        long_url = request.json.get('long_url', None)
-        short_url = request.json.get('short_url', None)
-    except:
-        return jsonify(code=400, error="Empty Long URL", message="Please provide URL to Shorten!"), 200
+        if not long_url:
+            return jsonify(code=400, error="Empty Long URL", message="Please provide URL to Shorten!"), 200
 
-    if not long_url:
-        return jsonify(code=400, error="Empty Long URL", message="Please provide URL to Shorten!"), 200
+        for url_s in blacklist:
+            url_s_1 = '://' + url_s
+            url_s_2 = 'www.' + url_s
+            if (url_s_1 in (long_url).lower()) or (url_s_2 in (long_url).lower()):
+                return jsonify(code=430,error="Blacklist URL Request",message="The URL you entered to shorten is Blacklisted"),200
 
-    for url_s in blacklist:
-        url_s_1 = '://' + url_s
-        url_s_2 = 'www.' + url_s
-        if (url_s_1 in (long_url).lower()) or (url_s_2 in (long_url).lower()):
-            return jsonify(code=430,error="Blacklist URL Request",message="The URL you entered to shorten is Blacklisted"),200
+        if not validators.url(long_url):
+            return jsonify(code=510,error="Invalid URL",message="The Long URL you entered is Invalid!"),200
 
-    if not validators.url(long_url):
-        return jsonify(code=510,error="Invalid URL",message="The Long URL you entered is Invalid!"),200
+        try:
+            if short_url:
 
-    try:
-        if short_url:
+                if not re.match("^[A-Za-z0-9-]+$", short_url):
+                    return jsonify(code=520,error="Invalid URL Request",message="The Shortened URL character you entered is invalid") ,200
 
-            if not re.match("^[A-Za-z0-9-]+$", short_url):
-                return jsonify(code=520,error="Invalid URL Request",message="The Shortened URL character you entered is invalid") ,200
+                    # Check if unique or not
+                if Shortto.query.filter_by(short_url=short_url).count() > 0:
+                    return jsonify(code=320,error="Short URL Already Used",message="Please select another short URL") , 200
 
-                # Check if unique or not
-            if Shortto.query.filter_by(short_url=short_url).count() > 0:
-            # Already Used Short Url
-               return jsonify(code=320,error="Short URL Already Used",message="Please select another short URL") , 200
+                temp = Shortto(big_url=long_url, short_url=short_url)
+                db.session.add(temp)
+                db.session.commit()
 
-            temp = Shortto(big_url=long_url, short_url=short_url)
-            db.session.add(temp)
-            db.session.commit()
+                return jsonify(code=200,error="None",message="Short URL is made",url=app.config['BASE_URL']+short_url),200
+            else:
+                rows = Shortto.query.count()
+                rows = int(rows)
+                rows += 1
+                short_url = idtoshort_url(int(rows))
+                while Shortto.query.filter_by(short_url=short_url).count() > 0:
+                    rows += 1
+                    short_url = idtoshort_url(rows)
+                temp = Shortto(big_url=long_url, short_url=short_url)
+                db.session.add(temp)
+                db.session.commit()
 
-            return jsonify(code=200,error="None",message="Short URL is made",url=app.config['BASE_URL']+short_url),200
-        else:
+                return jsonify(code=200, error="None", message="Short URL is made",
+                            url=app.config['BASE_URL'] + short_url), 200
+        except:
             rows = Shortto.query.count()
             rows = int(rows)
             rows += 1
@@ -98,21 +127,7 @@ def protected():
             db.session.add(temp)
             db.session.commit()
 
-            return jsonify(code=200, error="None", message="Short URL is made",
-                           url=app.config['BASE_URL'] + short_url), 200
-    except:
-        rows = Shortto.query.count()
-        rows = int(rows)
-        rows += 1
-        short_url = idtoshort_url(int(rows))
-        while Shortto.query.filter_by(short_url=short_url).count() > 0:
-            rows += 1
-            short_url = idtoshort_url(rows)
-        temp = Shortto(big_url=long_url, short_url=short_url)
-        db.session.add(temp)
-        db.session.commit()
-
-        return jsonify(code=200, error="None", message="Short URL is made", url=app.config['BASE_URL'] + short_url),200
+            return jsonify(code=200, error="None", message="Short URL is made", url=app.config['BASE_URL'] + short_url),200
 
 @app.route('/url/self',methods=['GET'])
 @app.route('/url/self/',methods=['GET'])
@@ -231,18 +246,18 @@ def index():
     return render_template('index.html', form=form, tot_clicks=tot_clicks, tot_urls=tot_urls)
 
 
-@app.route('/<string:short_data>', methods=['GET'])
-@app.route('/<string:short_data>/', methods=['GET'])
-@limiter.exempt
-def routeit(short_data):
-    temp = Shortto.query.filter_by(short_url=short_data).first()
-    if temp is not None:
-        temp.clicks += 1
-        db.session.commit()
-        url = temp.big_url
-        if not validators.url(url):
-            return render_template('index.html',url_error=True)
-        return redirect(url, code=302)
+# @app.route('/<string:short_data>', methods=['GET'])
+# @app.route('/<string:short_data>/', methods=['GET'])
+# @limiter.exempt
+# def routeit(short_data):
+#     temp = Shortto.query.filter_by(short_url=short_data).first()
+#     if temp is not None:
+#         temp.clicks += 1
+#         db.session.commit()
+#         url = temp.big_url
+#         if not validators.url(url):
+#             return render_template('index.html',url_error=True)
+#         return redirect(url, code=302)
     return render_template('notfound.html')
 
 @app.route('/favicon.ico')
