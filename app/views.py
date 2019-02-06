@@ -250,17 +250,17 @@ def index():
     return render_template('index.html', form=form, tot_clicks=tot_clicks, tot_urls=tot_urls)
 
 
-# @app.route('/<string:short_data>', methods=['GET'])
-# @app.route('/<string:short_data>/', methods=['GET'])
-# @limiter.exempt
-# def routeit(short_data):
-#     temp = Shortto.query.filter_by(short_url=short_data).first()
-#     if temp is not None:
-#         temp.clicks += 1
-#         db.session.commit()
-#         url = temp.big_url
-#         if not validators.url(url):
-#             return render_template('index.html',url_error=True)
+@app.route('/<string:short_data>', methods=['GET'])
+@app.route('/<string:short_data>/', methods=['GET'])
+@limiter.exempt
+def routeit(short_data):
+    temp = Shortto.query.filter_by(short_url=short_data).first()
+    if temp is not None:
+        temp.clicks += 1
+        db.session.commit()
+        url = temp.big_url
+        if not validators.url(url):
+            return render_template('index.html',url_error=True)
 #         return redirect(url, code=302)
     return render_template('notfound.html')
 
