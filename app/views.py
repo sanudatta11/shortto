@@ -249,7 +249,6 @@ def index():
     # Just Index Render get analytics data
     return render_template('index.html', form=form, tot_clicks=tot_clicks, tot_urls=tot_urls)
 
-
 @app.route('/<string:short_data>', methods=['GET'])
 @app.route('/<string:short_data>/', methods=['GET'])
 @limiter.exempt
@@ -261,7 +260,7 @@ def routeit(short_data):
         url = temp.big_url
         if not validators.url(url):
             return render_template('index.html',url_error=True)
-#         return redirect(url, code=302)
+        return redirect(url, code=302)
     return render_template('notfound.html')
 
 @app.route('/favicon.ico')
