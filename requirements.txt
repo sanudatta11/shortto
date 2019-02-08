@@ -17,3 +17,8 @@ flask_jwt_extended
 flask_limiter
 pymysql
 mysqlclient
+click
+itsdangerous
+MarkupSafe
+uWSGI
+Werkzeug
