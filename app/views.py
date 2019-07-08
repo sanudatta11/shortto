@@ -183,7 +183,6 @@ def index():
     if request.method == 'POST' and request.form['from_url']:
 
         # Recaptcha Verify
-
         g_captcha_response = request.form['g-recaptcha-response']
         data = {'secret': '6LeFWDYUAAAAAAP1FaIZ8Q6NtJxHO9n3Sa1l6RKu', 'response': g_captcha_response,'remoteip': request.remote_addr}
         post_obj = requests.post("https://www.google.com/recaptcha/api/siteverify", data=data)
@@ -209,7 +208,6 @@ def index():
             return render_template('index.html', url_error=True, tot_clicks=tot_clicks, tot_urls=tot_urls)
 
         if request.form['to_url']:
-
             if not re.match("^[A-Za-z0-9-]+$",request.form['to_url']):
                 return render_template('index.html', code=320, error_url_type=True, tot_clicks=tot_clicks,
                                        tot_urls=tot_urls)
@@ -248,6 +246,16 @@ def index():
 
     # Just Index Render get analytics data
     return render_template('index.html', form=form, tot_clicks=tot_clicks, tot_urls=tot_urls)
+
+
+# Test Routes for New UI
+
+@app.route('/v2', methods=['GET', 'POST'])
+@limiter.exempt
+def indexv2():
+    return render_template('index2.html')
+
+# End of Test Routes for new UI
 
 @app.route('/<string:short_data>', methods=['GET'])
 @app.route('/<string:short_data>/', methods=['GET'])

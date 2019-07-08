@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en" prefix="og: http://ogp.me/ns#">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0" />
+    <meta name="description"
+        content="ShortTo is a premium no cost Link Shortening Service.We are commited to be add free and no cost for any duration. It offers best
+        performance and advanced features for your site." />
+    <meta name="keywords" content="shortto, premium url shortener, url short,lpu shortener,smart link" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
+
+    <!-- Open Graph Tags -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="index.html" />
+    <meta property="og:title" content="ShortTo - Making Links Smarter" />
+    <meta property="og:description"
+        content="ShortTo is a premium no cost Link Shortening Service.We are commited to be add free and no cost for any duration. It offers best
+        performance and advanced features for your site." />
+    <meta property="og:image" content="" />
+    <link rel="icon" type="image/png" href="https://shortto-v2-cdn.s3.ap-south-1.amazonaws.com/img/favicon.png" sizes="32x32" />
+
+    <title>ShortTo - Making Links Smarter</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+    <!-- Component CSS -->
+    <link rel="stylesheet" type="text/css" href=" https://shortto-v2-cdn.s3.ap-south-1.amazonaws.com/css/style.css">
+    <link rel="stylesheet" type="text/css" href=" https://shortto-v2-cdn.s3.ap-south-1.amazonaws.com/css/component.min.css">
+
+    <link rel="stylesheet" type="text/css"
+        href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.css">
+    <link rel="stylesheet" type="text/css" href="https://shortto-v2-cdn.s3.ap-south-1.amazonaws.com/css/snackbar.min.css">
+
+    <!-- Required Javascript Files -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
+    
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.4/datepicker.min.js?v=0.6.4">
+    </script>
+    <link rel="stylesheet" type="text/css"
+        href="//cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.4/datepicker.min.css?v=0.6.4">
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/chosen/1.1.0/chosen.jquery.min.js?v=1.1.0">
+    </script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.1/icheck.min.js?v=1.0.1"></script>
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.15/clipboard.min.js?v=1.5.15"></script>
+    <script type="text/javascript"
+        src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js?v=3.0.3"></script>
+    <link rel="stylesheet" type="text/css"
+        href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css?v=3.0.3">
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/pace/0.4.17/pace.js?v=0.4.17"></script>
+
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        @font-face {
+            font-family: 'Material-Design-Iconic-Font';
+            src: url('https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/fonts/Material-Design-Iconic-Font.woff2') format('woff2'), url('https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/fonts/Material-Design-Iconic-Font.woff') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/fonts/Material-Design-Iconic-Font.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        #long_url {
+            padding: 0px 55px;
+            border-width: 0;
+            font-size: 19px;
+                font-family: roboto;
+            background: #f2f2f2;
+            height: 55px;
+            color: #151720;
+            border-radius: 29px 29px 29px 29px;
+            transition: all 0.2s linear;
+            -webkit-transition: all 0.2s linear;
+            -o-transition: all 0.2s linear;
+            -ms-transition: all 0.2s linear;
+            -moz-transition: all 0.2s linear;
+        }
+        .shortto-teller {
+            padding: 0px 55px;
+            border-width: 0;
+            border-radius: 29px 0px 0px 29px;
+            font-size: 19px;
+                font-family: roboto;
+            background: #f2f2f2;
+            height: 55px;
+            color: #151720;
+            transition: all 0.2s linear;
+            -webkit-transition: all 0.2s linear;
+            -o-transition: all 0.2s linear;
+            -ms-transition: all 0.2s linear;
+            -moz-transition: all 0.2s linear;
+        }
+        .shortto-getter {
+            padding: 0px 55px;
+            border-width: 0;
+            font-size: 19px;
+                font-family: roboto;
+            background: #f2f2f2;
+            height: 55px;
+            color: #151720;
+            transition: all 0.2s linear;
+            -webkit-transition: all 0.2s linear;
+            -o-transition: all 0.2s linear;
+            -ms-transition: all 0.2s linear;
+            -moz-transition: all 0.2s linear;
+        }
+    </style>
+</head>
+<div id="focus-overlay"></div>
+
+<body class='light home' id="body">
+    <a href="#body" id="back-to-top"><i class="zmdi zmdi-chevron-up"></i></a>
+
+    <header class="activeheadmenu other-header">
+        <div class="navbar" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"
+                        onclick="In_headerFunction()"><i class="zmdi zmdi-menu"></i></button>
+                    <a class="navbar-brand" href="index.html">
+                        <img src=" https://shortto-v2-cdn.s3.ap-south-1.amazonaws.com/img/auto_site_logo.png"
+                            alt="ShortTo - Making Links Smarter">
+                    </a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#">Pricing</a></li>
+                        <li><a href="#">Login</a></li>
+                        <li><a href="#" class="active">Get Started</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <style>
+        .other-header {
+            display: none
+        }
+    </style>
+    <header>
+        <div class="navbar" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"
+                        onclick="In_headerFunction()">
+                        <i class="zmdi zmdi-menu"></i>
+                    </button>
+                    <a class="navbar-brand" href="index.html">
+                        <img src="https://shortto-v2-cdn.s3.ap-south-1.amazonaws.com/img/shortto-logo-transp.png"
+                            alt="ShortTo - Making Links Smarter">
+                    </a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#">Pricing</a></li>
+                        <li><a href="#">Login</a></li>
+                        <li><a href="#" class="active">Get Started</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="under-head-cont main-index-top"
+        style="background-image:url(https://shortto-v2-cdn.s3.ap-south-1.amazonaws.com/img/back.jpg);">
+
+        <svg id="wave" viewBox="0 0 100 15" style="position: absolute;bottom: 0;z-index: 0;">
+            <path fill="#fff" opacity="0.5" d="M0 30 V15 Q30 3 60 15 V30z"></path>
+            <path fill="#fff" d="M0 30 V12 Q30 17 55 12 T100 11 V30z"></path>
+        </svg>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="promo">
+                        <h1>
+                            ShortTo - Making Links Smarter
+                        </h1>
+                        <span>ShortTo is a premium no cost Link Shortening Service.We are commited to be add free and no cost for any duration. It offers best
+                            performance and advanced features for your site.</span>
+                    </div>
+                    <div class="overlaylink">
+                        <div class="link-shared" id="modal">
+                            <!-- close trigger -->
+                            <div class="closelink">
+                                <span><i class="zmdi zmdi-close"></i></span>
+                            </div>
+                            <!-- modal content -->
+                            <div class="modal-contentlink">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="share-this"></div>
+                    <div class="ajax"></div>
+                    <div class="p-relative">
+                        <form action="#" id="main-form" role="form" method="post">
+                            <div class="main-form">
+                                <div class="row" id="single">
+                                    <div class="col-md-13 shortfieldz" style="margin: 1%">
+                                        <i class="zmdi zmdi-link"></i>
+                                        <input type="text" class="form-control text-input" id="long_url"
+                                            name="url" value="" placeholder="Paste a long url" />
+                                    </div>
+                                    <div class="col-md-4 shortfieldz">
+                                        <i class="zmdi zmdi-link"></i>
+                                        <input type="text" class="form-control text-input shortto-teller" value="www.shortto.com/"  readonly/>
+                                    </div>
+                                    <div class="col-md-5 shortfieldz">
+                                        <i class="zmdi zmdi-link"></i>
+                                        <input type="text" class="form-control shortto-getter text-input"
+                                            name="long_url" value="" placeholder="Custom Short" id="short_url"/>
+                                    </div>
+                                    <div class="col-md-3 shortbtnz">
+                                        <button class="btn btn-default btn-block main-button" name="short_url"
+                                            type="submit" style="color: white;margin-left: 3px">Shorten </button>
+                                        <!--<button class="btn btn-primary btn-block main-button" id="copyurl" type="button">Copy</button>-->
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.main-form -->
+                            <div class="main-options clearfix" style="min-height:34px;position:relative;">
+                                <select name="type" class="form-control">
+                                    <optgroup label="Redirection">
+                                        <option value="direct">Direct</option>
+                                        <option value="frame">Frame</option>
+                                        <option value="splash">Splash</option>
+                                    </optgroup>
+                                </select> </div><!-- /.main-options -->
+
+                            <div id="captcha">
+                            </div>
+                        </form>
+                        <!--/.form-->
+                    </div>
+                    <div class="call-to-action">
+                        <a href="#" class="mdbtn btn btn-primary btn-lg">Get Started</a>
+                        <a href="#more" class="learn-more-index">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="light">
+        <div class="container">
+            <div class="row featurette">
+                <h2 class="center">
+                    One Link. Infinite Uses. </h2>
+                <p class="text-center featureP">
+                    A short link is a powerful marketing tool when you use it carefully. It is not just a link but a
+                    medium between your customer and their destination. A short link allows you to collect so much data
+                    about your customers and their behaviors. </p>
+                <div class="col-sm-4">
+                    <div class="feature-img"
+                        style="background-image:url( https://shortto-v2-cdn.s3.ap-south-1.amazonaws.com/img/lock.png)"></div>
+                    <h3>Password Protect</h3>
+                    <p>Set a password to protect your links from unauthorized access.</p>
+                </div>
+                <div class="col-sm-4">
+                    <div class="feature-img"
+                        style="background-image:url( https://shortto-v2-cdn.s3.ap-south-1.amazonaws.com/img/globe.png)"></div>
+                    <h3>Geotarget</h3>
+                    <p>Geotarget your links to redirect visitors to specialized pages and increase your conversion.</p>
+                </div>
+                <div class="col-sm-4">
+                    <div class="feature-img"
+                        style="background-image:url( https://shortto-v2-cdn.s3.ap-south-1.amazonaws.com/img/case.png)"></div>
+                    <h3>Bundle</h3>
+                    <p>Bundle your links for easy access and share them with the public on your public profile.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="more">
+        <div class="container">
+            <div class="row feature" id="infinity-feature">
+                <div class="col-sm-7 image">
+                    <img src=" https://shortto-v2-cdn.s3.ap-south-1.amazonaws.com/img/stats.png" alt="Complete Analytics">
+                </div>
+                <div class="col-sm-5 info">
+                    <h2>
+                        <small>Complete Analytics</small>
+                        Track each and every user who clicks a link. </h2>
+                    <div class="feature-border"></div>
+                    <p>
+                        Our system allows you to track everything. Whether it is the amount of clicks, the country or
+                        the referrer, the data is there. </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="container">
+            <div class="row feature" id="infinity-feature">
+                <div class="col-sm-5 info">
+                    <h2>
+                        <small>Powerful Dashboard</small>
+                        One dashboard to manage everything. </h2>
+                    <div class="feature-border"></div>
+                    <p>
+                        Our dashboard lets you control everything. Manage your URLs, create bundles, manage your splash
+                        pages and your settings, all from the same dashboard. </p>
+                </div>
+                <div class="col-sm-7 image">
+                    <img src=" https://shortto-v2-cdn.s3.ap-south-1.amazonaws.com/img/dashboard.png" alt="Powerful Dashboard">
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="infinity-stats">
+        <div class="container">
+            <div class="row stats">
+                <div class="col-xs-4">
+                    <div class="infinity-facts">
+                        <i class="zmdi zmdi-link"></i>
+                        <p>URLs Created</p>
+                        <h3>11126</h3>
+                    </div>
+                </div>
+                <div class="col-xs-4">
+                    <div class="infinity-facts">
+                        <i class="zmdi zmdi-mouse"></i>
+                        <p>Clicks Served</p>
+                        <h3>12967</h3>
+                    </div>
+                </div>
+                <div class="col-xs-4">
+                    <div class="infinity-facts">
+                        <i class="zmdi zmdi-account"></i>
+                        <p>Users Registered</p>
+                        <h3>737</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="infinity-cta">
+        <div class="container">
+            <div class="row stats">
+                <h2 class="center">
+                    The Ultimate URL Shortener that's simple,<br>powerful, and easy. </h2>
+                <p>
+                    Unleash the Power of the Link </p>
+                <div class="col-md-12">
+                    <a href="#" class="infbtn">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer class="main nousrfoot">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-5">
+                    2019 &copy; ShortTo - Making Links Smarter.
+                </div>
+                <div class="col-md-7 text-right">
+
+                    <a href='#' title='Terms and Conditions'>Terms and Conditions</a>
+
+                    <a href='#' title='Developer'>Developer</a>
+                    <a href='#' title='Contact'>Contact</a>
+                    <div class="languages">
+                        <a href="#lang" class="active" id="show-language"><i class="zmdi zmdi-globe"></i> Language</a>
+                        <div class="langs">
+                            <a href='#'>English</a> </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script type="text/javascript">
+        var lang = {
+            "del": "Delete",
+            "url": "URL",
+            "count": "Country",
+            "copied": "Copied",
+            "geo": "Geotargeting data for",
+            "error": "Please enter a valid URL.",
+            "success": "URL has been successfully shortened. Click Copy or CRTL+C to Copy it.",
+            "stats": "You can access the statistic page via this link",
+            "copy": "Copied to clipboard.",
+            "from": "Redirect from",
+            "to": "Redirect to",
+            "share": "Share this on",
+            "congrats": "Congratulation! Your URL has been successfully shortened. You can share it on Facebook or Twitter by clicking the links below.",
+            "qr": "Save QR Code",
+            "continue": "Continue",
+            "cookie": "This website uses cookies to ensure you get the best experience on our website.",
+            "cookieok": "Got it!",
+            "cookiemore": "Learn more"
+        };
+    </script>
+
+    <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://shortto-v2-cdn.s3.ap-south-1.amazonaws.com/js/snackbar.min.js"></script>
+    <script type="text/javascript" src="https://shortto-v2-cdn.s3.ap-south-1.amazonaws.com/js/application.fn.js"></script>
+    <script type="text/javascript" src="https://shortto-v2-cdn.s3.ap-south-1.amazonaws.com/js/application.js"></script>
+    <!-- <script type="text/javascript" src="https://shortto-v2-cdn.s3.ap-south-1.amazonaws.com/js/server.js"></script> -->
+    <script type="text/javascript" src="https://shortto-v2-cdn.s3.ap-south-1.amazonaws.com/js/main.js"></script>
+
+    <!-- Custom Scripts -->
+    <script type="application/javascript" src="{{ url_for('static',filename='js/v2/server.js') }}"></script>
+
+    <script type="text/javascript">
+        $(window).on("scroll", function () {
+            if ($(window).scrollTop() > 50) {
+                $("header").addClass("activehead");
+            } else {
+                //remove the background property so it comes transparent again (defined in your css)
+                $("header").removeClass("activehead");
+            }
+        });
+
+        function In_headerFunction() {
+            var element = $("header");
+            element.toggleClass("activeheadmenu2");
+        }
+
+
+        //Custom Link Modal
+        var $modallink = $('.link-shared'),
+            $overlaylink = $('.overlaylink'),
+            $showModallink = $('.show-modal'),
+            $closelink = $('.closelink');
+
+        function In_ShowLinkModal() {
+            e.preventDefault();
+
+            var windowHeight = $(window).height(),
+                windowWidth = $(window).width(),
+                modalWidth = windowWidth / 2; //50% of window
+
+            $overlaylink.show();
+            $modallink.css({
+                'width': modalWidth,
+                'margin-left': -modalWidth / 2
+            });
+        }
+
+        $closelink.on('click', function () {
+            $overlaylink.hide();
+        });
+
+        //Sidebar Menu
+        $(document).on('click', '.quicklinks-toggle__btn', function () {
+            $('body').addClass('menu_active');
+        });
+
+        $('#focus-overlay').on('click', function () {
+            $('body').removeClass('menu_active');
+        });
+
+        $(document).ready(function () {
+            $("#widget_news h3").append(" <i class='zmdi zmdi-info' style='color: #00BCD4;'></i>");
+            $("#widget_activities h3").append(
+                " <i class='zmdi zmdi-swap-vertical-circle' style='color: #ff9800;'></i>");
+            $("#widget_top_urls h3").append(" <i class='zmdi zmdi-trending-up' style='color: #4caf50;'></i>");
+            $("#splash h3, #splash_create h3").append(
+            " <i class='zmdi zmdi-info' style='color: #673ab7;'></i>");
+            $("#overlay h3").append(" <i class='zmdi zmdi-info' style='color: #4CAF50;'></i>");
+            $("#widget_tools h3").append(" <i class='zmdi zmdi-wrench' style='color: #9c27b0;'></i>");
+            $("#widget_export h3").append(" <i class='zmdi zmdi-hourglass-alt' style='color: #4CAF50;'></i>");
+        });
+
+        //Smooth Scroll
+        $('a[href*="#"]').not('[href="#"]').not('[href="#0"]').click(function (t) {
+            if (location.pathname.replace(/^\//, "") == this.pathname.replace(/^\//, "") && location.hostname ==
+                this.hostname) {
+                var e = $(this.hash);
+                (e = e.length ? e : $("[name=" + this.hash.slice(1) + "]")).length && (t.preventDefault(), $(
+                    "html, body").animate({
+                    scrollTop: e.offset().top
+                }, 1e3, function () {
+                    var t = $(e);
+                    if (t.focus(), t.is(":focus")) return !1;
+                    t.attr("tabindex", "-1"), t.focus()
+                }))
+            }
+        })
+    </script>
+</body>
+</html>
