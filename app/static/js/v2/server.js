@@ -9,7 +9,7 @@ function validURL(str) {
 }
 
 let api_key = "4VzBZpEtuk8gthQrqsp4k6AhsvtzfPjT6m2mERuk";
-let appurl = "https://065qhbd559.execute-api.ap-south-1.amazonaws.com/dev";
+let appurl = "https://api.shortto.com/v2";
 
 $(document).ready(function () {
 
