@@ -54,14 +54,12 @@ $(document).ready(function () {
         type: "POST",
         crossDomain: true,
         url: appurl + "/shortto-create-url",
-        // url: "http://requestbin.fullcontact.com/xjfok3xj",
         data: JSON.stringify(bodyJSON),
         dataType: "json",
         async: true,
         headers : {
           'X-Api-Key': api_key,
           'Content-Type':'application/json',
-          'access-control-allow-origin' : '*',
           "accept": "application/json",
         },
         beforeSend: function () {
