@@ -93,7 +93,7 @@ $(document).ready(function () {
           else if(statusCodes.includes(parseInt(xhr.status))){
             Snackbar.show({
               text: statusMessages[parseInt(xhr.status)],
-              backgroundColor: '#ffcc00',
+              backgroundColor: '#edb126',
               textColor: '#fff',
               showAction: false
             });
@@ -101,7 +101,7 @@ $(document).ready(function () {
           else if(parseInt(xhr.status) != 200){
             Snackbar.show({
               text: "Some Error Occured. Please try again!",
-              backgroundColor: '#ffcc00',
+              backgroundColor: '#edb126',
               textColor: '#fff',
               showAction: false
             });
