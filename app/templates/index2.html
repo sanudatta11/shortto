@@ -386,6 +386,15 @@
         };
     </script>
 
+    <script src="https://www.google.com/recaptcha/api.js?render=6LdMyawUAAAAAL5rvA7qwC-5F2MfrXy0G2GwgWXU"></script>
+    <script>
+    grecaptcha.ready(function() {
+        grecaptcha.execute('6LdMyawUAAAAAL5rvA7qwC-5F2MfrXy0G2GwgWXU', {action: '/'}).then(function(token) {
+            console.log(token);
+        });
+    });
+    </script>
+
     <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="https://shortto-v2-cdn.s3.ap-south-1.amazonaws.com/js/snackbar.min.js"></script>
     <script type="text/javascript" src="https://shortto-v2-cdn.s3.ap-south-1.amazonaws.com/js/application.fn.js"></script>
