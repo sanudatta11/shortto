@@ -250,6 +250,12 @@ def short_done():
 def indexv2():
     return render_template('index2.html')
 
+@app.route('/self/terms', methods=['GET'])
+@app.route('/self/terms/', methods=['GET'])
+@limiter.exempt
+def terms():
+    return render_template('terms.html')
+
 # End of Test Routes for new UI
 
 @app.route('/<string:short_data>', methods=['GET'])
