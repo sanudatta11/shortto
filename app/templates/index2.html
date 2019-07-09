@@ -46,11 +46,7 @@
     </script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.1/icheck.min.js?v=1.0.1"></script>
     <script type="text/javascript"
-        src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.15/clipboard.min.js?v=1.5.15"></script>
-    <script type="text/javascript"
-        src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js?v=3.0.3"></script>
-    <link rel="stylesheet" type="text/css"
-        href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css?v=3.0.3">
+        src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.15/clipboard.min.js?v=1.5.15"></script>    
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/pace/0.4.17/pace.js?v=0.4.17"></script>
 
     <!--[if lt IE 9]>
@@ -208,7 +204,7 @@
                                     </div>
                                     <div class="col-md-4 shortfieldz">
                                         <i class="zmdi zmdi-link"></i>
-                                        <input type="text" class="form-control text-input shortto-teller" value="www.shortto.com/"  readonly/>
+                                        <input type="button" class="form-control shortto-teller" value="www.shortto.com/" style="cursor: default;"  cureadonly/>
                                     </div>
                                     <div class="col-md-5 shortfieldz">
                                         <i class="zmdi zmdi-link"></i>
@@ -217,7 +213,7 @@
                                     </div>
                                     <div class="col-md-3 shortbtnz">
                                         <button class="btn btn-default btn-block main-button" name="short_url"
-                                            type="submit" style="color: white;margin-left: 3px">Shorten </button>
+                                            type="submit" style="color: white;margin-left: 3px">Shorten</button>
                                         <!--<button class="btn btn-primary btn-block main-button" id="copyurl" type="button">Copy</button>-->
                                     </div>
                                 </div>
@@ -231,9 +227,6 @@
                                         <option value="splash">Splash</option>
                                     </optgroup>
                                 </select> </div><!-- /.main-options -->
-
-                            <div id="captcha">
-                            </div>
                         </form>
                         <!--/.form-->
                     </div>
@@ -389,11 +382,8 @@
             "to": "Redirect to",
             "share": "Share this on",
             "congrats": "Congratulation! Your URL has been successfully shortened. You can share it on Facebook or Twitter by clicking the links below.",
-            "qr": "Save QR Code",
+            "qr": "Open QR URL",
             "continue": "Continue",
-            "cookie": "This website uses cookies to ensure you get the best experience on our website.",
-            "cookieok": "Got it!",
-            "cookiemore": "Learn more"
         };
     </script>
 
@@ -405,7 +395,8 @@
     <script type="text/javascript" src="https://shortto-v2-cdn.s3.ap-south-1.amazonaws.com/js/main.js"></script>
 
     <!-- Custom Scripts -->
-    <script type="application/javascript" src="{{ url_for('static',filename='js/v2/server.js') }}"></script>
+    <!-- <script type="application/javascript" src="{{ url_for('static',filename='js/server.js') }}"></script> -->
+    <script type="application/javascript" src="https://shortto-v2-cdn.s3.ap-south-1.amazonaws.com/js/server.js"></script>
 
     <script type="text/javascript">
         $(window).on("scroll", function () {

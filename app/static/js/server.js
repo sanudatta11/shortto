@@ -10,6 +10,7 @@ function validURL(str) {
 
 let api_key = "4VzBZpEtuk8gthQrqsp4k6AhsvtzfPjT6m2mERuk";
 let appurl = "https://api.shortto.com/v2";
+let qrAPI = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=";
 
 $(document).ready(function () {
 
@@ -59,82 +60,78 @@ $(document).ready(function () {
         async: true,
         headers : {
           'X-Api-Key': api_key,
+          "Access-Control-Allow-Origin" : "*", // Required for CORS support to work
+          "Access-Control-Allow-Credentials" : true, // Required for cookies, authorization headers with HTTPS 
           'Content-Type':'application/json',
           "accept": "application/json",
         },
         beforeSend: function () {
-          $('.shortbtnz').append("<div class='spinner-container-parent'><div class='spinner-container'><div class='spinner'><div class='spinner-left'><div class='spinner-circle'></div></div><div class='spinner-right'><div class='spinner-circle'></div></div></div></div></div>");
+          $('.shortbtnz').append("<div class='spinner-container-parent' id='spinner-remove'><div class='spinner-container'><div class='spinner'><div class='spinner-left'><div class='spinner-circle'></div></div><div class='spinner-right'><div class='spinner-circle'></div></div></div></div></div>");
         },
         complete: function () {
-          $('.shortbtnz').find('.spinner-container-parent').fadeOut("fast");
+          $('.shortbtnz').find('#spinner-remove').fadeOut("fast");
         },
         success: function (data) {
+          $('.shortbtnz').find('#spinner-remove').fadeOut("fast");
           console.log(data);
-          Snackbar.show({
-            text: "URL Created!",
-            backgroundColor: '#e22e40',
-            textColor: '#fff',
-            showAction: false
-          });
-          // if (html.error) {
-          //   Snackbar.show({
-          //     text: "URL Created!",
-          //     backgroundColor: '#e22e40',
-          //     textColor: '#fff',
-          //     showAction: false
-          //   });
-          //   $('.main-input').addClass('error');
-          // } else {
-          //   $('.main-input').removeClass('error');
-          //   $('.main-advanced').fadeOut('slow');
-          //   $('#captcha').fadeOut('slow');
-          //   if (!html.confirm) {
-
-          //     var short = html.short.split("#");
-          //     Snackbar.show({
-          //       text: lang.success,
-          //       backgroundColor: '#1aa82c',
-          //       textColor: '#fff',
-          //       showAction: false
-          //     });
-          //     $('.modal-contentlink').html('<div class="panel-body"><div class="copy-link-block"><span class="short_url">' + short[0] + '</span><button class="btn btn-primary" id="copyurlmodal" type="button"><i class="zmdi zmdi-copy"></i></button></div><div class="qr"><img src="' + short[0] + '/qr" alt=""><a href="' + html.short + '/qr" target="_blank" class="mdbtn btn btn-primary copy" data-value="' + html.short + '/qr">' + lang.qr + '</a></div><hr><p>' + lang.stats + ': <a href="' + short[0] + '+" target="_blank" style="color: #2196F3;border-bottom: 1px solid #2196F3;"> ' + short[0] + '+ </a></p><div class="share-message"><p>' + lang.share + '</p><div class="share"><a href="http://www.facebook.com/sharer.php?u=' + html.short + '" target="_blank" class="btn btn-facebook u_share" title="Facebook"><i class="zmdi zmdi-facebook"></i></a><a href="https://twitter.com/share?url=' + html.short + '" target="_blank" class="btn btn-twitter u_share" title="Twitter"><i class="zmdi zmdi-twitter"></i></a><a href="https://plus.google.com/share?url=' + html.short + '" target="_blank" class="btn btn-danger u_share" title="Google Plus"><i class="zmdi zmdi-google-plus"></i></a><a href="https://www.linkedin.com/shareArticle?mini=true&url=' + html.short + '" target="_blank" class="btn btn-linkedin u_share" title="LinkedIn"><i class="zmdi zmdi-linkedin"></i></a><a href="https://pinterest.com/pin/create/button/?url=' + html.short + '" target="_blank" class="btn btn-pinterest u_share" title="Pinterest"><i class="zmdi zmdi-pinterest"></i></a></div></div></div>');
-          //     $('.overlaylink').fadeIn();
-          //     zClipload();
-          //   } else {
-          //     $('.share-this').slideUp();
-          //     Snackbar.show({
-          //       text: lang.success,
-          //       backgroundColor: '#1aa82c',
-          //       textColor: '#fff',
-          //       showAction: false
-          //     });
-          //   }
-          //   $('.main-advanced').find('input').val('');
-          //   $('.main-input').val('');
-          //   form.find(".main-textarea").val(html.short);
-          //   /**url.select();**/
-          //   if ($(".g-recaptcha").length > 0) {
-          //     grecaptcha.reset();
-          //   }
-          //   var copy = new Clipboard('#copyurl');
-          //   var copymodal = new Clipboard('#copyurlmodal');
-          //   $("#submit").hide();
-          //   $("#copyurl").attr("data-clipboard-text", html.short).show();
-          //   $("#copyurlmodal").attr("data-clipboard-text", html.short).show();
-          //   copy.on('success', function (e) {
-          //     Snackbar.show({
-          //       text: lang.copy
-          //     });
-          //     $("#copyurl").hide();
-          //     $("#shortenurl").show();
-          //     $('input.main-input').val('');
-          //   });
-          //   copymodal.on('success', function (e) {
-          //     Snackbar.show({
-          //       text: lang.copy
-          //     });
-          //   });
-          // }
+          // Snackbar.show({
+          //   text: "URL Created!",
+          //   backgroundColor: '#e22e40',
+          //   textColor: '#fff',
+          //   showAction: false
+          // });
+          if (data.error) {
+            Snackbar.show({
+              text: "Error Creating URL!",
+              backgroundColor: '#e22e40',
+              textColor: '#fff',
+              showAction: false
+            });
+            $('.text-input').addClass('error');
+          } else {
+            $('.text-input').removeClass('error');
+            $('.main-advanced').fadeOut('slow');
+            if (data.body) {
+              var short = data.body;
+              Snackbar.show({
+                text: lang.success,
+                backgroundColor: '#1aa82c',
+                textColor: '#fff',
+                showAction: false
+              });
+              $('.modal-contentlink').html('<div class="panel-body"><div class="copy-link-block"><span class="short-url">' + data.body + '</span><button class="btn btn-primary" id="copyurlmodal" type="button"><i class="zmdi zmdi-copy"></i></button></div><div class="qr"><img src="' + qrAPI + data.body + '" alt=""><a href="' + data.body + '" target="_blank" class="mdbtn btn btn-primary copy" data-value="' + data.body + '">' + lang.qr + '</a></div><hr><div class="share-message"><p>' + lang.share + '</p><div class="share"><a href="http://www.facebook.com/sharer.php?u=' + data.body + '" target="_blank" class="btn btn-facebook u_share" title="Facebook"><i class="zmdi zmdi-facebook"></i></a><a href="https://twitter.com/share?url=' + data.body + '" target="_blank" class="btn btn-twitter u_share" title="Twitter"><i class="zmdi zmdi-twitter"></i></a><a href="https://plus.google.com/share?url=' + data.body + '" target="_blank" class="btn btn-danger u_share" title="Google Plus"><i class="zmdi zmdi-google-plus"></i></a><a href="https://www.linkedin.com/shareArticle?mini=true&url=' + data.body + '" target="_blank" class="btn btn-linkedin u_share" title="LinkedIn"><i class="zmdi zmdi-linkedin"></i></a><a href="https://pinterest.com/pin/create/button/?url=' + data.body + '" target="_blank" class="btn btn-pinterest u_share" title="Pinterest"><i class="zmdi zmdi-pinterest"></i></a></div></div></div>');
+              $('.overlaylink').fadeIn();
+              zClipload();
+            } else {
+              $('.share-this').slideUp();
+              Snackbar.show({
+                text: lang.success,
+                backgroundColor: '#1aa82c',
+                textColor: '#fff',
+                showAction: false
+              });
+            }
+            $('.main-advanced').find('input').val('');
+            $('.text-input').val('');
+            var copy = new Clipboard('#copyurl');
+            var copymodal = new Clipboard('#copyurlmodal');
+            $("#submit").hide();
+            $("#copyurl").attr("data-clipboard-text", data.body).show();
+            $("#copyurlmodal").attr("data-clipboard-text",data.body).show();
+            copy.on('success', function (e) {
+              Snackbar.show({
+                text: lang.copy
+              });
+              $("#copyurl").hide();
+              $("#shortenurl").show();
+              $('input.text-input').val('');
+            });
+            copymodal.on('success', function (e) {
+              Snackbar.show({
+                text: lang.copy
+              });
+            });
+          }
         }
       });
     }
