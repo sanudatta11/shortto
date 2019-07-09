@@ -8,6 +8,16 @@ function validURL(str) {
   return !!pattern.test(str);
 }
 
+let statusMessages = {
+  404 : "Long URL not found!",
+  403 : "URL Provided is Blacklisted!",
+  304 : "Short URL is Invalid",
+  300 : "Short URL is already Used",
+  500 : "Create Loop has occured! Contact Admin.",
+  501 : "Maximum Length of 50 Characters Exceeded in Custom URL!"
+}
+let statusCodes = [404,403,304,300,500];
+
 let api_key = "4VzBZpEtuk8gthQrqsp4k6AhsvtzfPjT6m2mERuk";
 let appurl = "https://api.shortto.com/v2";
 let qrAPI = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=";
@@ -68,11 +78,38 @@ $(document).ready(function () {
         beforeSend: function () {
           $('.shortbtnz').append("<div class='spinner-container-parent' id='spinner-remove'><div class='spinner-container'><div class='spinner'><div class='spinner-left'><div class='spinner-circle'></div></div><div class='spinner-right'><div class='spinner-circle'></div></div></div></div></div>");
         },
-        complete: function () {
+        complete: function (xhr, textStatus) {
           $('.shortbtnz').find('#spinner-remove').fadeOut("fast");
+          $('#spinner-remove').remove();
+          console.log(xhr.status);
+          if(parseInt(xhr.status) == 500 || parseInt(xhr.status) == 501){
+            Snackbar.show({
+              text: statusMessages[parseInt(xhr.status)],
+              backgroundColor: '#cc3300',
+              textColor: '#fff',
+              showAction: false
+            });
+          }
+          else if(statusCodes.includes(parseInt(xhr.status))){
+            Snackbar.show({
+              text: statusMessages[parseInt(xhr.status)],
+              backgroundColor: '#ffcc00',
+              textColor: '#fff',
+              showAction: false
+            });
+          }
+          else if(parseInt(xhr.status) != 200){
+            Snackbar.show({
+              text: "Some Error Occured. Please try again!",
+              backgroundColor: '#ffcc00',
+              textColor: '#fff',
+              showAction: false
+            });
+          }
         },
         success: function (data) {
           $('.shortbtnz').find('#spinner-remove').fadeOut("fast");
+          $('#spinner-remove').remove();
           console.log(data);
           // Snackbar.show({
           //   text: "URL Created!",
@@ -133,6 +170,7 @@ $(document).ready(function () {
             });
           }
         }
+        
       });
     }
   });
