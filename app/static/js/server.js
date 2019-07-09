@@ -45,11 +45,13 @@ $(document).ready(function () {
     if ($('#short_url').val() != "") {
       bodyJSON = {
         "long_url": $('#long_url').val(),
-        "short_url": $('#short_url').val()
+        "short_url": $('#short_url').val(),
+        "g-captcha-client-key" : $('#g-captcha-client-key').val()
       };
     } else {
       bodyJSON = {
-        "long_url": $('#long_url').val()
+        "long_url": $('#long_url').val(),
+        "g-captcha-client-key" : $('#g-captcha-client-key').val()
       }
     }
     if ($('#long_url').val() == "") {

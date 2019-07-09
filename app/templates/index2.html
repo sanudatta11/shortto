@@ -209,6 +209,7 @@
                                         <i class="zmdi zmdi-link"></i>
                                         <input type="text" class="form-control shortto-getter text-input"
                                             name="long_url" value="" placeholder="Custom Short" id="short_url" autocomplete="off"/>
+                                        <input type="hidden" id="g-captcha-client-key" name="g-captcha-client-key">
                                     </div>
                                     <div class="col-md-3 shortbtnz">
                                         <button class="btn btn-default btn-block main-button" name="short_url"
@@ -386,14 +387,7 @@
         };
     </script>
 
-    <script src="https://www.google.com/recaptcha/api.js?render=6LdMyawUAAAAAL5rvA7qwC-5F2MfrXy0G2GwgWXU"></script>
-    <script>
-    grecaptcha.ready(function() {
-        grecaptcha.execute('6LdMyawUAAAAAL5rvA7qwC-5F2MfrXy0G2GwgWXU', {action: '/'}).then(function(token) {
-            console.log(token);
-        });
-    });
-    </script>
+    
 
     <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="https://shortto-v2-cdn.s3.ap-south-1.amazonaws.com/js/snackbar.min.js"></script>
@@ -404,7 +398,15 @@
     <!-- Custom Scripts -->
     <!--<script type="application/javascript" src="{{ url_for('static',filename='js/server.js') }}"></script> --> 
     <script type="application/javascript" src="https://shortto-v2-cdn.s3.ap-south-1.amazonaws.com/js/server.js"></script>
-
+    <script src="https://www.google.com/recaptcha/api.js?render=6LdMyawUAAAAAL5rvA7qwC-5F2MfrXy0G2GwgWXU"></script>
+    <script>
+    grecaptcha.ready(function() {
+        grecaptcha.execute('6LdMyawUAAAAAL5rvA7qwC-5F2MfrXy0G2GwgWXU', {action: '/'}).then(function(token) {
+            console.log(token);
+            $('#g-captcha-client-key').val(token);
+        });
+    });
+    </script>
     <script type="text/javascript">
         $(window).on("scroll", function () {
             if ($(window).scrollTop() > 50) {
