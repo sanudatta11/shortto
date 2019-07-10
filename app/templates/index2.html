@@ -401,7 +401,6 @@
     <script>
     grecaptcha.ready(function() {
         grecaptcha.execute('6LdMyawUAAAAAL5rvA7qwC-5F2MfrXy0G2GwgWXU', {action: '/'}).then(function(token) {
-            console.log(token);
             $('#g-captcha-client-key').val(token);
         });
     });
