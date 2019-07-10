@@ -256,6 +256,12 @@ def indexv2():
 def terms():
     return render_template('terms.html')
 
+@app.route('/self/policy', methods=['GET'])
+@app.route('/self/policy/', methods=['GET'])
+@limiter.exempt
+def policy():
+    return render_template('gdpr.html')
+
 # End of Test Routes for new UI
 
 @app.route('/<string:short_data>', methods=['GET'])
