@@ -23,6 +23,13 @@ let appurl = "https://api.shortto.com/v2";
 let qrAPI = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=";
 
 $(document).ready(function () {
+  // DELETE ME LATER
+  Snackbar.show({
+    text: "The site is in Demo Mode. Any Changes made here wont work in actual production!",
+    backgroundColor: '#cc3300',
+    textColor: '#fff',
+    showAction: false
+  });
 
   // Ajax request: URL shortening and error handeling
   $(document).on('submit', "form#main-form", function (e) {
