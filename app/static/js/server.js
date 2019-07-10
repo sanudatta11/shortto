@@ -88,6 +88,9 @@ $(document).ready(function () {
           $('.shortbtnz').append("<div class='spinner-container-parent' id='spinner-remove'><div class='spinner-container'><div class='spinner'><div class='spinner-left'><div class='spinner-circle'></div></div><div class='spinner-right'><div class='spinner-circle'></div></div></div></div></div>");
         },
         complete: function (xhr, textStatus) {
+          grecaptcha.execute('6LdMyawUAAAAAL5rvA7qwC-5F2MfrXy0G2GwgWXU', {action: '/'}).then(function(token) {
+            $('#g-captcha-client-key').val(token);
+          });
           $('.shortbtnz').find('#spinner-remove').fadeOut("fast");
           $('#spinner-remove').remove();
           console.log(xhr.status);
