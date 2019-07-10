@@ -262,6 +262,12 @@ def terms():
 def policy():
     return render_template('gdpr.html')
 
+@app.route('/login', methods=['GET'])
+@app.route('/login/', methods=['GET'])
+@limiter.exempt
+def login():
+    return render_template('login.html')
+
 # End of Test Routes for new UI
 
 @app.route('/<string:short_data>', methods=['GET'])
