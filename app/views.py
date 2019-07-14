@@ -268,6 +268,12 @@ def policy():
 def login():
     return render_template('login.html')
 
+@app.route('/register', methods=['GET'])
+@app.route('/register/', methods=['GET'])
+@limiter.exempt
+def register():
+    return render_template('register.html')
+
 # End of Test Routes for new UI
 
 @app.route('/<string:short_data>', methods=['GET'])
