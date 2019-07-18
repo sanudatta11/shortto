@@ -10,3 +10,7 @@ __pycache__/
 !.elasticbeanstalk/*.global.yml
 node_modules/
 venv/*
+zappa*
+env.*
+shortto-*
+.serverless/

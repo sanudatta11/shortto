@@ -7,7 +7,7 @@ RUN apt-get update -y && \
     apt install -y build-essential
 
 # We copy just the requirements.txt first to leverage Docker cache
-COPY ./requirements.txt /app/requirements.txt
+COPY ./requirements-prod.txt /app/requirements.txt
 
 WORKDIR /app
 

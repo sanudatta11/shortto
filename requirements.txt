@@ -1,4 +1,3 @@
-requests
 validators
 flask
 flask_wtf
@@ -20,5 +19,4 @@ click
 itsdangerous
 MarkupSafe
 Werkzeug
-uWSGI
-mysqlclient
+zappa

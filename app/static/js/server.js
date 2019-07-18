@@ -25,7 +25,7 @@ let qrAPI = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=";
 $(document).ready(function () {
   // DELETE ME LATER
   Snackbar.show({
-    text: "The site is in Demo Mode. Any Changes made here wont work in actual production!",
+    text: "The site is in Beta Stage. If you face any issues. Please send an email to support@shortto.com",
     backgroundColor: '#cc3300',
     textColor: '#fff',
     showAction: false

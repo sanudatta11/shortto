@@ -232,7 +232,7 @@ def short_done():
 #             db.session.commit()
 #             # prev_url_data = request.cookies.get(COOKIE_VAR)
 #             # prev_url_data_split = []
-#             # if prev_url_data:
+#               if prev_url_data:
 #             #     prev_url_data_split = prev_url_data.split('#')
 #                 # THis variable has previous data
 #             return redirect(url_for('short_done',short_url=short_url))
