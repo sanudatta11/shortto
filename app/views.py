@@ -61,8 +61,11 @@ def short_done():
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 @limiter.exempt
-def indexv2():
-    return render_template('index.html')
+def index():
+    tot_urls = Shortto.query.count()
+    tot_clicks_obj = db.session.query(Shortto, db.func.sum(Shortto.clicks))
+    tot_clicks = tot_clicks_obj[0][1]
+    return render_template('index.html', tot_clicks=tot_clicks, tot_urls=tot_urls)
 
 @app.route('/dashboard', methods=['GET'])
 @limiter.exempt
