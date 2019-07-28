@@ -42,19 +42,19 @@ def self_urls():
             send_list.append(temp_list)
     return render_template('analytics.html',prev_url_list=send_list)
 
-@app.route('/url/done',methods=['GET'])
-@app.route('/url/done/',methods=['GET'])
-@limiter.exempt
-def short_done():
-    resp = make_response(render_template('done.html', code=200, short_url=app.config['BASE_URL'] + request.args.get('short_url')))
-    prev_url = request.cookies.get('__shortto__')
-    prev_url_list = []
-    if prev_url:
-        prev_url_list = prev_url.split('#')
-    prev_url_list.append(request.args.get('short_url'))
-    prev_url = '#'.join(prev_url_list)
-    resp.set_cookie('__shortto__',prev_url)
-    return resp
+# @app.route('/url/done',methods=['GET'])
+# @app.route('/url/done/',methods=['GET'])
+# @limiter.exempt
+# def short_done():
+#     resp = make_response(render_template('done.html', code=200, short_url=app.config['BASE_URL'] + request.args.get('short_url')))
+#     prev_url = request.cookies.get('__shortto__')
+#     prev_url_list = []
+#     if prev_url:
+#         prev_url_list = prev_url.split('#')
+#     prev_url_list.append(request.args.get('short_url'))
+#     prev_url = '#'.join(prev_url_list)
+#     resp.set_cookie('__shortto__',prev_url)
+#     return resp
 
 # Test Routes for New UI
 
