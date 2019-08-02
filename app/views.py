@@ -143,7 +143,13 @@ def index():
 @login_required
 def dashboard():
     announcement_to_publish = Announcement.query.filter(Announcement.end_date>datetime.datetime.utcnow()).order_by(Announcement.id.desc()).first()
-    user_links = Links.query.filter_by(user=current_user).all()
+    sort_method = request.args.get('sort')
+    if sort_method == "newest":
+        user_links = Links.query.filter_by(user=current_user).order_by(Links.created_at.desc()).all()
+    elif sort_method == "popular":
+        user_links = Links.query.filter_by(user=current_user).order_by(Links.clicks.desc()).all()
+    else:
+        user_links = Links.query.filter_by(user=current_user).all()
     return render_template('dashboard.html',announcement=announcement_to_publish,user_links=user_links,current_date = datetime.datetime.now())
 
 @app.route('/dashboard/shorten',methods=['POST'])
