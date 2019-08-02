@@ -12,11 +12,14 @@ flask_cors
 flask-JWT
 flask_debug
 flask-restful
+flask-bcrypt
 flask_jwt_extended
-flask_limiter
 pymysql
 click
 itsdangerous
 MarkupSafe
 Werkzeug
-zappa
+authlib==0.11
+google-api-python-client
+google-auth
+flask-login

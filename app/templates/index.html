@@ -146,7 +146,7 @@ ShortTo - Making Links Smarter
                         <div class="col-md-13 shortfieldz" style="margin: 1%">
                            <i class="zmdi zmdi-link"></i>
                            <input type="text" class="form-control text-input" id="long_url"
-                              name="url" value="" placeholder="Paste a long url" autocomplete="off"/>
+                              name="url" value="" placeholder="Paste a long url" autocomplete="off" required>
                         </div>
                         <div class="col-md-4 shortfieldz">
                            <i class="zmdi zmdi-link"></i>
@@ -180,7 +180,7 @@ ShortTo - Making Links Smarter
                <!--/.form-->
             </div>
             <div class="call-to-action">
-               <a href="#" class="mdbtn btn btn-primary btn-lg">Get Started</a>
+               <a href={{url_for('login')}} class="mdbtn btn btn-primary btn-lg">Get Started</a>
                <a href="#more" class="learn-more-index">Learn More</a>
             </div>
          </div>

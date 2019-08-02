@@ -23,9 +23,9 @@ ShortTo - Dashboard
             </div>
             <div class="navbar-collapse collapse">
                <ul class="nav navbar-nav navbar-right">
-                  <li><a href="#/pricing" class="active">Plans</a></li>
+                  <li><a href="#/pricing" class="active">Support</a></li>
                   <li><a href='#/user'>My Account</a></li>
-                  <li><a href="#/user/logout">Logout</a></li>
+                  <li><a href={{ url_for('logout') }}>Logout</a></li>
                </ul>
             </div>
          </div>
@@ -153,8 +153,35 @@ ShortTo - Dashboard
          <div class="col-md-10 content">
             <div class="row">
                <div id="user-content" class="col-md-8 no-padding-right">
-                  <div class='alert alert-success no-round'>You have been successfully logged in.</div>
+                  {% with messages = get_flashed_messages(category_filter=["success"]) %}
+                  {% if messages %}
+                  <div class="alert alert-success no-round" style="color: white">
+                     {% for message in messages %}
+                     <span>{{ message }}</span>
+                     {% endfor %}
+                  </div>
+                  {% endif %}
+                  {% endwith %}
+                  {% with messages = get_flashed_messages(category_filter=["warning"]) %}
+                  {% if messages %}
+                  <div class="alert alert-warning no-round" style="color: white">
+                     {% for message in messages %}
+                     <span>{{ message }}</span>
+                     {% endfor %}
+                  </div>
+                  {% endif %}
+                  {% endwith %}
+                   {% with messages = get_flashed_messages(category_filter=["error"]) %}
+                  {% if messages %}
+                  <div class="alert alert-danger no-round" style="color: white">
+                     {% for message in messages %}
+                     <span>{{ message }}</span>
+                     {% endfor %}
+                  </div>
+                  {% endif %}
+                  {% endwith %}
                   <!-- Shortener Form -->
+                  <br><br>
                   <div class="overlaylink">
                      <div class="link-shared" id="modal">
                         <!-- close trigger -->
@@ -169,25 +196,25 @@ ShortTo - Dashboard
                   <div class="share-this"></div>
                   <div class="ajax"></div>
                   <div class="p-relative">
-                     <form action="#/shorten" id="main-form" role="form" method="post">
+                     <form action="{{ url_for('dashboardShorten') }}" id="main-form" role="form" method="post">
                         <div class="main-form">
                            <div class="row" id="single">
                               <div class="col-md-9 shortfieldz">
                                  <i class="zmdi zmdi-link"></i>
-                                 <input type="text" class="form-control main-input" onclick="In_ShowPosInfo()" name="url" value="" placeholder="Paste a long url" /> 
+                                 <input type="text" class="form-control main-input" onclick="In_ShowPosInfo()" name="long_url" value="" placeholder="Paste a long url" autocomplete="off"  required/>
                                  <a href="#" class="advanced short-adv-sett" data-toggle="tooltip" title="Advanced Options"><i class="zmdi zmdi-settings"></i></a>
                               </div>
                               <div class="col-md-3 shortbtnz">
-                                 <button class="btn btn-default btn-block main-button" id="shortenurl" type="submit">Shorten</button>
+                                 <button class="btn btn-default btn-block main-button" style="color:white" id="shortenurl" type="submit">Shorten</button>
                                  <!--<button class="btn btn-primary btn-block main-button" id="copyurl" type="button">Copy</button>-->
                               </div>
                            </div>
                            <div id="multiple" style="display: none">
                               <div class="form-group">
-                                 <textarea class="form-control main-textarea" name="urls" rows="5" placeholder="Paste up to 10 long urls. One URL per line." style="resize: vertical;"></textarea>
+                                 <textarea class="form-control main-textarea" name="urls" rows="5" placeholder="Paste up to 10 long urls. One URL per line." style="resize: vertical;" disabled></textarea>
                               </div>
                               <div class="shortbtnz" style="width: 100%;max-width: 150px;">
-                                 <button class="btn btn-primary btn-block main-button" id="shortenurl" type="submit" style="border-radius: 0;padding: 0px 40px;">Shorten</button>
+                                 <button class="btn btn-primary btn-block main-button" id="shortenurl" type="button" style="border-radius: 0;" disabled>NA</button>
                               </div>
                            </div>
                         </div>
@@ -201,19 +228,19 @@ ShortTo - Dashboard
                               </optgroup>
                            </select>
                            <ul class="form_opt short-multi-option" data-id="multiple-form" data-callback="form_switch">
-                              <li><a href="" class="last" data-value="1">Multiple</a></li>
+                              <li><a href="" class="last" data-value="1" disabled>Multiple - Coming Soon</a></li>
                               <li><a href="" class="first current" data-value="0">Single</a></li>
                            </ul>
                         </div>
                         <!-- /.main-options -->
-                        <div class="main-advanced slideup">
+                        <div class="main-advanced slideup" style="display: block">
                            <div class="row">
                               <div class="col-md-6 col-sm-6">
                                  <h3>Custom Alias</h3>
-                                 <p>If you need a custom alias, you can enter it below.</p>
+                                 <p>If you need a custom alias, you can enter it below.(3-15 Characters)</p>
                                  <div class="input-group">
                                     <span class="input-group-addon"><i class="zmdi zmdi-edit"></i></span>
-                                    <input type="text" class="form-control" name="custom" placeholder="Type your custom alias here" >
+                                    <input type="text" class="form-control" name="short_url" placeholder="Type your custom alias here" name="short_url" maxlength="15" autocomplete="off">
                                  </div>
                               </div>
                               <!-- /.col-md-6 -->
@@ -222,337 +249,37 @@ ShortTo - Dashboard
                                  <p>Set an expiration date to disable the URL after this date.</p>
                                  <div class="input-group">
                                     <span class="input-group-addon"><i class="zmdi zmdi-calendar"></i></span>
-                                    <input type="text" class="form-control" data-toggle="datepicker" name="expiry" id="expiry" placeholder="MM/DD/YYYY">
+                                    <input type="text" class="form-control" data-toggle="datepicker" name="expiration_date" id="expiry" name="expiration_date" autocomplete="off" placeholder="MM/DD/YYYY">
                                  </div>
                               </div>
                               <!-- /.col-md-6 -->
                               <div class="col-md-6 col-sm-6" style="margin-top: 20px;">
                                  <h3>Password Protect</h3>
-                                 <p>By adding a password, you can restrict the access of statistics.</p>
+                                 <p>By adding a password, you can restrict the access of statistics.(4-16 characters)</p>
                                  <div class="input-group">
                                     <span class="input-group-addon"><i class="zmdi zmdi-dialpad"></i></span>
-                                    <input type="text" class="form-control" name="password" id="pass" placeholder="Type your password here">
+                                    <input type="text" class="form-control" name="password" id="pass" name="password" placeholder="Type your password here" autocomplete="off" maxlength="16">
                                  </div>
                               </div>
                               <!-- /.col-md-6 -->
                               <div class="col-md-6 col-sm-6" style="margin-top: 20px;">
                                  <h3>Description</h3>
-                                 <p>This can be used to identify URLs on your account.</p>
+                                 <p>This can be used to identify URLs on your account. (20 Chars max)</p>
                                  <div class="input-group">
                                     <span class="input-group-addon"><i class="zmdi zmdi-info"></i></span>
-                                    <input type="text" class="form-control" name="description" placeholder="Type your description here">
+                                    <input type="text" class="form-control" name="description" name="description"  placeholder="Type your description here" maxlength="20" autocomplete="off">
                                  </div>
                               </div>
                               <!-- /.col-md-6 -->
                            </div>
                            <!--/.row -->
-                           <div class="row geotarget" id="geo">
-                              <div class="col-md-12 geo-input">
-                                 <h3>Geotargeting <a href="#" class="btn btn-xs btn-primary pull-right add_geo" data-home="true">Add more locations</a></h3>
-                                 <p>If you have different pages for different countries then it is possible to redirect users to that page using the same URL. Simply choose the country and enter the URL.</p>
-                                 <div class="row country">
-                                    <div class="col-md-6">
-                                       <div class="input-group">
-                                          <span class="input-group-addon"><i class="zmdi zmdi-globe"></i></span>
-                                          <select name="location[]">
-                                             <option value="Afghanistan">Afghanistan</option>
-                                             <option value="Aland Islands">Aland Islands</option>
-                                             <option value="Albania">Albania</option>
-                                             <option value="Algeria">Algeria</option>
-                                             <option value="American Samoa">American Samoa</option>
-                                             <option value="Andorra">Andorra</option>
-                                             <option value="Angola">Angola</option>
-                                             <option value="Anguilla">Anguilla</option>
-                                             <option value="Antarctica">Antarctica</option>
-                                             <option value="Antigua And Barbuda">Antigua And Barbuda</option>
-                                             <option value="Argentina">Argentina</option>
-                                             <option value="Armenia">Armenia</option>
-                                             <option value="Aruba">Aruba</option>
-                                             <option value="Australia">Australia</option>
-                                             <option value="Austria">Austria</option>
-                                             <option value="Azerbaijan">Azerbaijan</option>
-                                             <option value="Bahamas">Bahamas</option>
-                                             <option value="Bahrain">Bahrain</option>
-                                             <option value="Bangladesh">Bangladesh</option>
-                                             <option value="Barbados">Barbados</option>
-                                             <option value="Belarus">Belarus</option>
-                                             <option value="Belgium">Belgium</option>
-                                             <option value="Belize">Belize</option>
-                                             <option value="Benin">Benin</option>
-                                             <option value="Bermuda">Bermuda</option>
-                                             <option value="Bhutan">Bhutan</option>
-                                             <option value="Bolivia">Bolivia</option>
-                                             <option value="Bosnia And Herzegovina">Bosnia And Herzegovina</option>
-                                             <option value="Botswana">Botswana</option>
-                                             <option value="Bouvet Island">Bouvet Island</option>
-                                             <option value="Brazil">Brazil</option>
-                                             <option value="British Indian Ocean Territory">British Indian Ocean Territory</option>
-                                             <option value="Brunei Darussalam">Brunei Darussalam</option>
-                                             <option value="Bulgaria">Bulgaria</option>
-                                             <option value="Burkina Faso">Burkina Faso</option>
-                                             <option value="Burundi">Burundi</option>
-                                             <option value="Cambodia">Cambodia</option>
-                                             <option value="Cameroon">Cameroon</option>
-                                             <option value="Canada">Canada</option>
-                                             <option value="Cape Verde">Cape Verde</option>
-                                             <option value="Cayman Islands">Cayman Islands</option>
-                                             <option value="Central African Republic">Central African Republic</option>
-                                             <option value="Chad">Chad</option>
-                                             <option value="Chile">Chile</option>
-                                             <option value="China">China</option>
-                                             <option value="Christmas Island">Christmas Island</option>
-                                             <option value="Cocos (Keeling) Islands">Cocos (Keeling) Islands</option>
-                                             <option value="Colombia">Colombia</option>
-                                             <option value="Comoros">Comoros</option>
-                                             <option value="Congo">Congo</option>
-                                             <option value="Congo, Democratic Republic">Congo, Democratic Republic</option>
-                                             <option value="Cook Islands">Cook Islands</option>
-                                             <option value="Costa Rica">Costa Rica</option>
-                                             <option value="Cote D'Ivoire">Cote D'Ivoire</option>
-                                             <option value="Croatia">Croatia</option>
-                                             <option value="Cuba">Cuba</option>
-                                             <option value="Cyprus">Cyprus</option>
-                                             <option value="Czech Republic">Czech Republic</option>
-                                             <option value="Denmark">Denmark</option>
-                                             <option value="Djibouti">Djibouti</option>
-                                             <option value="Dominica">Dominica</option>
-                                             <option value="Dominican Republic">Dominican Republic</option>
-                                             <option value="Ecuador">Ecuador</option>
-                                             <option value="Egypt">Egypt</option>
-                                             <option value="El Salvador">El Salvador</option>
-                                             <option value="Equatorial Guinea">Equatorial Guinea</option>
-                                             <option value="Eritrea">Eritrea</option>
-                                             <option value="Estonia">Estonia</option>
-                                             <option value="Ethiopia">Ethiopia</option>
-                                             <option value="Falkland Islands (Malvinas)">Falkland Islands (Malvinas)</option>
-                                             <option value="Faroe Islands">Faroe Islands</option>
-                                             <option value="Fiji">Fiji</option>
-                                             <option value="Finland">Finland</option>
-                                             <option value="France">France</option>
-                                             <option value="French Guiana">French Guiana</option>
-                                             <option value="French Polynesia">French Polynesia</option>
-                                             <option value="French Southern Territories">French Southern Territories</option>
-                                             <option value="Gabon">Gabon</option>
-                                             <option value="Gambia">Gambia</option>
-                                             <option value="Georgia">Georgia</option>
-                                             <option value="Germany">Germany</option>
-                                             <option value="Ghana">Ghana</option>
-                                             <option value="Gibraltar">Gibraltar</option>
-                                             <option value="Greece">Greece</option>
-                                             <option value="Greenland">Greenland</option>
-                                             <option value="Grenada">Grenada</option>
-                                             <option value="Guadeloupe">Guadeloupe</option>
-                                             <option value="Guam">Guam</option>
-                                             <option value="Guatemala">Guatemala</option>
-                                             <option value="Guernsey">Guernsey</option>
-                                             <option value="Guinea">Guinea</option>
-                                             <option value="Guinea-Bissau">Guinea-Bissau</option>
-                                             <option value="Guyana">Guyana</option>
-                                             <option value="Haiti">Haiti</option>
-                                             <option value="Heard Island & Mcdonald Islands">Heard Island & Mcdonald Islands</option>
-                                             <option value="Holy See (Vatican City State)">Holy See (Vatican City State)</option>
-                                             <option value="Honduras">Honduras</option>
-                                             <option value="Hong Kong">Hong Kong</option>
-                                             <option value="Hungary">Hungary</option>
-                                             <option value="Iceland">Iceland</option>
-                                             <option value="India">India</option>
-                                             <option value="Indonesia">Indonesia</option>
-                                             <option value="Iran, Islamic Republic Of">Iran, Islamic Republic Of</option>
-                                             <option value="Iraq">Iraq</option>
-                                             <option value="Ireland">Ireland</option>
-                                             <option value="Isle Of Man">Isle Of Man</option>
-                                             <option value="Israel">Israel</option>
-                                             <option value="Italy">Italy</option>
-                                             <option value="Jamaica">Jamaica</option>
-                                             <option value="Japan">Japan</option>
-                                             <option value="Jersey">Jersey</option>
-                                             <option value="Jordan">Jordan</option>
-                                             <option value="Kazakhstan">Kazakhstan</option>
-                                             <option value="Kenya">Kenya</option>
-                                             <option value="Kiribati">Kiribati</option>
-                                             <option value="Korea">Korea</option>
-                                             <option value="Kuwait">Kuwait</option>
-                                             <option value="Kyrgyzstan">Kyrgyzstan</option>
-                                             <option value="Lao People's Democratic Republic">Lao People's Democratic Republic</option>
-                                             <option value="Latvia">Latvia</option>
-                                             <option value="Lebanon">Lebanon</option>
-                                             <option value="Lesotho">Lesotho</option>
-                                             <option value="Liberia">Liberia</option>
-                                             <option value="Libyan Arab Jamahiriya">Libyan Arab Jamahiriya</option>
-                                             <option value="Liechtenstein">Liechtenstein</option>
-                                             <option value="Lithuania">Lithuania</option>
-                                             <option value="Luxembourg">Luxembourg</option>
-                                             <option value="Macao">Macao</option>
-                                             <option value="Macedonia">Macedonia</option>
-                                             <option value="Madagascar">Madagascar</option>
-                                             <option value="Malawi">Malawi</option>
-                                             <option value="Malaysia">Malaysia</option>
-                                             <option value="Maldives">Maldives</option>
-                                             <option value="Mali">Mali</option>
-                                             <option value="Malta">Malta</option>
-                                             <option value="Marshall Islands">Marshall Islands</option>
-                                             <option value="Martinique">Martinique</option>
-                                             <option value="Mauritania">Mauritania</option>
-                                             <option value="Mauritius">Mauritius</option>
-                                             <option value="Mayotte">Mayotte</option>
-                                             <option value="Mexico">Mexico</option>
-                                             <option value="Micronesia, Federated States Of">Micronesia, Federated States Of</option>
-                                             <option value="Moldova">Moldova</option>
-                                             <option value="Monaco">Monaco</option>
-                                             <option value="Mongolia">Mongolia</option>
-                                             <option value="Montenegro">Montenegro</option>
-                                             <option value="Montserrat">Montserrat</option>
-                                             <option value="Morocco">Morocco</option>
-                                             <option value="Mozambique">Mozambique</option>
-                                             <option value="Myanmar">Myanmar</option>
-                                             <option value="Namibia">Namibia</option>
-                                             <option value="Nauru">Nauru</option>
-                                             <option value="Nepal">Nepal</option>
-                                             <option value="Netherlands">Netherlands</option>
-                                             <option value="Netherlands Antilles">Netherlands Antilles</option>
-                                             <option value="New Caledonia">New Caledonia</option>
-                                             <option value="New Zealand">New Zealand</option>
-                                             <option value="Nicaragua">Nicaragua</option>
-                                             <option value="Niger">Niger</option>
-                                             <option value="Nigeria">Nigeria</option>
-                                             <option value="Niue">Niue</option>
-                                             <option value="Norfolk Island">Norfolk Island</option>
-                                             <option value="Northern Mariana Islands">Northern Mariana Islands</option>
-                                             <option value="Norway">Norway</option>
-                                             <option value="Oman">Oman</option>
-                                             <option value="Pakistan">Pakistan</option>
-                                             <option value="Palau">Palau</option>
-                                             <option value="Palestinian Territory, Occupied">Palestinian Territory, Occupied</option>
-                                             <option value="Panama">Panama</option>
-                                             <option value="Papua New Guinea">Papua New Guinea</option>
-                                             <option value="Paraguay">Paraguay</option>
-                                             <option value="Peru">Peru</option>
-                                             <option value="Philippines">Philippines</option>
-                                             <option value="Pitcairn">Pitcairn</option>
-                                             <option value="Poland">Poland</option>
-                                             <option value="Portugal">Portugal</option>
-                                             <option value="Puerto Rico">Puerto Rico</option>
-                                             <option value="Qatar">Qatar</option>
-                                             <option value="Reunion">Reunion</option>
-                                             <option value="Romania">Romania</option>
-                                             <option value="Russian Federation">Russian Federation</option>
-                                             <option value="Rwanda">Rwanda</option>
-                                             <option value="Saint Barthelemy">Saint Barthelemy</option>
-                                             <option value="Saint Helena">Saint Helena</option>
-                                             <option value="Saint Kitts And Nevis">Saint Kitts And Nevis</option>
-                                             <option value="Saint Lucia">Saint Lucia</option>
-                                             <option value="Saint Martin">Saint Martin</option>
-                                             <option value="Saint Pierre And Miquelon">Saint Pierre And Miquelon</option>
-                                             <option value="Saint Vincent And Grenadines">Saint Vincent And Grenadines</option>
-                                             <option value="Samoa">Samoa</option>
-                                             <option value="San Marino">San Marino</option>
-                                             <option value="Sao Tome And Principe">Sao Tome And Principe</option>
-                                             <option value="Saudi Arabia">Saudi Arabia</option>
-                                             <option value="Senegal">Senegal</option>
-                                             <option value="Serbia">Serbia</option>
-                                             <option value="Seychelles">Seychelles</option>
-                                             <option value="Sierra Leone">Sierra Leone</option>
-                                             <option value="Singapore">Singapore</option>
-                                             <option value="Slovakia">Slovakia</option>
-                                             <option value="Slovenia">Slovenia</option>
-                                             <option value="Solomon Islands">Solomon Islands</option>
-                                             <option value="Somalia">Somalia</option>
-                                             <option value="South Africa">South Africa</option>
-                                             <option value="South Georgia And Sandwich Isl.">South Georgia And Sandwich Isl.</option>
-                                             <option value="Spain">Spain</option>
-                                             <option value="Sri Lanka">Sri Lanka</option>
-                                             <option value="Sudan">Sudan</option>
-                                             <option value="Suriname">Suriname</option>
-                                             <option value="Svalbard And Jan Mayen">Svalbard And Jan Mayen</option>
-                                             <option value="Swaziland">Swaziland</option>
-                                             <option value="Sweden">Sweden</option>
-                                             <option value="Switzerland">Switzerland</option>
-                                             <option value="Syrian Arab Republic">Syrian Arab Republic</option>
-                                             <option value="Taiwan">Taiwan</option>
-                                             <option value="Tajikistan">Tajikistan</option>
-                                             <option value="Tanzania">Tanzania</option>
-                                             <option value="Thailand">Thailand</option>
-                                             <option value="Timor-Leste">Timor-Leste</option>
-                                             <option value="Togo">Togo</option>
-                                             <option value="Tokelau">Tokelau</option>
-                                             <option value="Tonga">Tonga</option>
-                                             <option value="Trinidad And Tobago">Trinidad And Tobago</option>
-                                             <option value="Tunisia">Tunisia</option>
-                                             <option value="Turkey">Turkey</option>
-                                             <option value="Turkmenistan">Turkmenistan</option>
-                                             <option value="Turks And Caicos Islands">Turks And Caicos Islands</option>
-                                             <option value="Tuvalu">Tuvalu</option>
-                                             <option value="Uganda">Uganda</option>
-                                             <option value="Ukraine">Ukraine</option>
-                                             <option value="United Arab Emirates">United Arab Emirates</option>
-                                             <option value="United Kingdom">United Kingdom</option>
-                                             <option value="United States">United States</option>
-                                             <option value="United States Outlying Islands">United States Outlying Islands</option>
-                                             <option value="Uruguay">Uruguay</option>
-                                             <option value="Uzbekistan">Uzbekistan</option>
-                                             <option value="Vanuatu">Vanuatu</option>
-                                             <option value="Venezuela">Venezuela</option>
-                                             <option value="Viet Nam">Viet Nam</option>
-                                             <option value="Virgin Islands, British">Virgin Islands, British</option>
-                                             <option value="Virgin Islands, U.S.">Virgin Islands, U.S.</option>
-                                             <option value="Wallis And Futuna">Wallis And Futuna</option>
-                                             <option value="Western Sahara">Western Sahara</option>
-                                             <option value="Yemen">Yemen</option>
-                                             <option value="Zambia">Zambia</option>
-                                             <option value="Zimbabwe">Zimbabwe</option>
-                                          </select>
-                                       </div>
-                                    </div>
-                                    <!-- /.col-md-6 -->  
-                                    <div class="col-md-6">
-                                       <div class="input-group">
-                                          <span class="input-group-addon"><i class="zmdi zmdi-link"></i></span>
-                                          <input type="text" name="target[]" class="form-control" placeholder="Type the url to redirect user to.">
-                                       </div>
-                                    </div>
-                                    <!-- /.col-md-6 -->  
-                                 </div>
-                                 <!-- /.row -->
-                              </div>
-                              <!-- /.geo-input -->
-                           </div>
                            <!-- /.row -->            
                            <hr>
-                           <div class="row devicetarget" id="device">
-                              <div class="col-md-12 device-input">
-                                 <h3>Device Targeting <a href="#" class="btn btn-xs btn-primary pull-right add_device" data-home="true">Add more device</a></h3>
-                                 <p>If you have different pages for different devices (such as mobile, tablet etc) then it is possible to redirect users to that page using the same short URL. Simply choose the device and enter the URL.</p>
-                                 <div class="row devices">
-                                    <div class="col-md-6">
-                                       <div class="input-group">
-                                          <span class="input-group-addon"><i class="zmdi zmdi-smartphone-iphone"></i></span>
-                                          <select name="device[]">
-                                             <option value="iPhone">iPhone</option>
-                                             <option value="iPad">iPad</option>
-                                             <option value="Android">Android</option>
-                                             <option value="BlackBerry">BlackBerry</option>
-                                             <option value="Other mobile">Other mobile</option>
-                                          </select>
-                                       </div>
-                                    </div>
-                                    <!-- /.col-md-6 -->  
-                                    <div class="col-md-6">
-                                       <div class="input-group">
-                                          <span class="input-group-addon"><i class="zmdi zmdi-link"></i></span>
-                                          <input type="text" name="dtarget[]" class="form-control" placeholder="Type the url to redirect user to.">
-                                       </div>
-                                    </div>
-                                    <!-- /.col-md-6 -->  
-                                 </div>
-                                 <!-- /.row -->
-                              </div>
-                              <!-- /.device-input -->
-                           </div>
                            <!-- /.row -->            
                         </div>
-                        <!-- /.main-advanced -->  
-                        <input type="hidden" value="0" name="multiple" id="multiple-form">
-                        <input type="hidden" value="01d7b5177e7efd9f07da22c9319455d4">
+                        <!-- /.main-advanced -->
+                         <!-- recaptcha hidden token -->
+                         <input type="hidden" id="g-captcha-client-key" name="g-captcha-client-key">
                      </form>
                      <!--/.form-->  
                   </div>
@@ -597,7 +324,7 @@ ShortTo - Dashboard
                            </div>
                            <!-- /.return-ajax -->
                            <div class="url-container">
-                              <table id="urls-table" class="table urls-table table-striped table-bordered table-advance table-hover">
+                              <table class="table urls-table table-striped table-bordered table-advance table-hover" id="urls-table">
                                  <thead>
                                     <tr>
                                        <th></th>
@@ -608,9 +335,133 @@ ShortTo - Dashboard
                                     </tr>
                                  </thead>
                                  <tbody>
+                                    <tr class="url-list" id="url-container-37450" data-id="37450">
+                                       <td class="center">
+                                          <div class="round-check toggle">
+                                             <input name="delete-id[]" id="url-select-cbox37450" type="checkbox" value="7xIT6">
+                                             <label for="url-select-cbox37450">&nbsp;</label>
+                                          </div>
+                                       </td>
+                                       <td class="hidden-xs">
+                                          <h3 class="title">
+                                             <img alt="Favicon" src="https://cdn.shortto.com/img/st-favicon.ico">
+                                             <a href="" target="_blank">URL.</a>
+                                          </h3>
+                                          <p>
+                                          </p>
+                                          <ul class="toggle">
+                                             <li class="lock-url-37450">
+                                                <a class="ajax_call" href="#public" data-id="37450" data-class="lock-url-37450" data-action="unlock">
+                                                <i class="glyphicon glyphicon-eye-close"></i> Private					</a>
+                                             </li>
+                                             <li>
+                                                <span><i class="glyphicon glyphicon-time"></i> 6 hours ago </span>
+                                             </li>
+                                          </ul>
+                                       </td>
+                                       <td class="va-middle">
+                                          <div class="short-url">
+                                             <a href="" target="_blank">
+                                             <span class="url-first-part">#</span>/<span class="url-last-part">7xIT6</span>
+                                             </a>
+                                             <p class="copy matbtn" data-clipboard-text="">Copy</p>
+                                          </div>
+                                       </td>
+                                       <td class="center">
+                                          <a class="link-clickz" href="+" target="_blank">0</a>
+                                       </td>
+                                       <td class="center">
+                                          <div class="dropdown In_dropdown">
+                                             <a title="Options" class="cusdropdown-toggle" id="urlLabel" aria-expanded="false" aria-haspopup="true" href="javascript:void(0)" type="button" data-toggle="dropdown">
+                                             <i class="zmdi zmdi-more-vert"></i>
+                                             </a>
+                                             <ul class="dropdown-menu dropdown-menu-right cusdropdown-menu" aria-labelledby="urlLabel">
+                                                <li>
+                                                   <a href="">Edit</a>
+                                                </li>
+                                                <li>
+                                                   <a class="delete" href="">Delete</a>
+                                                </li>
+                                                <li>
+                                                   <a class="ajax_call" href="#" data-id="37450" data-action="url_bundle_add" data-title="Add to bundle" data-content="Click to add to a bundle">Add to bundle</a>					
+                                                </li>
+                                                <li>
+                                                   <a class="ajax_call" href="#archive" data-id="37450" data-class="return-ajax" data-action="archive">Archive</a>
+                                                </li>
+                                                <li>
+                                                   <a class="u_share" href="https://www.facebook.com/sharer.php?u=">Share on Facebook</a>
+                                                   <a class="u_share" href="https://twitter.com/share?url=&amp;text=Check+out+this+url">Share on Twitter</a>
+                                                </li>
+                                             </ul>
+                                          </div>
+                                       </td>
+                                    </tr>
+                                    <!-- /.url-list -->																
+                                    <tr class="url-list" id="url-container-37449" data-id="37449">
+                                       <td class="center">
+                                          <div class="round-check toggle">
+                                             <input name="delete-id[]" id="url-select-cbox37449" type="checkbox" value="qZ4v5">
+                                             <label for="url-select-cbox37449">&nbsp;</label>
+                                          </div>
+                                       </td>
+                                       <td class="hidden-xs">
+                                          <h3 class="title">
+                                             <img alt="Favicon" src="https://cdn.shortto.com/img/st-favicon.ico">
+                                             <a href="" target="_blank">URl</a>
+                                          </h3>
+                                          <p>
+                                          </p>
+                                          <ul class="toggle">
+                                             <li class="lock-url-37449">
+                                                <a class="ajax_call" href="#public" data-id="37449" data-class="lock-url-37449" data-action="unlock">
+                                                <i class="glyphicon glyphicon-eye-close"></i> Private					</a>
+                                             </li>
+                                             <li>
+                                                <span><i class="glyphicon glyphicon-time"></i> 6 hours ago </span>
+                                             </li>
+                                          </ul>
+                                       </td>
+                                       <td class="va-middle">
+                                          <div class="short-url">
+                                             <a href="#/qZ4v5" target="_blank">
+                                             <span class="url-first-part">#</span>/<span class="url-last-part">qZ4v5</span>
+                                             </a>
+                                             <p class="copy matbtn" data-clipboard-text="#/qZ4v5">Copy</p>
+                                          </div>
+                                       </td>
+                                       <td class="center">
+                                          <a class="link-clickz" href="#/qZ4v5+" target="_blank">2</a>
+                                       </td>
+                                       <td class="center">
+                                          <div class="dropdown In_dropdown">
+                                             <a title="Options" class="cusdropdown-toggle" id="urlLabel" aria-expanded="false" aria-haspopup="true" href="javascript:void(0)" type="button" data-toggle="dropdown">
+                                             <i class="zmdi zmdi-more-vert"></i>
+                                             </a>
+                                             <ul class="dropdown-menu dropdown-menu-right cusdropdown-menu" aria-labelledby="urlLabel">
+                                                <li>
+                                                   <a href="#/user/edit/37449">Edit</a>
+                                                </li>
+                                                <li>
+                                                   <a class="delete" href="#/user/delete/37449?nonce=544b7f6ee6">Delete</a>
+                                                </li>
+                                                <li>
+                                                   <a class="ajax_call" href="#" data-id="37449" data-action="url_bundle_add" data-title="Add to bundle" data-content="Click to add to a bundle">Add to bundle</a>					
+                                                </li>
+                                                <li>
+                                                   <a class="ajax_call" href="#archive" data-id="37449" data-class="return-ajax" data-action="archive">Archive</a>
+                                                </li>
+                                                <li>
+                                                   <a class="u_share" href="https://www.facebook.com/sharer.php?u=#/qZ4v5">Share on Facebook</a>
+                                                   <a class="u_share" href="https://twitter.com/share?url=#/qZ4v5&amp;text=Check+out+this+url">Share on Twitter</a>
+                                                </li>
+                                             </ul>
+                                          </div>
+                                       </td>
+                                    </tr>
+                                    <!-- /.url-list -->																
                                  </tbody>
                               </table>
-                              <input type='hidden' name='token' value='37d52b3184e75d5cf3710afe019f7d9032477665' />											
+                              <input name="token" type="hidden" value="d877a9d4d05203d6472046acbc3f6123af7abf90">											
                            </div>
                            <!-- /.url-conainer -->
                         </form>
@@ -623,9 +474,9 @@ ShortTo - Dashboard
                <div id="widgets" class="col-md-4">
                   <div class='panel panel-default panel-body' id='widget_news'>
                      <h3>Announcement</h3>
-                     Hello,
-                     Theme is now updated to the latest version, now it will work absolutely fine with latest script version. Please clear your browser cache, if you are facing any issue.
-                     Thanks
+                      {% if announcement %}
+                        {{announcement.text}}
+                      {% endif %}
                   </div>
                   <div class='panel panel-dark panel-body' id='widget_countries'>
                      <div id='country-map' style='width:100%;height:300px;'></div>
@@ -641,25 +492,7 @@ ShortTo - Dashboard
                </div>
                <!--/#widgets-->
             </div>
-            <!--/.row-->              
-            <footer class="main nousrfoot" style="margin: 0px -15px;padding: 55px 20px 80px;">
-               <div class="row">
-                  <div class="col-md-5">
-                     2019 &copy; Infinity - Premium URL Shortener Theme.
-                  </div>
-                  <div class="col-md-7 text-right">
-                     <a href='#/page/terms' title='Terms and Conditions'>Terms and Conditions</a>
-                     <a href='#/page/developer' title='Developer'>Developer</a>
-                     <a href='#/contact' title='Contact'>Contact</a> 
-                     <div class="languages">
-                        <a href="#lang" class="active" id="show-language"><i class="zmdi zmdi-globe"></i> Language</a>
-                        <div class="langs">
-                           <a href='?lang=en'>English</a>                      
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </footer>
+            <!--/.row-->
          </div>
          <!--/.content-->
       </div>

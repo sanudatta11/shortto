@@ -29,6 +29,16 @@
       <link rel="stylesheet" type="text/css"
          href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.css">
       <link rel="stylesheet" type="text/css" href="https://cdn.shortto.com/css/snackbar.min.css">
+       <script async src="https://www.googletagmanager.com/gtag/js?id=UA-108877136-1"></script>
+       <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-108877136-1');
+    </script>
       <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
@@ -63,33 +73,39 @@
             </div>
          </div>
       </header>
-      {%endif%}
+      {% endif %}
       
       
       {% block body %}
       {% endblock %}
       
-     <footer class="main nousrfoot">
-         <div class="container">
-            <div class="row">
-               <div class="col-md-5">
-                  2019 &copy; ShortTo - Making Links Smarter.
-               </div>
-               <div class="col-md-7 text-right">
-                  <a href='/self/terms' title='Terms and Conditions'>Terms and Conditions</a>
-                  <a href='/self/policy' title='Developer'>GDPR Policy</a>
-                  <a href='#' title='Developer'>Developer</a>
-                  <a href='#' title='Contact'>Contact</a>
-                  <div class="languages">
-                     <a href="#lang" class="active" id="show-language"><i class="zmdi zmdi-globe"></i> Language</a>
-                     <div class="langs">
-                        <a href='#'>English</a> 
+     {% if self.footer() | trim %}
+         {% block footer %}
+         {% endblock %}
+     {% else %}
+         <footer class="main nousrfoot">
+            <div class="container">
+               <div class="row">
+                  <div class="col-md-5">
+                     2019 &copy; ShortTo - Making Links Smarter.
+                  </div>
+                  <div class="col-md-7 text-right">
+                     <a href='/self/terms' title='Terms and Conditions'>Terms and Conditions</a>
+                     <a href='/self/policy' title='Developer'>GDPR Policy</a>
+                     <a href='#' title='Developer'>Developer</a>
+                     <a href='#' title='Contact'>Contact</a>
+                     <div class="languages">
+                        <a href="#lang" class="active" id="show-language"><i class="zmdi zmdi-globe"></i> Language</a>
+                        <div class="langs">
+                           <a href='#'>English</a> 
+                        </div>
                      </div>
                   </div>
                </div>
             </div>
-         </div>
-      </footer>
+         </footer>
+     {% endif %}
+     
       <!-- Required Javascript Files -->
       <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
       <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.4/datepicker.min.js?v=0.6.4"></script>

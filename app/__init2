@@ -1,0 +1,35 @@
+import os
+
+from flask import Flask
+from flask_jwt_extended import (
+    JWTManager, jwt_required, create_access_token,
+    get_jwt_identity
+)
+from flask_cors import CORS, cross_origin
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+from flask_bcrypt import Bcrypt
+import google_auth
+from flask_login import LoginManager
+
+app = Flask(__name__)
+
+# LoginManager.login_view = "login"
+# LoginManager.login_message = u"Please Log in again!"
+# LoginManager.login_message_category = "error"
+app.register_blueprint(google_auth.app)
+
+# Setup the Flask-JWT-Extended extension
+app.config['JWT_SECRET_KEY'] = os.urandom(24)  # Change this!
+jwt = JWTManager(app)
+
+application = app
+login_manager = LoginManager(app)
+
+app.config.from_object('config')
+db = SQLAlchemy(app)
+cors = CORS(app)
+bcrypt = Bcrypt(app)
+migrate = Migrate(app, db)
+app.config['CORS_HEADERS'] = 'Content-Type'
+from app import views

@@ -6,38 +6,64 @@
 {% block body %}
 <section class="under-head-cont">
 	<div class="container">
+	
 		<div class="centered form">      
-			      
-			<form role="form" class="live_form" id="login_form" method="post" action="#">
+				{% with messages = get_flashed_messages(category_filter=["success"]) %}
+                  {% if messages %}
+                    <div class="alert alert-success no-round">
+                      {% for message in messages %}
+                          <span>{{ message }}</span>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                {% endwith %}
+
+                {% with messages = get_flashed_messages(category_filter=["error"]) %}
+                  {% if messages %}
+                    <div class="alert alert-danger no-round">
+                      {% for message in messages %}
+                          <span>{{ message }}</span>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                {% endwith %}
+
+			<form role="form" class="live_form" id="login_form" method="post" action={{url_for('register')}}>
 				<p class="title">Get Started</p>
 				<div class="form-group">
-					<input type="text" class="form-control" id="name" placeholder="Username" name="username" autofocus>
+					<input type="text" class="form-control" id="firstName" placeholder="First Name" name="firstName" autofocus required>
 					<i class="zmdi zmdi-account"></i>
 				</div>        
 				<div class="form-group">
-					<input type="email" class="form-control" id="email" placeholder="Email address" name="email">
+					<input type="text" class="form-control" id="lastName" placeholder="Last Name" name="lastName" autofocus required>
+					<i class="zmdi zmdi-account"></i>
+				</div>
+				<div class="form-group">
+					<input type="email" class="form-control" id="email" placeholder="Email address" name="email" required>
 					<i class="zmdi zmdi-email"></i>
 				</div>
 				<div class="form-group">
-					<input type="password" class="form-control" id="pass" placeholder="Password" name="password">
+					<input type="password" class="form-control" id="pass" placeholder="Password" name="password" required>
 					<i class="zmdi zmdi-dialpad"></i>
 				</div>     
 				<div class="form-group">
-					<input type="password" class="form-control" id="pass2" placeholder="Confirm Password" name="cpassword">
+					<input type="password" class="form-control" id="pass2" placeholder="Confirm Password" name="cpassword" required>
 					<i class="zmdi zmdi-dialpad"></i>
 				</div>  
 				            
 				<div class="form-group">
 					<div class="round-check">
-						<input type="checkbox" name="terms" value="1" id="round-checkbox"> 
+						<input type="checkbox" name="terms" value="1" id="round-checkbox" required>
 						<label for="round-checkbox">I agree to the <a href="#" target="_blank">terms and conditions</a>.</label>
 					</div>
 				</div>          
-				<input type='hidden' name='token' value='63226f1a7ba1401e46c9d9af7746a5be8425ed7f' />				<button type="submit" class="mdbtn btn btn-primary width100">Create account</button>
-								<hr>
+				<button type="submit" class="mdbtn btn btn-primary width100">Create account</button>
+				<hr>
 				<div class="social">															          
 				</div>
-				 
+				
+
+
 			</form>        
 		</div>
 	</div>

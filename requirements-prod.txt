@@ -11,10 +11,10 @@ wtforms
 gunicorn
 flask_cors
 flask-JWT
+flask-bcrypt
 flask_debug
 flask-restful
 flask_jwt_extended
-flask_limiter
 pymysql
 click
 itsdangerous
@@ -22,3 +22,4 @@ MarkupSafe
 Werkzeug
 uWSGI
 mysqlclient
+flask-login

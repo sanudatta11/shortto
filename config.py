@@ -2,7 +2,6 @@ import os
 
 import datetime
 WTF_CSRF_ENABLED = True
-SECRET_KEY = os.urandom(24)
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -18,6 +17,7 @@ RDS_PASS = os.environ['RDS_PASS']
 RDS_PORT = '3306'
 RDS_HOST = os.environ['RDS_HOST']
 RDS_DBNAME = 'shortto'
+BCRYPT_LOG_ROUNDS = 12
 
 SQLALCHEMY_DATABASE_URI = RDS_PROTOCOL+'://'+RDS_USER+':'+RDS_PASS+'@'+RDS_HOST+':'+RDS_PORT+'/'+RDS_DBNAME
 # SQLALCHEMY_DATABASE_URI = 'mysql://root:mysql@127.0.0.1:3306/shortto'
@@ -62,3 +62,17 @@ blacklist = [
     'link.zip.net',
     'tinyarrows.com'
 ]
+
+
+# Google Login
+
+class Auth:
+    CLIENT_ID = os.environ['CLIENT_ID']
+    CLIENT_SECRET = 'DNnwEpjpVEhCUie6H1UmWf49'
+    BASE_URI = 'http://localhost:5000/checkLogin'
+    DASH_URI = 'http://localhost:5000/dashboard'
+    REDIRECT_URI = 'http://localhost:5000/google/auth'
+    AUTH_URI = 'http://accounts.google.com/o/oauth2/auth'
+    TOKEN_URI = 'http://accounts.google.com/o/oauth2/token'
+    USER_INFO = 'http://www.googleapis.com/userinfo/v2/me'
+    RECAPTCHA_SECRET = os.environ['RECAPTCHA_SECRET']
