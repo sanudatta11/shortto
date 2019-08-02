@@ -313,6 +313,7 @@ ShortTo - Dashboard
                                     <tr>
                                        <th></th>
                                        <th class="hidden-xs">Link</th>
+                                       <th>Description</th>
                                        <th>Short link</th>
                                        <th>Clicks</th>
                                        <th></th>
@@ -329,12 +330,15 @@ ShortTo - Dashboard
                                     <tr>
                                        <th></th>
                                        <th class="hidden-xs">Link</th>
+                                       <th>Description</th>
                                        <th>Short link</th>
                                        <th>Clicks</th>
                                        <th></th>
                                     </tr>
                                  </thead>
                                  <tbody>
+                                 {% for each_link in user_links %}
+                        <!--URL Repeat# -->
                                     <tr class="url-list" id="url-container-37450" data-id="37450">
                                        <td class="center">
                                           <div class="round-check toggle">
@@ -345,30 +349,38 @@ ShortTo - Dashboard
                                        <td class="hidden-xs">
                                           <h3 class="title">
                                              <img alt="Favicon" src="https://cdn.shortto.com/img/st-favicon.ico">
-                                             <a href="" target="_blank">URL.</a>
+                                              {% if each_link.big_url|length>50 %}
+                                                <a href="" target="_blank">{{ each_link.big_url[:50] }}....</a>
+                                              {% else %}
+                                                <a href="" target="_blank">{{ each_link.big_url }}</a>
+                                              {% endif %}
                                           </h3>
                                           <p>
                                           </p>
                                           <ul class="toggle">
                                              <li class="lock-url-37450">
                                                 <a class="ajax_call" href="#public" data-id="37450" data-class="lock-url-37450" data-action="unlock">
-                                                <i class="glyphicon glyphicon-eye-close"></i> Private					</a>
+                                                <i class="glyphicon glyphicon-eye-close"></i>&nbsp;Private</a>
                                              </li>
                                              <li>
-                                                <span><i class="glyphicon glyphicon-time"></i> 6 hours ago </span>
+                                                 {% set diff = (current_date - each_link.created_at) %}
+                                                <span><i class="glyphicon glyphicon-time"></i>&nbsp;{{ diff.days  }} days ago</span>
                                              </li>
                                           </ul>
+                                       </td>
+                                       <td class="center">
+                                          <p class="link-description">{{ each_link.description }}</p>
                                        </td>
                                        <td class="va-middle">
                                           <div class="short-url">
                                              <a href="" target="_blank">
-                                             <span class="url-first-part">#</span>/<span class="url-last-part">7xIT6</span>
+                                             <p id="copyid{{loop.index}}"><span class="url-first-part">{{ config.BASE_URL }}</span><span class="url-last-part">{{ each_link.short_url }}</span>
                                              </a>
-                                             <p class="copy matbtn" data-clipboard-text="">Copy</p>
+                                             <p class="copy matbtn" data-clipboard-text="" onclick='copyToClipboard("#copyid{{loop.index}}")'>Copy</p>
                                           </div>
                                        </td>
                                        <td class="center">
-                                          <a class="link-clickz" href="+" target="_blank">0</a>
+                                          <a class="link-clickz" href="+" target="_blank">{{ each_link.clicks }}</a>
                                        </td>
                                        <td class="center">
                                           <div class="dropdown In_dropdown">
@@ -383,7 +395,7 @@ ShortTo - Dashboard
                                                    <a class="delete" href="">Delete</a>
                                                 </li>
                                                 <li>
-                                                   <a class="ajax_call" href="#" data-id="37450" data-action="url_bundle_add" data-title="Add to bundle" data-content="Click to add to a bundle">Add to bundle</a>					
+                                                   <a class="ajax_call" href="#" data-id="37450" data-action="url_bundle_add" data-title="Add to bundle" data-content="Click to add to a bundle">Add to bundle</a>
                                                 </li>
                                                 <li>
                                                    <a class="ajax_call" href="#archive" data-id="37450" data-class="return-ajax" data-action="archive">Archive</a>
@@ -396,69 +408,8 @@ ShortTo - Dashboard
                                           </div>
                                        </td>
                                     </tr>
-                                    <!-- /.url-list -->																
-                                    <tr class="url-list" id="url-container-37449" data-id="37449">
-                                       <td class="center">
-                                          <div class="round-check toggle">
-                                             <input name="delete-id[]" id="url-select-cbox37449" type="checkbox" value="qZ4v5">
-                                             <label for="url-select-cbox37449">&nbsp;</label>
-                                          </div>
-                                       </td>
-                                       <td class="hidden-xs">
-                                          <h3 class="title">
-                                             <img alt="Favicon" src="https://cdn.shortto.com/img/st-favicon.ico">
-                                             <a href="" target="_blank">URl</a>
-                                          </h3>
-                                          <p>
-                                          </p>
-                                          <ul class="toggle">
-                                             <li class="lock-url-37449">
-                                                <a class="ajax_call" href="#public" data-id="37449" data-class="lock-url-37449" data-action="unlock">
-                                                <i class="glyphicon glyphicon-eye-close"></i> Private					</a>
-                                             </li>
-                                             <li>
-                                                <span><i class="glyphicon glyphicon-time"></i> 6 hours ago </span>
-                                             </li>
-                                          </ul>
-                                       </td>
-                                       <td class="va-middle">
-                                          <div class="short-url">
-                                             <a href="#/qZ4v5" target="_blank">
-                                             <span class="url-first-part">#</span>/<span class="url-last-part">qZ4v5</span>
-                                             </a>
-                                             <p class="copy matbtn" data-clipboard-text="#/qZ4v5">Copy</p>
-                                          </div>
-                                       </td>
-                                       <td class="center">
-                                          <a class="link-clickz" href="#/qZ4v5+" target="_blank">2</a>
-                                       </td>
-                                       <td class="center">
-                                          <div class="dropdown In_dropdown">
-                                             <a title="Options" class="cusdropdown-toggle" id="urlLabel" aria-expanded="false" aria-haspopup="true" href="javascript:void(0)" type="button" data-toggle="dropdown">
-                                             <i class="zmdi zmdi-more-vert"></i>
-                                             </a>
-                                             <ul class="dropdown-menu dropdown-menu-right cusdropdown-menu" aria-labelledby="urlLabel">
-                                                <li>
-                                                   <a href="#/user/edit/37449">Edit</a>
-                                                </li>
-                                                <li>
-                                                   <a class="delete" href="#/user/delete/37449?nonce=544b7f6ee6">Delete</a>
-                                                </li>
-                                                <li>
-                                                   <a class="ajax_call" href="#" data-id="37449" data-action="url_bundle_add" data-title="Add to bundle" data-content="Click to add to a bundle">Add to bundle</a>					
-                                                </li>
-                                                <li>
-                                                   <a class="ajax_call" href="#archive" data-id="37449" data-class="return-ajax" data-action="archive">Archive</a>
-                                                </li>
-                                                <li>
-                                                   <a class="u_share" href="https://www.facebook.com/sharer.php?u=#/qZ4v5">Share on Facebook</a>
-                                                   <a class="u_share" href="https://twitter.com/share?url=#/qZ4v5&amp;text=Check+out+this+url">Share on Twitter</a>
-                                                </li>
-                                             </ul>
-                                          </div>
-                                       </td>
-                                    </tr>
-                                    <!-- /.url-list -->																
+                                    <!-- /.url-list -->
+                                 {% endfor %}
                                  </tbody>
                               </table>
                               <input name="token" type="hidden" value="d877a9d4d05203d6472046acbc3f6123af7abf90">											
@@ -502,79 +453,114 @@ ShortTo - Dashboard
 </section>
 {% endblock %}
 {% block customjs %}
-<script type="text/javascript">
-   var lang = {"del":"Delete","url":"URL","count":"Country","copied":"Copied","geo":"Geotargeting data for","error":"Please enter a valid URL.","success":"URL has been successfully shortened. Click Copy or CRTL+C to Copy it.","stats":"You can access the statistic page via this link","copy":"Copied to clipboard.","from":"Redirect from","to":"Redirect to","share":"Share this on","congrats":"Congratulation! Your URL has been successfully shortened. You can share it on Facebook or Twitter by clicking the links below.","qr":"Save QR Code","continue":"Continue","cookie":"This website uses cookies to ensure you get the best experience on our website.","cookieok":"Got it!","cookiemore":"Learn more"};
-</script>  
-<script type="text/javascript" src="http://cdn.shortto.com/js/jvector.js"></script>
-<script type="text/javascript" src="http://cdn.shortto.com/js/jvector.world.js"></script>
-<script type='text/javascript'>var data=[]; $('#country-map').vectorMap({
-   map: 'world_mill_en',
-   backgroundColor: 'transparent',
-   series: {
-     regions: [{
-       values: data,
-       scale: ['#74CBFA', '#0da1f5'],
-       normalizeFunction: 'polynomial'
-     }]
-   },
-   onRegionLabelShow: function(e, el, code){
-     if(typeof data[code]!='undefined') el.html(el.html()+' ('+data[code]+' Clicks)');
-   }     
-   });
+<script type = "text/javascript">
+    var lang = {
+        "del": "Delete",
+        "url": "URL",
+        "count": "Country",
+        "copied": "Copied",
+        "geo": "Geotargeting data for",
+        "error": "Please enter a valid URL.",
+        "success": "URL has been successfully shortened. Click Copy or CRTL+C to Copy it.",
+        "stats": "You can access the statistic page via this link",
+        "copy": "Copied to clipboard.",
+        "from": "Redirect from",
+        "to": "Redirect to",
+        "share": "Share this on",
+        "congrats": "Congratulation! Your URL has been successfully shortened. You can share it on Facebook or Twitter by clicking the links below.",
+        "qr": "Save QR Code",
+        "continue": "Continue",
+        "cookie": "This website uses cookies to ensure you get the best experience on our website.",
+        "cookieok": "Got it!",
+        "cookiemore": "Learn more"
+    };
 </script>
-<script type="application/javascript" src="{{ url_for('static',filename='js/server.js') }}"></script>
-<script type="text/javascript">
-$(window).on("scroll", function() {
-if($(window).scrollTop() > 50) {
-$("header").addClass("activehead");
-} else {
-//remove the background property so it comes transparent again (defined in your css)
-$("header").removeClass("activehead");
-}
+<script type = "text/javascript" src = "http://cdn.shortto.com/js/jvector.js"> </script>
+<script type = "text/javascript" src = "http://cdn.shortto.com/js/jvector.world.js"></script>
+<script type = 'text/javascript'>
+    var data = [];
+$('#country-map').vectorMap({
+    map: 'world_mill_en',
+    backgroundColor: 'transparent',
+    series: {
+        regions: [{
+            values: data,
+            scale: ['#74CBFA', '#0da1f5'],
+            normalizeFunction: 'polynomial'
+        }]
+    },
+    onRegionLabelShow: function(e, el, code) {
+        if (typeof data[code] != 'undefined') el.html(el.html() + ' (' + data[code] + ' Clicks)');
+    }
 });
+</script>
+<script type = "text/javascript">
+    $(window).on("scroll", function() {
+        if ($(window).scrollTop() > 50) {
+            $("header").addClass("activehead");
+        } else {
+            //remove the background property so it comes transparent again (defined in your css)
+            $("header").removeClass("activehead");
+        }
+    });
+
 function In_headerFunction() {
-var element = $("header");
-element.toggleClass("activeheadmenu2");
+    var element = $("header");
+    element.toggleClass("activeheadmenu2");
 }
+
 function In_ShowPosInfo() {
-$(".short-adv-sett").fadeIn(100);
-$(".main-index-top #main-form .main-options").slideDown(100);
+    $(".short-adv-sett").fadeIn(100);
+    $(".main-index-top #main-form .main-options").slideDown(100);
 }
 //Custom Link Modal
 var $modallink = $('.link-shared'),
-$overlaylink = $('.overlaylink'),
-$showModallink = $('.show-modal'),
-$closelink = $('.closelink');
-function In_ShowLinkModal(){
-e.preventDefault();
-var windowHeight = $(window).height(),
-windowWidth = $(window).width(),
-modalWidth = windowWidth/2; //50% of window
-$overlaylink.show();
-$modallink.css({
-'width' : modalWidth,
-'margin-left' : -modalWidth/2
-});
+    $overlaylink = $('.overlaylink'),
+    $showModallink = $('.show-modal'),
+    $closelink = $('.closelink');
+
+function In_ShowLinkModal() {
+    e.preventDefault();
+    var windowHeight = $(window).height(),
+        windowWidth = $(window).width(),
+        modalWidth = windowWidth / 2; //50% of window
+    $overlaylink.show();
+    $modallink.css({
+        'width': modalWidth,
+        'margin-left': -modalWidth / 2
+    });
 }
-$closelink.on('click', function(){
-$overlaylink.hide();
+$closelink.on('click', function() {
+    $overlaylink.hide();
 });
+
+function copyToClipboard(element) {
+  var $temp = $("<input>");
+  $("body").append($temp);
+  $temp.val($(element).text()).select();
+  document.execCommand("copy");
+  $temp.remove();
+}
+
 //Sidebar Menu
-$(document).on('click','.quicklinks-toggle__btn',function(){
-$('body').addClass('menu_active');
+$(document).on('click', '.quicklinks-toggle__btn', function() {
+    $('body').addClass('menu_active');
 });
-$('#focus-overlay').on('click',function (){
-$('body').removeClass('menu_active');
-});
-$(document).ready(function(){
-$("#widget_news h3").append(" <i class='zmdi zmdi-info' style='color: #00BCD4;'></i>");
-$("#widget_activities h3").append(" <i class='zmdi zmdi-swap-vertical-circle' style='color: #ff9800;'></i>");
-$("#widget_top_urls h3").append(" <i class='zmdi zmdi-trending-up' style='color: #4caf50;'></i>");
-$("#splash h3, #splash_create h3").append(" <i class='zmdi zmdi-info' style='color: #673ab7;'></i>");
-$("#overlay h3").append(" <i class='zmdi zmdi-info' style='color: #4CAF50;'></i>");
-$("#widget_tools h3").append(" <i class='zmdi zmdi-wrench' style='color: #9c27b0;'></i>");
-$("#widget_export h3").append(" <i class='zmdi zmdi-hourglass-alt' style='color: #4CAF50;'></i>");
+$('#focus-overlay').on('click', function() {
+    $('body').removeClass('menu_active');
 });
 //Smooth Scroll
-$('a[href*="#"]').not('[href="#"]').not('[href="#0"]').click(function(t){if(location.pathname.replace(/^\//,"")==this.pathname.replace(/^\//,"")&&location.hostname==this.hostname){var e=$(this.hash);(e=e.length?e:$("[name="+this.hash.slice(1)+"]")).length&&(t.preventDefault(),$("html, body").animate({scrollTop:e.offset().top},1e3,function(){var t=$(e);if(t.focus(),t.is(":focus"))return!1;t.attr("tabindex","-1"),t.focus()}))}})
+$('a[href*="#"]').not('[href="#"]').not('[href="#0"]').click(function(t) {
+    if (location.pathname.replace(/^\//, "") == this.pathname.replace(/^\//, "") && location.hostname == this.hostname) {
+        var e = $(this.hash);
+        (e = e.length ? e : $("[name=" + this.hash.slice(1) + "]")).length && (t.preventDefault(), $("html, body").animate({
+            scrollTop: e.offset().top
+        }, 1e3, function() {
+            var t = $(e);
+            if (t.focus(), t.is(":focus")) return !1;
+            t.attr("tabindex", "-1"), t.focus()
+        }))
+    }
+})
+</script>
 {%endblock%}

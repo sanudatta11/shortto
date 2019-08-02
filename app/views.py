@@ -6,9 +6,7 @@ import random
 import datetime
 import hashlib
 from flask import json,flash
-from flask import render_template, flash, redirect, request,session, make_response
-from flask import send_from_directory
-from flask import url_for
+from flask import render_template, flash, redirect, request,session, make_response, current_app, send_from_directory, url_for
 from werkzeug.security import safe_str_cmp
 from flask_bcrypt import generate_password_hash,check_password_hash
 
@@ -17,6 +15,8 @@ from app.models import Links, User, Announcement, Bundle
 from config import BCRYPT_LOG_ROUNDS,Auth,blacklist
 
 from flask_login import current_user, login_user, login_required, logout_user
+from functools import wraps
+from werkzeug.datastructures import MultiDict
 
 # Google Auth
 import functools
@@ -50,6 +50,20 @@ def user_loader(user_id):
 def unauthorized():
     flash(u'Login Expired! Try Again','error')
     return redirect(url_for('login'))
+
+def login_required_save_post(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if current_app.login_manager._login_disabled or current_user.is_authenticated:
+            # auth disabled or already logged in
+            return f(*args, **kwargs)
+
+        # store data before handling login
+        session['form_data'] = request.form.to_dict(flat=False)
+        session['form_path'] = request.path
+        return current_app.login_manager.unauthorized()
+
+    return decorated
 
 def recaptcha_validate(g_captcha_response,remoteip):
     returnObj = {}
@@ -129,14 +143,12 @@ def index():
 @login_required
 def dashboard():
     announcement_to_publish = Announcement.query.filter(Announcement.end_date>datetime.datetime.utcnow()).order_by(Announcement.id.desc()).first()
-    if(announcement_to_publish):
-        return render_template('dashboard.html',announcement=announcement_to_publish)
-    else:
-        return render_template('dashboard.html' )
+    user_links = Links.query.filter_by(user=current_user).all()
+    return render_template('dashboard.html',announcement=announcement_to_publish,user_links=user_links,current_date = datetime.datetime.now())
 
 @app.route('/dashboard/shorten',methods=['POST'])
 @app.route('/dashboard/shorten/',methods=['POST'])
-@login_required
+@login_required_save_post
 def dashboardShorten():
     try:
         if request.method == 'POST':
