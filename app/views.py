@@ -49,7 +49,7 @@ def user_loader(user_id):
 @login_manager.unauthorized_handler
 def unauthorized():
     flash(u'Login Expired! Try Again','error')
-    return redirect(url_for('login'))
+    return redirect(url_for('login',next=request.endpoint))
 
 def login_required_save_post(f):
     @wraps(f)
@@ -64,6 +64,15 @@ def login_required_save_post(f):
         return current_app.login_manager.unauthorized()
 
     return decorated
+
+def redirect_dest(fallback):
+    dest = request.args.get('next')
+    try:
+        dest_url = url_for(dest)
+    except:
+        return redirect(fallback)
+    return redirect(dest_url)
+
 
 def recaptcha_validate(g_captcha_response,remoteip):
     returnObj = {}
@@ -264,8 +273,10 @@ def profile():
 
 @app.route('/bundles', methods=['GET'])
 @app.route('/bundles/', methods=['GET'])
+@login_required_save_post
 def bundle():
     return render_template('bundle.html')
+
 
 @app.route('/self/terms', methods=['GET'])
 @app.route('/self/terms/', methods=['GET'])
@@ -281,7 +292,7 @@ def policy():
 @app.route('/login/', methods=['GET','POST'])
 def login():
     if current_user.is_authenticated:
-      return redirect(url_for('dashboard'))
+      return redirect_dest(fallback=url_for('dashboard'))
     elif request.method == "POST":
         g_captcha_response = request.form['g-captcha-client-key']
         resp = recaptcha_validate(g_captcha_response,request.remote_addr)
@@ -300,7 +311,7 @@ def login():
                 #All cool
                 flash(u'You have been successfully logged in.','success')
                 login_user(user)
-                return redirect(url_for('dashboard'))
+                return redirect_dest(fallback=url_for('dashboard'))
             else:
                 flash(u'Email or Password Incorrect!','error')
                 return redirect(url_for('login'))

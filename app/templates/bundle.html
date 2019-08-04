@@ -34,7 +34,34 @@
         </div>
     </header>
 {% endblock %}
+
+{% block customcss %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
+{% endblock %}
+
 {% block body %}
+    <div id="bundle_modal" class="modal">
+        <div class="title"><h4>Create Bundle</h4><a class="close-modal" href="#"><i class="zmdi zmdi-close"></i></a>
+        </div>
+        <p style="display: block;">
+        <form class="form" action="http://www.bigto.in/user/bundles/add" method="post">
+            <div class="form-group">
+                <label>Bundle Name (required)</label>
+                <input name="name" class="form-control" type="text" value="" autocomplete="off" required>
+            </div>
+            <ul class="form_opt" data-id="access">
+                <li class="text-label">Bundle Access
+                    <small>If its set to private, only you can access the URLs and share it.</small>
+                </li>
+                <li><a class="last current" href="" data-value="private">Private</a></li>
+{#                <li><a class="first" href="" data-value="public">Public</a></li>#}
+            </ul>
+            <input name="access" id="access" type="hidden" value="private">
+
+            <input name="token" type="hidden" value="b31b645850317744a240caac94458fa19f955d90">
+            <button class="btn btn-primary" type="submit">Create Bundle</button>
+        </form>
+    </div>
     <section class="under-head-cont">
         <div class="container-fluid">
             <div class="row">
@@ -68,7 +95,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="#/user/bundles">
+                                <a href="{{ url_for('bundle') }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                                         <path fill="currentColor"
                                               d="M12,16L19.36,10.27L21,9L12,2L3,9L4.63,10.27M12,18.54L4.62,12.81L3,14.07L12,21.07L21,14.07L19.37,12.8L12,18.54Z"/>
@@ -167,8 +194,8 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <h3 class="bundleh3">Manage your bundles
-                                    <a href="" class="btn mdbtn btn-primary ajax_call pull-right"
-                                       data-action="bundle_create" data-title="Create Bundle">Create Bundle</a></h3>
+                                    <a href="#bundle_modal" rel="modal:open" class="btn mdbtn btn-primary ajax_call pull-right"
+                                       data-action="bundle_create" data-title="Create Bundle" id="create_bundle">Create Bundle</a></h3>
                             </div>
                             <div class="main-content col-md-5 url-bundle no-padding-right">
                                 <div class="panel panel-default panel-body">
@@ -216,10 +243,11 @@
                                 <div class="panel panel-default panel-body">
                                     <div id="data-container">
                                         <div class="btn-group btn-group-sm pull-right">
-                                            <a href="#" class="btn" id="selectall"><i class="zmdi zmdi-check-all"></i>Select
+                                            <a href="#" class="btn" id="selectall">
+                                                <i class="zmdi zmdi-check-all"></i>&nbsp; &nbsp;Select
                                                 All</a>
-                                            <a href="#" class="btn btn-outline-danger" id="deleteall"><i
-                                                    class="zmdi zmdi-delete"></i>Delete All</a>
+                                            <a href="#" class="btn btn-outline-danger" id="deleteall">
+                                                <i class="zmdi zmdi-delete"></i>&nbsp; &nbsp;Delete All</a>
                                         </div>
                                         <form action="#/user/delete" method="post"
                                               id="delete-all-urls">
@@ -281,3 +309,12 @@
     </section>
 {% endblock %}
 
+
+{% block customjs %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+    <script type="text/javascript">
+        $('#create_bundle').click(function () {
+           $('#add_here').append()
+        });
+    </script>
+{% endblock %}

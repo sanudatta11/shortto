@@ -87,7 +87,7 @@ button ~ button {
                     </div>
                   {% endif %}
                 {% endwith %}
-               <form role="form" class="live_form form" id="login_form" method="post" action={{url_for('login')}}>
+               <form role="form" class="live_form form" id="login_form" method="post" action={{url_for('login',next=request.args.get('next'))}}>
                   <b><p class="title">Login</p></b>
                   <div class="form-group">
                      <input type="text" class="form-control" id="email" placeholder="Email or username" name="email" autocomplete="off" autofocus required>
