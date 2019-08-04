@@ -66,8 +66,8 @@
                </div>
                <div class="navbar-collapse collapse">
                   <ul class="nav navbar-nav navbar-right">
-                     <li><a href="/login">Login</a></li>
-                     <li><a href="/register" class="active">Get Started</a></li>
+                     <li><a href="{{ url_for('login') }}">Login</a></li>
+                     <li><a href="{{ url_for('register') }}" class="active">Get Started</a></li>
                   </ul>
                </div>
             </div>
@@ -78,10 +78,9 @@
       
       {% block body %}
       {% endblock %}
-      
+
      {% if self.footer() | trim %}
-         {% block footer %}
-         {% endblock %}
+
      {% else %}
          <footer class="main nousrfoot">
             <div class="container">
@@ -95,9 +94,9 @@
                      <a href='#' title='Developer'>Developer</a>
                      <a href='#' title='Contact'>Contact</a>
                      <div class="languages">
-                        <a href="#lang" class="active" id="show-language"><i class="zmdi zmdi-globe"></i> Language</a>
+                        <a class="active" id="show-language"><i class="zmdi zmdi-globe"></i> Language</a>
                         <div class="langs">
-                           <a href='#'>English</a> 
+                           <a href='#'>English</a>
                         </div>
                      </div>
                   </div>
@@ -115,14 +114,15 @@
       <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.1/icheck.min.js?v=1.0.1"></script>
       <script type="text/javascript"
          src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.15/clipboard.min.js?v=1.5.15"></script>    
-      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/pace/0.4.17/pace.js?v=0.4.17"></script>
-      {% block customjs %}
-      {% endblock %}
-      <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pace/0.4.17/pace.js?v=0.4.17"></script>
+      <script type="text/javascript" src="https://cdn.shortto.com/js/bootstrap.min.js"></script>
       <script type="text/javascript" src="https://cdn.shortto.com/js/snackbar.min.js"></script>
       <script type="text/javascript" src="https://cdn.shortto.com/js/application.fn.js"></script>
       <script type="text/javascript" src="https://cdn.shortto.com/js/application.js"></script>
       <script type="text/javascript" src="https://cdn.shortto.com/js/main.js"></script>
+
+      {% block customjs %}
+      {% endblock %}
       <!-- Custom Scripts -->
       <!-- <script type="application/javascript" src="https://cdn.shortto.com/js/server.js"></script> -->
       <script src="https://www.google.com/recaptcha/api.js?render=6LdMyawUAAAAAL5rvA7qwC-5F2MfrXy0G2GwgWXU"></script>

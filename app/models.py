@@ -18,6 +18,8 @@ class Links(db.Model):
     expiration = db.Column(db.Boolean,default=False)
     expiration_date = db.Column(db.DateTime)
 
+    archieved = db.Column(db.Boolean,default=False)
+
     def show_url(self):
         return app.config['BASE_URL'] + self.short_url + '/'
 
@@ -29,7 +31,9 @@ class Links(db.Model):
 class User(UserMixin,db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), index=True,unique=True, nullable=False)
-    
+
+    username = db.Column(db.String(50), index=True,unique=True)
+
     firstName = db.Column(db.String(130))
     lastName = db.Column(db.String(130))
 

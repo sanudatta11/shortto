@@ -23,9 +23,9 @@ ShortTo - Account Settings
             </div>
             <div class="navbar-collapse collapse">
                <ul class="nav navbar-nav navbar-right">
-                  <li><a href="#/pricing" class="active">Support</a></li>
-                  <li><a href='#/user'>My Account</a></li>
-                  <li><a href="#/user/logout">Logout</a></li>
+                  <li><a href="" class="active">Support</a></li>
+                  <li><a href='{{ url_for('profile') }}'>My Account</a></li>
+                  <li><a href="{{ url_for('logout') }}">Logout</a></li>
                </ul>
             </div>
          </div>
@@ -41,7 +41,7 @@ ShortTo - Account Settings
             <div id="offnavmenu">
                <ul class="nav nav-sidebar nav-sidebarz">
                   <li>
-                     <a href="#/user">
+                     <a href="{{ url_for('dashboard') }}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                            <path fill="currentColor" d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z" />
                         </svg>
@@ -132,7 +132,8 @@ ShortTo - Account Settings
                   </li>
                   <hr>
                </ul>
-               <h3>Membership					<span class="label label-primary pull-right">Starter</span>            	
+               <h3>Membership
+                <span class="label label-primary pull-right">Starter</span>
                </h3>
                <div class="side-stats side-statz">
                   <div>
@@ -153,30 +154,60 @@ ShortTo - Account Settings
          <div class="col-md-10 content">
             <div class="row">
                <div id="user-content" class="col-md-8 no-padding-right">
-                  <div class='alert alert-success no-round'>Account has been successfully updated.</div>
+
+                   {% with messages = get_flashed_messages(category_filter=["success"]) %}
+                  {% if messages %}
+                  <div class="alert alert-success no-round" style="color: white">
+                     {% for message in messages %}
+                     <span>{{ message }}</span>
+                     {% endfor %}
+                  </div>
+                  {% endif %}
+                  {% endwith %}
+                  {% with messages = get_flashed_messages(category_filter=["warning"]) %}
+                  {% if messages %}
+                  <div class="alert alert-warning no-round" style="color: white">
+                     {% for message in messages %}
+                     <span>{{ message }}</span>
+                     {% endfor %}
+                  </div>
+                  {% endif %}
+                  {% endwith %}
+                   {% with messages = get_flashed_messages(category_filter=["error"]) %}
+                  {% if messages %}
+                  <div class="alert alert-danger no-round" style="color: white">
+                     {% for message in messages %}
+                     <span>{{ message }}</span>
+                     {% endfor %}
+                  </div>
+                  {% endif %}
+                  {% endwith %}
+
                   <div class="main-content panel panel-default panel-body">
                      <h3>Account Settings</h3>
                      <form action="#/user/settings" role="form" class="form-horizontal" method="post">
                         <div class="setting-panel row">
                            <div class="avatar-holder row">
-                              <img src="http://www.gravatar.com/avatar/aa84c01c43407c4dbcc11e8145d866c0?s=150" alt="abcdabcd's Avatar" class="avatar pull-left">
+                              <img src="{{ current_user.picture or 'https://cdn.shortto.com/img/default-profile-cat.png' }}" alt="{{ current_user.firstName }}'s Avatar" class="avatar pull-left">
                               <div class="infoz pull-left">
-                                 <strong title="abcdabcd">abcdabcd</strong>
-                                 <a href="https://gravatar.com/" target="_blank" class="chavatlink">
-                                 Change Avatar								</a>
+                                 <strong title="{{ current_user.firstName }}">{{ current_user.firstName }} {{ current_user.lastName }}</strong>
+                                 <a target="_blank" class="chavatlink">
+                                    Change Avatar
+                                 </a>
                               </div>
                            </div>
                            <hr>
                            <div class="form-group col-lg-6">
                               <label class="col-md-12 control-label">Email</label>			
                               <div class="col-md-12">
-                                 <input type="text" value="abcdabcd@gmail.com" name="email" class="form-control" />
+                                 <input type="text" value="{{ current_user.email }}" name="email" class="form-control" disabled/>
                               </div>
                            </div>
                            <div class="form-group col-lg-6">
                               <label class="col-md-12 control-label">Username</label>			
                               <div class="col-md-12">
-                                 <input type="text" value="abcdabcd" name="username" class="form-control" disabled/>
+                                  {% set endT = "- Google User" %}
+                                 <input type="text" value="{{ current_user.username or (current_user.email.split("@")[0] + endT) }}" name="username" class="form-control" disabled/>
                                  <p class="help-block">A username is required for your public profile to be visible.</p>
                               </div>
                            </div>
@@ -187,33 +218,34 @@ ShortTo - Account Settings
                            <div class="form-group col-lg-6">
                               <label class="col-md-12 control-label">Password</label>
                               <div class="col-md-12">
-                                 <input type="password" value="" name="password" class="form-control" />
+                                 <input type="password" value="" name="password" class="form-control" required/>
                                  <p class="help-block">Leave blank to keep current one.</p>
                               </div>
                            </div>
                            <div class="form-group col-lg-6">
                               <label class="col-md-12 control-label">Confirm Password</label>
                               <div class="col-md-12">
-                                 <input type="password" value="" name="cpassword" class="form-control" />
+                                 <input type="password" value="" name="cpassword" class="form-control" required/>
                                  <p class="help-block">Leave blank to keep current one.</p>
                               </div>
                            </div>
                         </div>
                         <div class="setting-panel">
                            <ul class="form_opt" data-id="public">
-                              <li class="text-label">Profile Access							<small>Public profile will be activated only when this option is public. Username is required.</small>
+                              <li class="text-label">Profile Access - Work in Progress
+                                  <small>Public profile will be activated only when this option is public. Username is required.</small>
                               </li>
-                              <li><a href="" class="last" data-value="0">Private</a></li>
-                              <li><a href="" class="first current" data-value="1">Public</a></li>
+                              <li><a href="" class="last current" data-value="0">Private</a></li>
+{#                              <li><a href="" class="first current" data-value="1">Public</a></li>#}
                            </ul>
                            <input type="hidden" name="public" id="public" value="1">
                            <ul class="form_opt" data-id="media">
-                              <li class="text-label">Media Gateway							<small>If enabled, special pages will be automatically created for your media URLs (e.g. youtube, vimeo, dailymotion...)</small>
+                              <li class="text-label">Media Gateway - Work in Progress
+                                  <small>If enabled, special pages will be automatically created for your media URLs (e.g. youtube, vimeo, dailymotion...)</small>
                               </li>
                               <li><a href="" class="last current" data-value="0">Disabled</a></li>
-                              <li><a href="" class="first" data-value="1">Enabled</a></li>
+{#                              <li><a href="" class="first" data-value="1">Enabled</a></li>#}
                            </ul>
-                           <input type="hidden" name="media" id="media" value="0">
                         </div>
                         <input type='hidden' name='token' value='e6e6ae773eb8834effef49d777cf04711fb25620' />				
                         <div class="text-center"><button type="submit" class="btn btn-primary setting-panel-mdbtn"><i class="zmdi zmdi-check-circle"></i> Update</button></div>
@@ -251,22 +283,23 @@ ShortTo - Account Settings
             <footer class="main nousrfoot" style="margin: 0px -15px;padding: 55px 20px 80px;">
                <div class="row">
                   <div class="col-md-5">
-                     2019 &copy; Infinity - Premium URL Shortener Theme.
+                     2019 &copy; ShortTo - Making Links Smarter.
                   </div>
                   <div class="col-md-7 text-right">
-                     <a href='#/page/terms' title='Terms and Conditions'>Terms and Conditions</a>
-                     <a href='#/page/developer' title='Developer'>Developer</a>
-                     <a href='#/contact' title='Contact'>Contact</a> 
+                     <a href='/self/terms' title='Terms and Conditions'>Terms and Conditions</a>
+                     <a href='/self/policy' title='Developer'>GDPR Policy</a>
+                     <a href='#' title='Developer'>Developer</a>
+                     <a href='#' title='Contact'>Contact</a>
                      <div class="languages">
-                        <a href="#lang" class="active" id="show-language"><i class="zmdi zmdi-globe"></i> Language</a>
+                        <a class="active" id="show-language"><i class="zmdi zmdi-globe"></i> Language</a>
                         <div class="langs">
-                           <a href='?lang=en'>English</a>                      
+                           <a href='#'>English</a>
                         </div>
                      </div>
                   </div>
                </div>
             </footer>
-            {% endblock footer %}
+            {% endblock %}
          </div>
          <!--/.content-->
       </div>

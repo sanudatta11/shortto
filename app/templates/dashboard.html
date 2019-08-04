@@ -24,7 +24,7 @@ ShortTo - Dashboard
             <div class="navbar-collapse collapse">
                <ul class="nav navbar-nav navbar-right">
                   <li><a href="#/pricing" class="active">Support</a></li>
-                  <li><a href='#/user'>My Account</a></li>
+                  <li><a href='{{ url_for('profile') }}'>My Account</a></li>
                   <li><a href={{ url_for('logout') }}>Logout</a></li>
                </ul>
             </div>
@@ -41,7 +41,7 @@ ShortTo - Dashboard
             <div id="offnavmenu">
                <ul class="nav nav-sidebar nav-sidebarz">
                   <li>
-                     <a href="#/user">
+                     <a href="{{ url_for('dashboard') }}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                            <path fill="currentColor" d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z" />
                         </svg>
@@ -222,9 +222,9 @@ ShortTo - Dashboard
                         <div class="main-options clearfix" style="min-height:34px;position:relative;">
                            <select name="type" class="form-control">
                               <optgroup label="Redirection">
-                                 <option value="direct">Direct</option>
-                                 <option value="frame">Frame</option>
-                                 <option value="splash">Splash</option>
+                                 <option value="direct" selected>Direct</option>
+{#                                 <option value="frame">Frame</option>#}
+{#                                 <option value="splash">Splash</option>#}
                               </optgroup>
                            </select>
                            <ul class="form_opt short-multi-option" data-id="multiple-form" data-callback="form_switch">
@@ -348,7 +348,7 @@ ShortTo - Dashboard
                                        </td>
                                        <td class="hidden-xs">
                                           <h3 class="title">
-                                             <img alt="Favicon" src="https://cdn.shortto.com/img/st-favicon.ico">
+                                             <img alt="Favicon" src="https://www.google.com/s2/favicons?domain={{ each_link.big_url }}">
                                               {% if each_link.big_url|length>50 %}
                                                 <a href="" target="_blank">{{ each_link.big_url[:50] }}....</a>
                                               {% else %}
@@ -401,8 +401,10 @@ ShortTo - Dashboard
                                                    <a class="ajax_call" href="#archive" data-id="37450" data-class="return-ajax" data-action="archive">Archive</a>
                                                 </li>
                                                 <li>
-                                                   <a class="u_share" href="https://www.facebook.com/sharer.php?u=">Share on Facebook</a>
-                                                   <a class="u_share" href="https://twitter.com/share?url=&amp;text=Check+out+this+url">Share on Twitter</a>
+                                                   <a class="ajax_call" href="#facebook" data-id="37450" data-class="return-ajax">Share on Facebook</a>
+                                                </li>
+                                                <li>
+                                                   <a class="ajax_call" href="#twitter" data-id="37450" data-class="return-ajax">Share on Twitter</a>
                                                 </li>
                                              </ul>
                                           </div>
@@ -427,6 +429,8 @@ ShortTo - Dashboard
                      <h3>Announcement</h3>
                       {% if announcement %}
                         {{announcement.text}}
+                      {% else %}
+                          <p class='center'>No Announcement found...</p>
                       {% endif %}
                   </div>
                   <div class='panel panel-dark panel-body' id='widget_countries'>
@@ -438,7 +442,20 @@ ShortTo - Dashboard
                   </div>
                   <div class='panel panel-default panel-body' id='widget_top_urls'>
                      <h3>Top URLs</h3>
-                     <p class='center'>No URLs found...</p>
+                      {% if top_urls %}
+                          <ul>
+                            {% for url in top_urls %}
+                                <li>
+                                  <a href="" target="_blank">&nbsp;<img alt="favicon" src="https://www.google.com/s2/favicons?domain={{ url.big_url }}">
+                                  {{ url.big_url[:30] }}{% if url.big_url | length > 30 %}...{% endif %}
+                                  </a> -
+                                  <strong>{{ url.clicks }} Click</strong>
+        		                </li>
+                            {% endfor %}
+                          </ul>
+                      {% else %}
+                          <p class='center'>No URLs found...</p>
+                      {% endif %}
                   </div>
                </div>
                <!--/#widgets-->
@@ -475,10 +492,10 @@ ShortTo - Dashboard
         "cookiemore": "Learn more"
     };
 </script>
-<script type = "text/javascript" src = "http://cdn.shortto.com/js/jvector.js"> </script>
-<script type = "text/javascript" src = "http://cdn.shortto.com/js/jvector.world.js"></script>
+<script src="http://cdn.shortto.com/js/jvector.js"></script>
+<script type="text/javascript" src="http://cdn.shortto.com/js/jvector.world.js"></script>
 <script type = 'text/javascript'>
-    var data = [];
+var data = [];
 $('#country-map').vectorMap({
     map: 'world_mill_en',
     backgroundColor: 'transparent',

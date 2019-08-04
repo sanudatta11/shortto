@@ -144,13 +144,14 @@ def index():
 def dashboard():
     announcement_to_publish = Announcement.query.filter(Announcement.end_date>datetime.datetime.utcnow()).order_by(Announcement.id.desc()).first()
     sort_method = request.args.get('sort')
+    top_urls = user_links = Links.query.filter_by(user=current_user).order_by(Links.clicks.desc()).all()
     if sort_method == "newest":
         user_links = Links.query.filter_by(user=current_user).order_by(Links.created_at.desc()).all()
     elif sort_method == "popular":
-        user_links = Links.query.filter_by(user=current_user).order_by(Links.clicks.desc()).all()
+        user_links = top_urls
     else:
         user_links = Links.query.filter_by(user=current_user).all()
-    return render_template('dashboard.html',announcement=announcement_to_publish,user_links=user_links,current_date = datetime.datetime.now())
+    return render_template('dashboard.html',announcement=announcement_to_publish,user_links=user_links,current_date = datetime.datetime.now(),top_urls=top_urls)
 
 @app.route('/dashboard/shorten',methods=['POST'])
 @app.route('/dashboard/shorten/',methods=['POST'])
@@ -234,10 +235,32 @@ def dashboardShorten():
         flash(u'Something Went Wrong! Please try again!', 'error')
         return redirect(url_for('login'))
 
-@app.route('/profile',methods=['GET'])
-@app.route('/profile/',methods=['GET'])
+@app.route('/profile',methods=['GET','POST'])
+@app.route('/profile/',methods=['GET','POST'])
+@login_required_save_post
 def profile():
-    return render_template('profile.html')
+    if not current_user.is_authenticated:
+        flash(u'Login Expired! Try Again', 'error')
+        return redirect(url_for('login'),current_user=current_user)
+    if request.method == "POST":
+        password = request.form['password']
+        cpassword = request.form['cpassword']
+        if current_user.google_login:
+            flash(u"Google SignIn Users cannot change password!", "error")
+        elif not password or not cpassword:
+            flash(u"Password not Provided!","error")
+        elif password != cpassword:
+            flash(u"Passwords donot match!","error")
+        elif len(password) < 5:
+            flash(u"Password length less than 5 characters!", "warning")
+        else:
+            passh = generate_password_hash(password, BCRYPT_LOG_ROUNDS)
+            current_user.password_hash = passh
+            db.session.commit()
+            flash(u'Password updated successfully!','success')
+        return redirect(url_for("profile"))
+    else:
+        return render_template('profile.html')
 
 @app.route('/self/terms', methods=['GET'])
 @app.route('/self/terms/', methods=['GET'])
@@ -285,6 +308,8 @@ def login():
 @login_required
 def logout():
     logout_user()
+    session.pop(AUTH_TOKEN_KEY, None)
+    session.pop(AUTH_STATE_KEY, None)
     return redirect(url_for('index'))
 
 @app.route('/register', methods=['GET','POST'])
@@ -293,31 +318,43 @@ def register():
     if request.method == "POST":
         firstName = request.form['firstName']
         lastName = request.form['lastName']
+        username = request.form['username']
         email = request.form['email']
         passw = request.form['password']
         cpassw = request.form['cpassword']
         
         error = []
-        if(not firstName):
+        if not firstName:
             error = True
             flash(u"First Name not Provided!","error")
-        if(not lastName):
+        if not lastName:
             error = True
             flash(u"Last Name not Provided!","error")
-        if(not email):
+        if not username:
+            error = True
+            flash(u"Username not Provided!","error")
+        if not email:
             error = True
             flash(u"Email not Provided!","error")
-        if(not passw or not cpassw):
+        if not passw or not cpassw:
             error = True
             flash(u"Password not Provided!","error")
-        if(passw != cpassw):
+        if passw != cpassw:
             error = True
             flash(u"Passwords donot match!","error")
-        if(error):
+        if len(passw) < 5:
+            error = True
+            flash(u"Password length less than 5!", "warning")
+        if User.query.filter_by(username=username).count() > 0:
+            error = True
+            flash(u"Username is taken!", "warning")
+        if User.query.filter_by(email=email).count() > 0:
+            error = True
+            flash(u"Email is already registered!", "error")
+        if error:
             return redirect(url_for("register"))
-        
         passh = generate_password_hash(passw, BCRYPT_LOG_ROUNDS)
-        register = User(firstName = firstName,lastName = lastName, email = email, password_hash = passh)
+        register = User(firstName = firstName,lastName = lastName, email = email, password_hash = passh,username=username)
         db.session.add(register)
         db.session.commit()
         flash(u'You were successfully registered', 'success')
@@ -396,7 +433,6 @@ def google_auth_redirect():
 def googleLogout():
     session.pop(AUTH_TOKEN_KEY, None)
     session.pop(AUTH_STATE_KEY, None)
-
     return redirect(BASE_URI, code=302)
 
 

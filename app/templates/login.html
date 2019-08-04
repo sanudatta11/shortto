@@ -69,7 +69,15 @@ button ~ button {
                     </div>
                   {% endif %}
                 {% endwith %}
-
+                {% with messages = get_flashed_messages(category_filter=["warning"]) %}
+                  {% if messages %}
+                  <div class="alert alert-warning no-round" style="color: white">
+                     {% for message in messages %}
+                     <span>{{ message }}</span>
+                     {% endfor %}
+                  </div>
+                  {% endif %}
+                {% endwith %}
                 {% with messages = get_flashed_messages(category_filter=["error"]) %}
                   {% if messages %}
                     <div class="alert alert-danger no-round">
