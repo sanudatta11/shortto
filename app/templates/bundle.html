@@ -1,6 +1,6 @@
 {% extends "new-ui.html" %}
 {% block title %}
-    ShortTo - Account Settings
+    Manage your Bundles - ShortTo
 {% endblock %}
 {% block navbar %}
     <header class="app activeheadmenu">
@@ -24,9 +24,9 @@
                     </div>
                     <div class="navbar-collapse collapse">
                         <ul class="nav navbar-nav navbar-right">
-                            <li><a href="" class="active">Support</a></li>
+                            <li><a href="#/pricing" class="active">Support</a></li>
                             <li><a href='{{ url_for('profile') }}'>My Account</a></li>
-                            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                            <li><a href={{ url_for('logout') }}>Logout</a></li>
                         </ul>
                     </div>
                 </div>
@@ -143,15 +143,14 @@
                             </li>
                             <hr>
                         </ul>
-                        <h3>Membership
-                            <span class="label label-primary pull-right">Starter</span>
+                        <h3>Membership <span class="label label-primary pull-right">Starter</span>
                         </h3>
                         <div class="side-stats side-statz">
                             <div>
-                                <p><i class="zmdi zmdi-link"></i> <span>2</span> <br>URLs</p>
+                                <p><i class="zmdi zmdi-link"></i> <span>0</span> <br>URLs</p>
                             </div>
                             <div>
-                                <p><i class="zmdi zmdi-mouse"></i> <span>5</span> <br>Clicks</p>
+                                <p><i class="zmdi zmdi-mouse"></i> <span>0</span> <br>Clicks</p>
                             </div>
                             <div>
                                 <p><i class="zmdi zmdi-layers"></i> <span>1</span> <br>Bundles</p>
@@ -163,149 +162,97 @@
                     </div>
                 </div>
                 <div class="col-md-10 content">
-                    <div class="row">
-                        <div id="user-content" class="col-md-8 no-padding-right">
+                    <div id="user-content">
 
-                            {% with messages = get_flashed_messages(category_filter=["success"]) %}
-                                {% if messages %}
-                                    <div class="alert alert-success no-round" style="color: white">
-                                        {% for message in messages %}
-                                            <span>{{ message }}</span>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                            {% endwith %}
-                            {% with messages = get_flashed_messages(category_filter=["warning"]) %}
-                                {% if messages %}
-                                    <div class="alert alert-warning no-round" style="color: white">
-                                        {% for message in messages %}
-                                            <span>{{ message }}</span>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                            {% endwith %}
-                            {% with messages = get_flashed_messages(category_filter=["error"]) %}
-                                {% if messages %}
-                                    <div class="alert alert-danger no-round" style="color: white">
-                                        {% for message in messages %}
-                                            <span>{{ message }}</span>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                            {% endwith %}
-
-                            <div class="main-content panel panel-default panel-body">
-                                <h3>Account Settings</h3>
-                                <form action="{{ url_for('profile') }}" role="form" class="form-horizontal"
-                                      method="post">
-                                    <div class="setting-panel row">
-                                        <div class="avatar-holder row">
-                                            <img src="{{ current_user.picture or 'https://cdn.shortto.com/img/default-profile-cat.png' }}"
-                                                 alt="{{ current_user.firstName }}'s Avatar" class="avatar pull-left">
-                                            <div class="infoz pull-left">
-                                                <strong title="{{ current_user.firstName }}">{{ current_user.firstName }} {{ current_user.lastName }}</strong>
-                                                <a target="_blank" class="chavatlink">
-                                                    Change Avatar
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <hr>
-                                        <div class="form-group col-lg-6">
-                                            <label class="col-md-12 control-label">Email</label>
-                                            <div class="col-md-12">
-                                                <input type="text" value="{{ current_user.email }}" name="email"
-                                                       class="form-control" disabled/>
-                                            </div>
-                                        </div>
-                                        <div class="form-group col-lg-6">
-                                            <label class="col-md-12 control-label">Username</label>
-                                            <div class="col-md-12">
-                                                {% set endT = "- Google User" %}
-                                                <input type="text"
-                                                       value="{{ current_user.username or (current_user.email.split("@")[0] + endT) }}"
-                                                       name="username" class="form-control" disabled/>
-                                                <p class="help-block">A username is required for your public profile to
-                                                    be visible.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="setting-panel row">
-                                        <h2>Password</h2>
-                                        <hr>
-                                        <div class="form-group col-lg-6">
-                                            <label class="col-md-12 control-label">Password</label>
-                                            <div class="col-md-12">
-                                                <input type="password" value="" name="password" class="form-control"
-                                                       required/>
-                                                <p class="help-block">Leave blank to keep current one.</p>
-                                            </div>
-                                        </div>
-                                        <div class="form-group col-lg-6">
-                                            <label class="col-md-12 control-label">Confirm Password</label>
-                                            <div class="col-md-12">
-                                                <input type="password" value="" name="cpassword" class="form-control"
-                                                       required/>
-                                                <p class="help-block">Leave blank to keep current one.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="setting-panel">
-                                        <ul class="form_opt" data-id="public">
-                                            <li class="text-label">Profile Access - Work in Progress
-                                                <small>Public profile will be activated only when this option is public.
-                                                    Username is required.
-                                                </small>
-                                            </li>
-                                            <li><a href="" class="last current" data-value="0">Private</a></li>
-                                            {#                              <li><a href="" class="first current" data-value="1">Public</a></li>#}
-                                        </ul>
-                                        <input type="hidden" name="public" id="public" value="1">
-                                        <ul class="form_opt" data-id="media">
-                                            <li class="text-label">Media Gateway - Work in Progress
-                                                <small>If enabled, special pages will be automatically created for your
-                                                    media URLs (e.g. youtube, vimeo, dailymotion...)
-                                                </small>
-                                            </li>
-                                            <li><a href="" class="last current" data-value="0">Disabled</a></li>
-                                            {#                              <li><a href="" class="first" data-value="1">Enabled</a></li>#}
-                                        </ul>
-                                    </div>
-                                    <input type='hidden' name='token' value='e6e6ae773eb8834effef49d777cf04711fb25620'/>
-                                    <div class="text-center">
-                                        <button type="submit" class="btn btn-primary setting-panel-mdbtn"><i
-                                                class="zmdi zmdi-check-circle"></i> Update
-                                        </button>
-                                    </div>
-                                </form>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h3 class="bundleh3">Manage your bundles
+                                    <a href="" class="btn mdbtn btn-primary ajax_call pull-right"
+                                       data-action="bundle_create" data-title="Create Bundle">Create Bundle</a></h3>
                             </div>
-                            <div class="main-content panel panel-default panel-body">
-                                <h3>Latest Transactions</h3>
-                                <div class="table-responsive">
-                                    <table class="table table-striped">
-                                        <thead>
-                                        <tr>
-                                            <th>Transaction ID</th>
-                                            <th>Amount</th>
-                                            <th>Date</th>
-                                            <th>Expiration</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody></tbody>
-                                    </table>
+                            <div class="main-content col-md-5 url-bundle no-padding-right">
+                                <div class="panel panel-default panel-body">
+                                    <ul class="list-group bundles">
+                                        <li class="list-group-item">
+                                            <div class="dropdown In_dropdown pull-right">
+                                                <a href="javascript:void(0)" id="bundleLabel" class="cusdropdown-toggle"
+                                                   type="button" data-toggle="dropdown" aria-haspopup="true"
+                                                   aria-expanded="false" title="Options">
+                                                    <i class="zmdi zmdi-more-vert"></i>
+                                                </a>
+                                                <ul class="dropdown-menu dropdown-menu-right cusdropdown-menu"
+                                                    aria-labelledby="bundleLabel">
+                                                    <li>
+                                                        <a href='#edit' class='ajax_call' data-title="Edit Bundle"
+                                                           data-action='bundle_edit' data-id='94'>Edit</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#/user/delete/94?nonce=d2043c0903"
+                                                           class="delete">Delete</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+
+                                            <a href="#" class="ajax_call" data-class="return-ajax" data-id="94"
+                                               data-active="active" data-action="bundle_urls"><h4
+                                                    class="list-group-item-heading">T1</h4></a>
+                                            <p>#/profile/abcdabcd/T1-94 <a href="#"
+                                                                           class="copy inline-copy"
+                                                                           data-value="#/profile/abcdabcd/T1-94">Copy</a>
+                                            </p>
+                                            <p class="list-group-item-text">
+                                                2 Views &nbsp;&nbsp;&bullet;&nbsp;&nbsp;
+                                                0 URLs &nbsp;&nbsp;&bullet;&nbsp;&nbsp;
+                                                Public
+                                                &nbsp;&nbsp;&bullet;&nbsp;&nbsp;
+                                                3 weeks ago </p>
+                                        </li>
+
+                                    </ul>
+
+                                </div>
+                            </div>
+                            <div class="main-content col-md-7">
+                                <div class="panel panel-default panel-body">
+                                    <div id="data-container">
+                                        <div class="btn-group btn-group-sm pull-right">
+                                            <a href="#" class="btn" id="selectall"><i class="zmdi zmdi-check-all"></i>Select
+                                                All</a>
+                                            <a href="#" class="btn btn-outline-danger" id="deleteall"><i
+                                                    class="zmdi zmdi-delete"></i>Delete All</a>
+                                        </div>
+                                        <form action="#/user/delete" method="post"
+                                              id="delete-all-urls">
+                                            <div class="url-container">
+                                                <div>
+                                                    <table id="urls-table"
+                                                           class="table urls-table table-striped table-bordered table-advance table-hover">
+                                                        <thead>
+                                                        <tr>
+                                                            <th></th>
+                                                            <th class="hidden-xs">Link</th>
+                                                            <th>Short link</th>
+                                                            <th>Clicks</th>
+                                                            <th></th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody class="return-ajax">
+                                                        <td></td>
+                                                        <td class="center">Please select a bundle from the left.</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        </tbody>
+                                                    </table>
+                                                </div><!-- /.return-ajax -->
+                                            </div>
+                                            <input type='hidden' name='token'
+                                                   value='b31b645850317744a240caac94458fa19f955d90'/></form>
+                                    </div><!-- /#data-container -->
                                 </div>
                             </div>
                         </div>
-                        <!--/#user-content-->
-                        <div id="widgets" class="col-md-4">
-                            <div class="panel panel-default panel-body" id="widget_export">
-                                <h3>Upgrade to export data</h3>
-                                <p>You can upgrade to export your URLs along with a summary of the stats as CSV.</p>
-                                <a class='btn btn-secondary' href='#/pricing' rel='nofollow'>Upgrade</a>
-                            </div>
-                        </div>
-                        <!--/#widgets-->
                     </div>
-                    <!--/.row-->
                     {% block footer %}
                         <span></span>
                     {% endblock %}
@@ -328,11 +275,9 @@
                             </div>
                         </div>
                     </footer>
-                </div>
-                <!--/.content-->
-            </div>
-            <!--/.row-->
-        </div>
-        <!--/.container-->
+                </div><!--/.content-->
+            </div><!--/.row-->
+        </div><!--/.container-->
     </section>
 {% endblock %}
+

@@ -262,6 +262,11 @@ def profile():
     else:
         return render_template('profile.html')
 
+@app.route('/bundles', methods=['GET'])
+@app.route('/bundles/', methods=['GET'])
+def bundle():
+    return render_template('bundle.html')
+
 @app.route('/self/terms', methods=['GET'])
 @app.route('/self/terms/', methods=['GET'])
 def terms():
