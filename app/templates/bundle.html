@@ -38,6 +38,33 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css"/>
 {% endblock %}
 {% block body %}
+    <div id="bundle_edit_modal" class="modal">
+        <div class="title">
+            <h4>Edit Bundle</h4>
+            <a class="close-modal" href="#">
+                <i class="zmdi zmdi-close"></i>
+            </a>
+        </div>
+        <p style="display: block;">
+            <form class="form" action="" method="post">
+                <div class="form-group">
+                    <label>Bundle Name (required)</label>
+                    <input name="name" class="form-control bundle_edit_modal_text" type="text" value="">
+                </div>
+                <ul class="form_opt" data-id="access">
+                    <li class="text-label">Bundle Access
+                        <small>If you set it to private, only you can access the URLs.</small>
+                    </li>
+                    <li><a class="last current" href="" data-value="private">Private</a></li>
+                    <li><a class="first" href="" data-value="public">Public</a></li>
+                </ul>
+                <input name="access" id="access" type="hidden" value="private">
+                <input name="token" type="hidden" value="95f45fdaa38d8f2d2a488d665f7f064297aeb18f">
+                <input name="id" type="hidden" value="97">
+                <button class="btn btn-primary" type="submit">Update Bundle</button>
+            </form>
+        </p>
+    </div>
     <div id="bundle_modal" class="modal">
         <div class="title">
             <h4>Create Bundle</h4>
@@ -62,6 +89,7 @@
             <input name="token" type="hidden" value="b31b645850317744a240caac94458fa19f955d90">
             <button class="btn btn-primary" type="submit">Create Bundle</button>
         </form>
+        </p>
     </div>
     <section class="under-head-cont">
         <div class="container-fluid">
@@ -216,8 +244,7 @@
                                                     <ul class="dropdown-menu dropdown-menu-right cusdropdown-menu"
                                                         aria-labelledby="bundleLabel">
                                                         <li>
-                                                            <a href='#edit' class='ajax_call' data-title="Edit Bundle"
-                                                               data-action='bundle_edit' data-id='94'>Edit</a>
+                                                            <a href='#bundle_edit_modal' class="bundle_edit_button" rel="modal:open" class='ajax_call' data-bundle-id="{{ bundle.id }}" data-bundle-name="{{ bundle.name }}" data-title="Edit Bundle" data-action='bundle_edit' data-id='94'>Edit</a>
                                                         </li>
                                                         <li>
                                                             <a href="#/user/delete/94?nonce=d2043c0903"
@@ -228,19 +255,17 @@
                                                 <a href="{{ url_for('bundle',bundle=bundle.id) }}" class="ajax_call"
                                                    data-class="return-ajax" data-id="94"
                                                    data-active="active" data-action="bundle_urls">
-                                                    <h4
-                                                            class="list-group-item-heading">{{ bundle.name }}</h4>
+                                                    <h4 class="list-group-item-heading">{{ bundle.name }}</h4>
                                                 </a>
-                                                <p>#/profile/abcdabcd/T1-94 <a href="#"
-                                                                               class="copy inline-copy"
-                                                                               data-value="#/profile/abcdabcd/T1-94">Copy</a>
-                                                </p>
+                                                <br>
                                                 <p class="list-group-item-text">
-                                                    2 Views &nbsp;&nbsp;&bullet;&nbsp;&nbsp;
                                                     {{ bundle.links | length }} URLs &nbsp;&nbsp;&bullet;&nbsp;&nbsp;
-                                                    Private
-                                                    &nbsp;&nbsp;&bullet;&nbsp;&nbsp;
-
+                                                    {% if bundle.created_at %}
+                                                        {% set diff = (current_date - (bundle.created_at) ) %}
+                                                            <span><i class="glyphicon glyphicon-time"></i>&nbsp;{{ diff.days }} days ago</span>
+                                                    {% else %}
+                                                        <span><i class="glyphicon glyphicon-time"></i>&nbsp;Data not present</span>
+                                                    {% endif %}
                                                 </p>
                                             </li>
                                             {% endfor %}
@@ -422,8 +447,10 @@
 {% block customjs %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
     <script type="text/javascript">
-        $('#create_bundle').click(function () {
-            $('#add_here').append()
+        $('.bundle_edit_button').click(function () {
+            let bundleId = $(this).attr('data-bundle-id');
+            let bundleName = $(this).attr('data-bundle-name');
+            $('.bundle_edit_modal_text').attr('value',bundleName);
         });
     </script>
 {% endblock %}

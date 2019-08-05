@@ -280,12 +280,16 @@ def bundle():
         bundle_id = request.args.get('bundle')
         bundle = Bundle.query.filter(Bundle.user == current_user,Bundle.id == bundle_id).first()
         if len(bundle.links):
-            return render_template('bundle.html',bundles=bundle_data,link_bundle=bundle)
+            return render_template('bundle.html',bundles=bundle_data,link_bundle=bundle,current_date = datetime.datetime.now())
         else:
-            print("S")
-            return render_template('bundle.html', bundles=bundle_data, blank_link=True)
-    return render_template('bundle.html', bundles=bundle_data)
+            return render_template('bundle.html', bundles=bundle_data, blank_link=True,current_date = datetime.datetime.now())
+    return render_template('bundle.html', bundles=bundle_data,current_date = datetime.datetime.now())
 
+@app.route('/bundle/add', methods=['POST'])
+@app.route('/bundle/add/', methods=['POST'])
+@login_required_save_post
+def bundle_add():
+        return redirect(url_for('bundle'))
 
 @app.route('/self/terms', methods=['GET'])
 @app.route('/self/terms/', methods=['GET'])
