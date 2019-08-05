@@ -18,6 +18,9 @@ class Links(db.Model):
     def show_url(self):
         return app.config['BASE_URL'] + self.short_url + '/'
 
+    def generate_qr(self):
+        return "https://api.qrserver.com/v1/create-qr-code/?data="+ self.show_url() + "&size=200x200"
+
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     bundle_id = db.Column(db.Integer, db.ForeignKey('bundle.id'))
 

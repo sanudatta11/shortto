@@ -450,7 +450,7 @@
                                                                 <ul class="dropdown-menu dropdown-menu-right cusdropdown-menu"
                                                                     aria-labelledby="urlLabel">
                                                                     <li>
-                                                                        <a href="">Edit</a>
+                                                                        <a href="{{ url_for('link_edit',short_url=each_link.short_url) }}">Edit</a>
                                                                     </li>
                                                                     <li>
                                                                         <a class="delete" href="">Delete</a>
