@@ -55,6 +55,8 @@ class User(UserMixin,db.Model):
 
     links = db.relationship("Links", backref="user", lazy=True)
 
+    bundles = db.relationship("Bundle", backref="user", lazy=True)
+
     announcements = db.relationship('Announcement', backref='user', lazy=True)
 
 class Announcement(db.Model):
@@ -68,5 +70,8 @@ class Bundle(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(500), nullable=False)
     archieved = db.Column(db.Boolean,default=False)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
     links = db.relationship('Links', backref='bundle', lazy=True)
 

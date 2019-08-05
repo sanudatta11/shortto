@@ -275,7 +275,16 @@ def profile():
 @app.route('/bundles/', methods=['GET'])
 @login_required_save_post
 def bundle():
-    return render_template('bundle.html')
+    bundle_data = Bundle.query.filter_by(user=current_user).all()
+    if request.args.get('bundle'):
+        bundle_id = request.args.get('bundle')
+        bundle = Bundle.query.filter(Bundle.user == current_user,Bundle.id == bundle_id).first()
+        if len(bundle.links):
+            return render_template('bundle.html',bundles=bundle_data,link_bundle=bundle)
+        else:
+            print("S")
+            return render_template('bundle.html', bundles=bundle_data, blank_link=True)
+    return render_template('bundle.html', bundles=bundle_data)
 
 
 @app.route('/self/terms', methods=['GET'])

@@ -34,17 +34,17 @@
         </div>
     </header>
 {% endblock %}
-
 {% block customcss %}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css"/>
 {% endblock %}
-
 {% block body %}
     <div id="bundle_modal" class="modal">
-        <div class="title"><h4>Create Bundle</h4><a class="close-modal" href="#"><i class="zmdi zmdi-close"></i></a>
+        <div class="title">
+            <h4>Create Bundle</h4>
+            <a class="close-modal" href="#"><i class="zmdi zmdi-close"></i></a>
         </div>
         <p style="display: block;">
-        <form class="form" action="http://www.bigto.in/user/bundles/add" method="post">
+        <form class="form" action="#/user/bundles/add" method="post">
             <div class="form-group">
                 <label>Bundle Name (required)</label>
                 <input name="name" class="form-control" type="text" value="" autocomplete="off" required>
@@ -54,10 +54,11 @@
                     <small>If its set to private, only you can access the URLs and share it.</small>
                 </li>
                 <li><a class="last current" href="" data-value="private">Private</a></li>
-{#                <li><a class="first" href="" data-value="public">Public</a></li>#}
+                {#
+         <li><a class="first" href="" data-value="public">Public</a></li>
+         #}
             </ul>
             <input name="access" id="access" type="hidden" value="private">
-
             <input name="token" type="hidden" value="b31b645850317744a240caac94458fa19f955d90">
             <button class="btn btn-primary" type="submit">Create Bundle</button>
         </form>
@@ -190,55 +191,62 @@
                 </div>
                 <div class="col-md-10 content">
                     <div id="user-content">
-
                         <div class="row">
                             <div class="col-md-12">
                                 <h3 class="bundleh3">Manage your bundles
-                                    <a href="#bundle_modal" rel="modal:open" class="btn mdbtn btn-primary ajax_call pull-right"
-                                       data-action="bundle_create" data-title="Create Bundle" id="create_bundle">Create Bundle</a></h3>
+                                    <a href="#bundle_modal" rel="modal:open"
+                                       class="btn mdbtn btn-primary ajax_call pull-right"
+                                       data-action="bundle_create" data-title="Create Bundle" id="create_bundle">Create
+                                        Bundle</a>
+                                </h3>
                             </div>
-                            <div class="main-content col-md-5 url-bundle no-padding-right">
-                                <div class="panel panel-default panel-body">
-                                    <ul class="list-group bundles">
-                                        <li class="list-group-item">
-                                            <div class="dropdown In_dropdown pull-right">
-                                                <a href="javascript:void(0)" id="bundleLabel" class="cusdropdown-toggle"
-                                                   type="button" data-toggle="dropdown" aria-haspopup="true"
-                                                   aria-expanded="false" title="Options">
-                                                    <i class="zmdi zmdi-more-vert"></i>
+
+                                <div class="main-content col-md-5 url-bundle no-padding-right">
+                                    <div class="panel panel-default panel-body">
+                                        <ul class="list-group bundles">
+                                            {% for bundle in bundles %}
+                                            <li class="list-group-item">
+                                                <div class="dropdown In_dropdown pull-right">
+                                                    <a href="javascript:void(0)" id="bundleLabel"
+                                                       class="cusdropdown-toggle"
+                                                       type="button" data-toggle="dropdown" aria-haspopup="true"
+                                                       aria-expanded="false" title="Options">
+                                                        <i class="zmdi zmdi-more-vert"></i>
+                                                    </a>
+                                                    <ul class="dropdown-menu dropdown-menu-right cusdropdown-menu"
+                                                        aria-labelledby="bundleLabel">
+                                                        <li>
+                                                            <a href='#edit' class='ajax_call' data-title="Edit Bundle"
+                                                               data-action='bundle_edit' data-id='94'>Edit</a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#/user/delete/94?nonce=d2043c0903"
+                                                               class="delete">Delete</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <a href="{{ url_for('bundle',bundle=bundle.id) }}" class="ajax_call"
+                                                   data-class="return-ajax" data-id="94"
+                                                   data-active="active" data-action="bundle_urls">
+                                                    <h4
+                                                            class="list-group-item-heading">{{ bundle.name }}</h4>
                                                 </a>
-                                                <ul class="dropdown-menu dropdown-menu-right cusdropdown-menu"
-                                                    aria-labelledby="bundleLabel">
-                                                    <li>
-                                                        <a href='#edit' class='ajax_call' data-title="Edit Bundle"
-                                                           data-action='bundle_edit' data-id='94'>Edit</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#/user/delete/94?nonce=d2043c0903"
-                                                           class="delete">Delete</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
+                                                <p>#/profile/abcdabcd/T1-94 <a href="#"
+                                                                               class="copy inline-copy"
+                                                                               data-value="#/profile/abcdabcd/T1-94">Copy</a>
+                                                </p>
+                                                <p class="list-group-item-text">
+                                                    2 Views &nbsp;&nbsp;&bullet;&nbsp;&nbsp;
+                                                    {{ bundle.links | length }} URLs &nbsp;&nbsp;&bullet;&nbsp;&nbsp;
+                                                    Private
+                                                    &nbsp;&nbsp;&bullet;&nbsp;&nbsp;
 
-                                            <a href="#" class="ajax_call" data-class="return-ajax" data-id="94"
-                                               data-active="active" data-action="bundle_urls"><h4
-                                                    class="list-group-item-heading">T1</h4></a>
-                                            <p>#/profile/abcdabcd/T1-94 <a href="#"
-                                                                           class="copy inline-copy"
-                                                                           data-value="#/profile/abcdabcd/T1-94">Copy</a>
-                                            </p>
-                                            <p class="list-group-item-text">
-                                                2 Views &nbsp;&nbsp;&bullet;&nbsp;&nbsp;
-                                                0 URLs &nbsp;&nbsp;&bullet;&nbsp;&nbsp;
-                                                Public
-                                                &nbsp;&nbsp;&bullet;&nbsp;&nbsp;
-                                                3 weeks ago </p>
-                                        </li>
-
-                                    </ul>
-
+                                                </p>
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
                                 </div>
-                            </div>
                             <div class="main-content col-md-7">
                                 <div class="panel panel-default panel-body">
                                     <div id="data-container">
@@ -264,19 +272,119 @@
                                                             <th></th>
                                                         </tr>
                                                         </thead>
-                                                        <tbody class="return-ajax">
-                                                        <td></td>
-                                                        <td class="center">Please select a bundle from the left.</td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        </tbody>
+                                                        {% if link_bundle %}
+                                                            {% for link in link_bundle.links %}
+                                                            <tr class="url-list" id="url-container-37466" data-id="37466">
+                                                                <td class="center">
+                                                                    <div class="round-check toggle">
+                                                                        <input name="delete-id[]" id="url-select-cbox37466"
+                                                                               type="checkbox" value="7akGk">
+                                                                        <label for="url-select-cbox37466">&nbsp;</label>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="hidden-xs">
+                                                                    <h3 class="title">
+                                                                        <img alt="Favicon"
+                                                                             src="https://www.google.com/s2/favicons?domain={{ link.big_url }}">
+                                                                        <a href=""
+                                                                           target="_blank">{{ link.big_url[:20] }}{% if link.big_url|length > 20 %}
+                                                                        ...
+                                                                    {% endif %}</a>
+                                                                    </h3>
+                                                                    <p>
+                                                                    </p>
+                                                                    <ul class="toggle">
+                                                                        <li class="lock-url-37466">
+                                                                            <a class="ajax_call" href="#private"
+                                                                               data-id="37466" data-class="lock-url-37466"
+                                                                               data-action="lock">
+                                                                                <i class="glyphicon glyphicon-eye-open"></i>
+                                                                                Public </a>
+                                                                        </li>
+                                                                        <li>
+                                                                            <span><i class="glyphicon glyphicon-time"></i> 3 days ago </span>
+                                                                        </li>
+                                                                    </ul>
+                                                                </td>
+                                                                <td class="va-middle">
+                                                                    <div class="short-url">
+                                                                        <a href="{{ link.show_url() }}" target="_blank">
+                                                                            {{ link.show_url() }}
+                                                                        </a>
+                                                                        <p class="copy matbtn"
+                                                                           data-clipboard-text="{{ link.show_url() }}">
+                                                                            Copy</p>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="center">
+                                                                    <a class="link-clickz" href=""
+                                                                       target="_blank">{{ link.clicks }}</a>
+                                                                </td>
+                                                                <td class="center">
+                                                                    <div class="dropdown In_dropdown">
+                                                                        <a title="Options" class="cusdropdown-toggle"
+                                                                           id="urlLabel" aria-expanded="false"
+                                                                           aria-haspopup="true" href="javascript:void(0)"
+                                                                           type="button" data-toggle="dropdown">
+                                                                            <i class="zmdi zmdi-more-vert"></i>
+                                                                        </a>
+                                                                        <ul class="dropdown-menu dropdown-menu-right cusdropdown-menu"
+                                                                            aria-labelledby="urlLabel">
+                                                                            <li>
+                                                                                <a href="#">Edit</a>
+                                                                            </li>
+                                                                            <li>
+                                                                                <a class="delete"
+                                                                                   href="#">Delete</a>
+                                                                            </li>
+                                                                            <li>
+                                                                                <a class="ajax_call" href="#"
+                                                                                   data-id="37466"
+                                                                                   data-action="url_bundle_add"
+                                                                                   data-title="Change Bundle"
+                                                                                   data-content="Click to change bundle">Bundle:
+                                                                                    {{ link_bundle.name }}</a>
+                                                                            </li>
+                                                                            <li>
+                                                                                <a class="ajax_call" href="#archive"
+                                                                                   data-id="37466" data-class="return-ajax"
+                                                                                   data-action="archive">Archive</a>
+                                                                            </li>
+                                                                            <li>
+                                                                                <a class="u_share"
+                                                                                   href="#">Share
+                                                                                    on Facebook</a>
+                                                                                <a class="u_share"
+                                                                                   href="#">Share
+                                                                                    on Twitter</a>
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                           {% endfor %}
+                                                       {% elif blank_link %}
+                                                            <td colspan="5">
+                                                                <p class="center">No URLs found in your bundle.</p>
+                                                            </td>
+                                                       {% else %}
+                                                            <tr>
+                                                                <td></td>
+                                                                <td class="center">Please select a bundle from the left.</td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                       {% endif %}
                                                     </table>
-                                                </div><!-- /.return-ajax -->
+                                                </div>
+                                                <!-- /.return-ajax -->
                                             </div>
                                             <input type='hidden' name='token'
-                                                   value='b31b645850317744a240caac94458fa19f955d90'/></form>
-                                    </div><!-- /#data-container -->
+                                                   value='b31b645850317744a240caac94458fa19f955d90'/>
+                                        </form>
+                                    </div>
+                                    <!-- /#data-container -->
                                 </div>
                             </div>
                         </div>
@@ -303,18 +411,19 @@
                             </div>
                         </div>
                     </footer>
-                </div><!--/.content-->
-            </div><!--/.row-->
-        </div><!--/.container-->
+                </div>
+                <!--/.content-->
+            </div>
+            <!--/.row-->
+        </div>
+        <!--/.container-->
     </section>
 {% endblock %}
-
-
 {% block customjs %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
     <script type="text/javascript">
         $('#create_bundle').click(function () {
-           $('#add_here').append()
+            $('#add_here').append()
         });
     </script>
 {% endblock %}

@@ -410,9 +410,13 @@
                                                                         <i class="glyphicon glyphicon-eye-close"></i>&nbsp;Private</a>
                                                                 </li>
                                                                 <li>
-                                                                    {% set diff = (current_date - each_link.created_at) %}
-                                                                    <span><i
-                                                                            class="glyphicon glyphicon-time"></i>&nbsp;{{ diff.days }} days ago</span>
+                                                                    {% if each_link.created_at %}
+                                                                        {% set diff = (current_date - (each_link.created_at) ) %}
+                                                                        <span><i class="glyphicon glyphicon-time"></i>&nbsp;{{ diff.days }} days ago</span>
+                                                                    {% else %}
+                                                                        <span><i class="glyphicon glyphicon-time"></i>&nbsp;Data not present</span>
+                                                                    {% endif %}
+
                                                                 </li>
                                                             </ul>
                                                         </td>
