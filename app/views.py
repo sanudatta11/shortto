@@ -289,7 +289,43 @@ def bundle():
 @app.route('/bundle/add/', methods=['POST'])
 @login_required_save_post
 def bundle_add():
-        return redirect(url_for('bundle'))
+    bundle_name = request.form['bundle_name']
+    if bundle_name and re.match("^[a-zA-Z\d\-_\s]+$",bundle_name):
+        bundle = Bundle(name=bundle_name,user=current_user)
+        db.session.add(bundle)
+        db.session.commit()
+        flash(u'Bundle added successfully','success')
+    else:
+        flash(u'Bundle Name contains Invalid Characters','error')
+        flash(u'Only Allowed characters (a-zA-Z-_)','error')
+    return redirect(url_for('bundle'))
+
+@app.route('/bundle/edit', methods=['POST'])
+@app.route('/bundle/edit/', methods=['POST'])
+@login_required_save_post
+def bundle_edit():
+    new_bundle_name = request.form['new_bundle_name']
+    bundle_id = request.form['bundle_id']
+    if new_bundle_name and re.match("^[a-zA-Z\d\-_\s]+$",new_bundle_name):
+        bundle = Bundle.query.filter(Bundle.user == current_user,Bundle.id == bundle_id).first()
+        bundle.name = new_bundle_name
+        db.session.commit()
+        flash(u'Bundle updated successfully','success')
+    else:
+        flash(u'Bundle Name contains Invalid Characters','error')
+        flash(u'Only Allowed characters (a-zA-Z-_)','error')
+    return redirect(url_for('bundle'))
+
+@app.route('/bundle/delete', methods=['POST'])
+@app.route('/bundle/delete/', methods=['POST'])
+@login_required_save_post
+def bundle_delete():
+    bundle_id = request.form['bundle_id']
+    bundle = Bundle.query.filter(Bundle.user == current_user, Bundle.id == bundle_id).first()
+    db.session.delete(bundle)
+    db.session.commit()
+    flash(u'Bundle deleted successfully', 'success')
+    return redirect(url_for('bundle'))
 
 @app.route('/self/terms', methods=['GET'])
 @app.route('/self/terms/', methods=['GET'])
