@@ -171,6 +171,8 @@ def dashboard():
         user_links = Links.query.filter(Links.user==current_user,Links.archieved==False).order_by(Links.created_at.desc()).all()
     elif sort_method == "popular":
         user_links = top_urls
+    elif sort_method == "expired":
+        user_links = Links.query.filter(Links.user==current_user,Links.expiration_date < datetime.datetime.utcnow()).order_by(Links.created_at.desc()).all()
     elif sort_method == "archieve":
         user_links = Links.query.filter(Links.user==current_user,Links.archieved==True).all()
     else:
@@ -592,8 +594,7 @@ def google_auth_redirect():
         email = user_info['email']
         picture = user_info['picture']
         locale = user_info['locale']
-        newUser = User(firstName=firstName, lastName=lastName, email=email, picture=picture, google_login=True,
-                       locale=locale)
+        newUser = User(firstName=firstName, lastName=lastName, email=email, picture=picture, google_login=True,locale=locale)
         db.session.add(newUser)
         db.session.commit()
         login_user(newUser)
