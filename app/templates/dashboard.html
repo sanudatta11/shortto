@@ -35,16 +35,55 @@
     </header>
 {% endblock %}
 {% block body %}
+    <div id="delete-modal" class="modal">
+        <form action="{{ url_for('link_delete') }}" method="post">
+            <div class="title">
+                <h4>Are you sure you want to proceed?</h4>
+            </div>
+            <input type="text" class="hidden" value="" name="short_url" id ="delete_short_url" required readonly>
+            <p>Note that this action is permanent. Once you click proceed, you <strong>may not undo</strong> this. Click anywhere outside this modal or click <a class="close-modal" href="#" rel="modal:close">close</a> to close this.</p>
+            <button class="matbtn btn btn-success pull-right delete_modal_button" style="margin-left: 15px;" type="submit">Proceed</button>
+        </form>
+    </div>
+    <div id="add-to-bundle-modal" class="modal">
+    {% if bundles %}
+        <div class="title">
+            <h4>Add to bundle</h4>
+        </div>
+        <p style="display: block;">
+        <form role="form" action="{{ url_for('bundle_add_url') }}" method="post">
+            <div class="form-group">
+               <label>URL</label>
+                <input class="form-control" type="text" value="" id="url_to_add" readonly disabled>
+                <input class="form-control hidden" type="text" value="" id="short_to_add" name="short_url" readonly required>
+            </div>
+            <div class="form-group">
+                <label class="label-block">Choose Bundle
+                    <a class="btn btn-xs btn-primary pull-right" href="{{ url_for('bundle') }}">Create Bundle</a>
+                </label>
+                <select name="bundle_id" id="bundle_select_id">
+                        {% for bundle in bundles  %}
+                            <option value="{{ bundle.id }}">{{ bundle.name }}</option>
+                        {% endfor %}
+                </select>
+            </div>
+                <button class="btn btn-primary" type="submit">Add to bundle</button>
+        </form>
+    {% else %}
+        <div class="title">Please create a Bundle First</div>
+        <a class="btn btn-xs btn-primary pull-right" href="{{ url_for('bundle') }}">Create Bundle</a>
+    {% endif %}
+    </div>
     <section class="under-head-cont">
         <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-2 sidebar">
+            <div class="row" >
+                <div class="col-md-2 sidebar" style="height: 1470px;">
                     <div id="offnavmenu">
                         <ul class="nav nav-sidebar nav-sidebarz">
                             <li>
                                 <a href="{{ url_for('dashboard') }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                                        <path fill="currentColor" d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z"/>
+                                        <path fill="currentColor" d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z"></path>
                                     </svg>
                                     Dashboard
                                 </a>
@@ -53,7 +92,7 @@
                                 <a href="#/user/archive">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                                         <path fill="currentColor"
-                                              d="M3,3H21V7H3V3M4,8H20V21H4V8M9.5,11A0.5,0.5 0 0,0 9,11.5V13H15V11.5A0.5,0.5 0 0,0 14.5,11H9.5Z"/>
+                                              d="M3,3H21V7H3V3M4,8H20V21H4V8M9.5,11A0.5,0.5 0 0,0 9,11.5V13H15V11.5A0.5,0.5 0 0,0 14.5,11H9.5Z"></path>
                                     </svg>
                                     Archived Links
                                 </a>
@@ -204,8 +243,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="share-this"></div>
-                            <div class="ajax"></div>
                             <div class="p-relative">
                                 <form action="{{ url_for('dashboardShorten') }}" id="main-form" role="form"
                                       method="post">
@@ -333,8 +370,10 @@
                                         </div>
                                     </form>
                                     <select name="sort" class="filter" data-key="sort">
+                                        <option selected>Select from below</option>
                                         <option value="oldest">Oldest</option>
                                         <option value="newest">Newest</option>
+                                        <option value="archieve">Archieve</option>
                                         <option value="popular">Popular</option>
                                     </select>
                                     <div class="btn-group btn-group-sm">
@@ -436,7 +475,7 @@
                                                             </div>
                                                         </td>
                                                         <td class="center">
-                                                            <a class="link-clickz" href="+"
+                                                            <a class="link-clickz"
                                                                target="_blank">{{ each_link.clicks }}</a>
                                                         </td>
                                                         <td class="center">
@@ -453,28 +492,41 @@
                                                                         <a href="{{ url_for('link_edit',short_url=each_link.short_url) }}">Edit</a>
                                                                     </li>
                                                                     <li>
-                                                                        <a class="delete" href="">Delete</a>
+                                                                        <a class="delete_choice" href="#delete-modal" rel="modal:open" data-delete-short="{{ each_link.short_url }}">Delete</a>
                                                                     </li>
                                                                     <li>
-                                                                        <a class="ajax_call" href="#" data-id="37450"
+                                                                        <a class="ajax_call add-to-bundle-button" href="#add-to-bundle-modal"
+                                                                           rel="modal:open"
                                                                            data-action="url_bundle_add"
+                                                                           data-short-url="{{ each_link.short_url }}"
                                                                            data-title="Add to bundle"
-                                                                           data-content="Click to add to a bundle">Add
-                                                                            to bundle</a>
+                                                                           data-content="Click to add to a bundle">
+                                                                            {% if each_link.bundle %}
+                                                                                Transfer from Bundle: {{ each_link.bundle.name }}
+                                                                            {% else %}
+                                                                                Add to bundle
+                                                                            {% endif %}
+                                                                        </a>
                                                                     </li>
                                                                     <li>
-                                                                        <a class="ajax_call" href="#archive"
+                                                                        <a class="ajax_call" href="{{ url_for('archieve_url',short_url=each_link.short_url) }}"
                                                                            data-id="37450" data-class="return-ajax"
-                                                                           data-action="archive">Archive</a>
+                                                                           data-action="archive">
+                                                                            {% if each_link.archieved %}
+                                                                                UnArchive
+                                                                            {% else %}
+                                                                                Archive
+                                                                            {% endif %}
+                                                                        </a>
                                                                     </li>
                                                                     <li>
-                                                                        <a class="ajax_call" href="#facebook"
-                                                                           data-id="37450" data-class="return-ajax">Share
+                                                                        <a class="ajax_call" href="https://www.facebook.com/sharer.php?u={{ each_link.show_url() }}"
+                                                                           data-id="37450" data-class="return-ajax" target="_blank">Share
                                                                             on Facebook</a>
                                                                     </li>
                                                                     <li>
-                                                                        <a class="ajax_call" href="#twitter"
-                                                                           data-id="37450" data-class="return-ajax">Share
+                                                                        <a class="ajax_call" href="https://twitter.com/share?url={{ each_link.show_url() }}&text=Check+out+this+url"
+                                                                           data-id="37450" data-class="return-ajax" target="_blank">Share
                                                                             on Twitter</a>
                                                                     </li>
                                                                 </ul>
@@ -569,6 +621,7 @@
     </section>
 {% endblock %}
 {% block customjs %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
     <script type="text/javascript">
         var lang = {
             "del": "Delete",
@@ -659,7 +712,17 @@
             document.execCommand("copy");
             $temp.remove();
         }
-
+        $('.delete_choice').click(function () {
+            console.log("SS",$(this).attr('data-delete-short'));
+            $('#delete_short_url').val($(this).attr('data-delete-short'))
+        });
+        $('.add-to-bundle-button').click(function () {
+            short_url = $(this).attr('data-short-url');
+            console.log(short_url);
+            let base_url = "{{ base_url }}";
+            $('#url_to_add').val(base_url + short_url);
+            $('#short_to_add').val(short_url);
+        });
         //Sidebar Menu
         $(document).on('click', '.quicklinks-toggle__btn', function () {
             $('body').addClass('menu_active');
@@ -669,7 +732,7 @@
         });
         //Smooth Scroll
         $('a[href*="#"]').not('[href="#"]').not('[href="#0"]').click(function (t) {
-            if (location.pathname.replace(/^\//, "") == this.pathname.replace(/^\//, "") && location.hostname == this.hostname) {
+            if (location.pathname.replace(/^\//, "") === this.pathname.replace(/^\//, "") && location.hostname == this.hostname) {
                 var e = $(this.hash);
                 (e = e.length ? e : $("[name=" + this.hash.slice(1) + "]")).length && (t.preventDefault(), $("html, body").animate({
                     scrollTop: e.offset().top
@@ -681,4 +744,8 @@
             }
         })
     </script>
+{% endblock %}
+
+{% block customcss %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css"/>
 {% endblock %}

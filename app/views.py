@@ -13,7 +13,7 @@ from flask_bcrypt import generate_password_hash, check_password_hash
 
 from app import app, db, login_manager
 from app.models import Links, User, Announcement, Bundle
-from config import BCRYPT_LOG_ROUNDS, Auth, blacklist
+from config import BCRYPT_LOG_ROUNDS, Auth, blacklist, BASE_URL
 
 from flask_login import current_user, login_user, login_required, logout_user
 from functools import wraps
@@ -165,15 +165,18 @@ def dashboard():
     announcement_to_publish = Announcement.query.filter(Announcement.end_date > datetime.datetime.utcnow()).order_by(
         Announcement.id.desc()).first()
     sort_method = request.args.get('sort')
-    top_urls = user_links = Links.query.filter_by(user=current_user).order_by(Links.clicks.desc()).all()
+    top_urls = user_links = Links.query.filter(Links.user==current_user,Links.archieved==False).order_by(Links.clicks.desc()).all()
+    bundles = Bundle.query.filter(Links.user==current_user,Links.archieved==False).all()
     if sort_method == "newest":
-        user_links = Links.query.filter_by(user=current_user).order_by(Links.created_at.desc()).all()
+        user_links = Links.query.filter(Links.user==current_user,Links.archieved==False).order_by(Links.created_at.desc()).all()
     elif sort_method == "popular":
         user_links = top_urls
+    elif sort_method == "archieve":
+        user_links = Links.query.filter(Links.user==current_user,Links.archieved==True).all()
     else:
-        user_links = Links.query.filter_by(user=current_user).all()
+        user_links = Links.query.filter(Links.user==current_user,Links.archieved==False).all()
     return render_template('dashboard.html', announcement=announcement_to_publish, user_links=user_links,
-                           current_date=datetime.datetime.now(), top_urls=top_urls)
+                           current_date=datetime.datetime.now(), top_urls=top_urls,base_url=BASE_URL,bundles=bundles)
 
 
 @app.route('/dashboard/shorten', methods=['POST'])
@@ -277,6 +280,20 @@ def link_edit(short_url):
         flash(u'Link is invalid or not present', 'error')
         return redirect(url_for('dashboard'))
 
+@app.route('/link/delete/', methods=['POST'])
+@login_required_save_post
+def link_delete():
+    short_url = request.form['short_url']
+    print(short_url)
+    link = Links.query.filter(Links.short_url == short_url, Links.user == current_user).first()
+    if link:
+        db.session.delete(link)
+        db.session.commit()
+        flash(u'Link has been deleted successfully', 'success')
+    else:
+        flash(u'Some Error Occured! Try again later', 'error')
+    return redirect(url_for('dashboard'))
+
 @app.route('/profile', methods=['GET', 'POST'])
 @app.route('/profile/', methods=['GET', 'POST'])
 @login_required_save_post
@@ -319,6 +336,43 @@ def bundle():
     return render_template('bundle.html', bundles=bundle_data, current_date=datetime.datetime.now())
 
 
+@app.route('/bundle/add/url', methods=['POST'])
+@app.route('/bundle/add/url/', methods=['POST'])
+@login_required_save_post
+def bundle_add_url():
+    short_url = request.form.get('short_url')
+    bundle_id = request.form.get('bundle_id')
+    # print(short_url,bundle_id)
+    bundle = Bundle.query.filter_by(id=bundle_id,user=current_user).first()
+    link = Links.query.filter(Links.user==current_user,Links.short_url==short_url).first()
+    if bundle and link:
+        link.bundle = bundle
+        db.session.commit()
+        flash(u'Link has been added to the bundle', 'success')
+    else:
+        flash(u'Bundle and Link Mismatch to Account!','error')
+    return redirect(url_for('dashboard'))
+
+@app.route('/archieve/<short_url>',methods=['GET'])
+@login_required_save_post
+def archieve_url(short_url):
+    if short_url:
+        short_url_obj = Links.query.filter_by(short_url=short_url,user=current_user).first()
+        if short_url_obj:
+            if not short_url_obj.archieved:
+                short_url_obj.archieved = True
+                db.session.commit()
+                flash(u'Short URL Has been Archieved!','success')
+            else:
+                short_url_obj.archieved = False
+                db.session.commit()
+                flash(u'Short URL Has been UnArchieved!', 'success')
+        else:
+            flash(u'Short URL not found!','error')
+    else:
+        flash(u'Short URL find error!', 'error')
+    return redirect(url_for('dashboard'))
+
 @app.route('/bundle/add', methods=['POST'])
 @app.route('/bundle/add/', methods=['POST'])
 @login_required_save_post
@@ -360,9 +414,12 @@ def bundle_delete():
         bundle_id = request.form['bundle_id']
         bundle = Bundle.query.filter(Bundle.user == current_user, Bundle.id == bundle_id).first()
         if bundle:
-            db.session.delete(bundle)
-            db.session.commit()
-            flash(u'Bundle deleted successfully', 'success')
+            if(len(bundle.links)):
+                flash(u'Please delete all URLs in the bundle before deleting it!','error')
+            else:
+                db.session.delete(bundle)
+                db.session.commit()
+                flash(u'Bundle deleted successfully', 'success')
         else:
             flash(u'Bundle find Error', 'warning')
     except Exception as e:
