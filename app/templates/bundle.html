@@ -34,9 +34,6 @@
         </div>
     </header>
 {% endblock %}
-{% block customcss %}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css"/>
-{% endblock %}
 {% block body %}
     <div id="bundle_delete_modal" class="modal">
         <form action="{{ url_for('bundle_delete') }}" method="post">
@@ -491,7 +488,6 @@
     </section>
 {% endblock %}
 {% block customjs %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
     <script type="text/javascript">
         $('.bundle_edit_button').click(function () {
             let bundleId = $(this).attr('data-bundle-id');
