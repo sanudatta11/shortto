@@ -320,12 +320,20 @@ def bundle_edit():
 @app.route('/bundle/delete/', methods=['POST'])
 @login_required_save_post
 def bundle_delete():
-    bundle_id = request.form['bundle_id']
-    bundle = Bundle.query.filter(Bundle.user == current_user, Bundle.id == bundle_id).first()
-    db.session.delete(bundle)
-    db.session.commit()
-    flash(u'Bundle deleted successfully', 'success')
-    return redirect(url_for('bundle'))
+    try:
+        bundle_id = request.form['bundle_id']
+        bundle = Bundle.query.filter(Bundle.user == current_user, Bundle.id == bundle_id).first()
+        if bundle:
+            db.session.delete(bundle)
+            db.session.commit()
+            flash(u'Bundle deleted successfully', 'success')
+        else:
+            flash(u'Bundle find Error', 'warning')
+    except Exception as e:
+        print(e)
+        flash(u'Some Error Occurred! Try Again','error')
+    finally:
+        return redirect(url_for('bundle'))
 
 @app.route('/self/terms', methods=['GET'])
 @app.route('/self/terms/', methods=['GET'])
