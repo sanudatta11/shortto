@@ -152,10 +152,11 @@ def changetomd5(long_url, count=0):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    tot_users = User.query.count()
     tot_urls = Links.query.count()
     tot_clicks_obj = db.session.query(Links, db.func.sum(Links.clicks))
     tot_clicks = tot_clicks_obj[0][1]
-    return render_template('index.html', tot_clicks=tot_clicks, tot_urls=tot_urls)
+    return render_template('index.html', tot_clicks=tot_clicks, tot_urls=tot_urls,tot_users=tot_users)
 
 
 @app.route('/dashboard', methods=['GET'])
