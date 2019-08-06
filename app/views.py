@@ -166,10 +166,10 @@ def dashboard():
     announcement_to_publish = Announcement.query.filter(Announcement.end_date > datetime.datetime.utcnow()).order_by(
         Announcement.id.desc()).first()
     sort_method = request.args.get('sort')
-    top_urls = user_links = Links.query.filter(Links.user==current_user,Links.archieved==False,Links.expiration_date > datetime.datetime.utcnow()).order_by(Links.clicks.desc()).all()
+    top_urls = user_links = Links.query.filter(Links.user==current_user,Links.archieved==False).order_by(Links.clicks.desc()).all()
     bundles = Bundle.query.filter(Links.user==current_user,Links.archieved==False).all()
     if sort_method == "newest":
-        user_links = Links.query.filter(Links.user==current_user,Links.archieved==False,Links.expiration_date > datetime.datetime.utcnow()).order_by(Links.created_at.desc()).all()
+        user_links = Links.query.filter(Links.user==current_user,Links.archieved==False).order_by(Links.created_at.desc()).all()
     elif sort_method == "popular":
         user_links = top_urls
     elif sort_method == "expired":
@@ -177,7 +177,7 @@ def dashboard():
     elif sort_method == "archieve":
         user_links = Links.query.filter(Links.user==current_user,Links.archieved==True).all()
     else:
-        user_links = Links.query.filter(Links.user==current_user,Links.archieved==False,Links.expiration_date > datetime.datetime.utcnow()).all()
+        user_links = Links.query.filter(Links.user==current_user,Links.archieved==False).all()
     return render_template('dashboard.html', announcement=announcement_to_publish, user_links=user_links,
                            current_date=datetime.datetime.now(), top_urls=top_urls,base_url=BASE_URL,bundles=bundles)
 
