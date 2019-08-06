@@ -68,7 +68,7 @@ blacklist = [
 
 class Auth:
     CLIENT_ID = os.environ['CLIENT_ID']
-    CLIENT_SECRET = 'DNnwEpjpVEhCUie6H1UmWf49'
+    CLIENT_SECRET = os.environ['CLIENT_SECRET']
     BASE_URI = 'http://localhost:5000/checkLogin'
     DASH_URI = 'http://localhost:5000/dashboard'
     REDIRECT_URI = 'http://localhost:5000/google/auth'

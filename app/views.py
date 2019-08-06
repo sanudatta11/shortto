@@ -33,8 +33,8 @@ AUTHORIZATION_SCOPE = 'openid email profile'
 AUTH_REDIRECT_URI = os.environ.get("FN_AUTH_REDIRECT_URI") or Auth.REDIRECT_URI
 BASE_URI = os.environ.get("FN_BASE_URI") or Auth.BASE_URI
 DASH_URI = os.environ.get("FN_DASH_URI") or Auth.DASH_URI
-CLIENT_ID = os.environ.get("FN_CLIENT_ID") or Auth.CLIENT_ID
-CLIENT_SECRET = os.environ.get("FN_CLIENT_SECRET") or Auth.CLIENT_SECRET
+CLIENT_ID = os.environ.get("CLIENT_ID") or Auth.CLIENT_ID
+CLIENT_SECRET = os.environ.get("CLIENT_SECRET") or Auth.CLIENT_SECRET
 
 AUTH_TOKEN_KEY = 'auth_token'
 AUTH_STATE_KEY = 'auth_state'
