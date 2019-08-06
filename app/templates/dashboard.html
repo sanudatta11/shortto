@@ -226,7 +226,8 @@
                                     <div class="overlaylink" style="display: block" id="url-done-modal">
                                         <div class="link-shared" id="modal">
                                             <div class="closelink">
-                                                <span><i class="zmdi zmdi-close" onclick="close_done_modal()"></i></span>
+                                                <span><i class="zmdi zmdi-close"
+                                                         onclick="close_done_modal()"></i></span>
                                             </div>
                                             <div class="modal-contentlink">
                                                 <div class="panel-body">
@@ -460,21 +461,31 @@
                                                             </p>
                                                             <ul class="toggle">
                                                                 <li class="lock-url-37450">
-                                                                    <a class="ajax_call" href="#public" data-id="37450"
+                                                                    <a class="ajax_call" data-id="37450"
                                                                        data-class="lock-url-37450" data-action="unlock">
                                                                         <i class="glyphicon glyphicon-eye-close"></i>&nbsp;Private</a>
                                                                 </li>
                                                                 <li>
                                                                     {% if each_link.created_at %}
                                                                         {% set diff = (current_date - (each_link.created_at) ) %}
+                                                                        <a class="tooltip" href="#" data-content="Created {{ diff.days }} days ago"><span><i class="glyphicon glyphicon-calendar"></i></span></a>
                                                                         <span><i class="glyphicon glyphicon-time"></i>&nbsp;{{ diff.days }} days ago</span>
                                                                     {% else %}
                                                                         <span><i class="glyphicon glyphicon-time"></i>&nbsp;Data not present</span>
                                                                     {% endif %}
 
                                                                 </li>
+                                                                {% if  each_link.expiration %}
+                                                                    <li>
+                                                                        <a class="tooltip" href="#" data-content="Expiry on {{ each_link.expiration_date.strftime('%d-%m-%Y') }}"><span><i class="glyphicon glyphicon-calendar"></i></span></a>
+                                                                        <i class="zmdi zmdi-calendar"></i>&nbsp;&nbsp;{{ each_link.expiration_date.strftime('%d-%m-%Y') }}&nbsp;&nbsp;
+                                                                    </li>
+                                                                {% endif %}
                                                                 {% if each_link.password_protect %}
-                                                                    <li><i class="zmdi zmdi-lock"></i> Protected</li>
+                                                                    <li>
+                                                                        <a class="tooltip" href="#" data-content="Password Protected URL"><span><i class="glyphicon glyphicon-calendar"></i></span></a>
+                                                                        <i class="zmdi zmdi-lock"></i> Protected
+                                                                    </li>
                                                                 {% endif %}
                                                             </ul>
                                                         </td>
@@ -565,8 +576,6 @@
                                                 {% endfor %}
                                                 </tbody>
                                             </table>
-                                            <input name="token" type="hidden"
-                                                   value="d877a9d4d05203d6472046acbc3f6123af7abf90">
                                         </div>
                                         <!-- /.url-conainer -->
                                     </form>
@@ -797,9 +806,10 @@
                 }
             }
         }
-    function close_done_modal() {
-        $('#url-done-modal').hide();
-    }
+
+        function close_done_modal() {
+            $('#url-done-modal').hide();
+        }
     </script>
 {% endblock %}
 
