@@ -40,50 +40,56 @@
             <div class="title">
                 <h4>Are you sure you want to proceed?</h4>
             </div>
-            <input type="text" class="hidden" value="" name="short_url" id ="delete_short_url" required readonly>
-            <p>Note that this action is permanent. Once you click proceed, you <strong>may not undo</strong> this. Click anywhere outside this modal or click <a class="close-modal" href="#" rel="modal:close">close</a> to close this.</p>
-            <button class="matbtn btn btn-success pull-right delete_modal_button" style="margin-left: 15px;" type="submit">Proceed</button>
+            <input type="text" class="hidden" value="" name="short_url" id="delete_short_url" required readonly>
+            <p>Note that this action is permanent. Once you click proceed, you <strong>may not undo</strong> this. Click
+                anywhere outside this modal or click <a class="close-modal" href="#" rel="modal:close">close</a> to
+                close this.</p>
+            <button class="matbtn btn btn-success pull-right delete_modal_button" style="margin-left: 15px;"
+                    type="submit">Proceed
+            </button>
         </form>
     </div>
     <div id="add-to-bundle-modal" class="modal">
-    {% if bundles %}
-        <div class="title">
-            <h4>Add to bundle</h4>
-        </div>
-        <p style="display: block;">
-        <form role="form" action="{{ url_for('bundle_add_url') }}" method="post">
-            <div class="form-group">
-               <label>URL</label>
-                <input class="form-control" type="text" value="" id="url_to_add" readonly disabled>
-                <input class="form-control hidden" type="text" value="" id="short_to_add" name="short_url" readonly required>
+        {% if bundles %}
+            <div class="title">
+                <h4>Add to bundle</h4>
             </div>
-            <div class="form-group">
-                <label class="label-block">Choose Bundle
-                    <a class="btn btn-xs btn-primary pull-right" href="{{ url_for('bundle') }}">Create Bundle</a>
-                </label>
-                <select name="bundle_id" id="bundle_select_id">
-                        {% for bundle in bundles  %}
+            <p style="display: block;">
+            <form role="form" action="{{ url_for('bundle_add_url') }}" method="post">
+                <div class="form-group">
+                    <label>URL</label>
+                    <input class="form-control" type="text" value="" id="url_to_add" readonly disabled>
+                    <input class="form-control hidden" type="text" value="" id="short_to_add" name="short_url" readonly
+                           required>
+                </div>
+                <div class="form-group">
+                    <label class="label-block">Choose Bundle
+                        <a class="btn btn-xs btn-primary pull-right" href="{{ url_for('bundle') }}">Create Bundle</a>
+                    </label>
+                    <select name="bundle_id" id="bundle_select_id">
+                        {% for bundle in bundles %}
                             <option value="{{ bundle.id }}">{{ bundle.name }}</option>
                         {% endfor %}
-                </select>
-            </div>
+                    </select>
+                </div>
                 <button class="btn btn-primary" type="submit">Add to bundle</button>
-        </form>
-    {% else %}
-        <div class="title">Please create a Bundle First</div>
-        <a class="btn btn-xs btn-primary pull-right" href="{{ url_for('bundle') }}">Create Bundle</a>
-    {% endif %}
+            </form>
+        {% else %}
+            <div class="title">Please create a Bundle First</div>
+            <a class="btn btn-xs btn-primary pull-right" href="{{ url_for('bundle') }}">Create Bundle</a>
+        {% endif %}
     </div>
     <section class="under-head-cont">
         <div class="container-fluid">
-            <div class="row" >
+            <div class="row">
                 <div class="col-md-2 sidebar" style="height: 1470px;">
                     <div id="offnavmenu">
                         <ul class="nav nav-sidebar nav-sidebarz">
                             <li>
                                 <a href="{{ url_for('dashboard') }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                                        <path fill="currentColor" d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z"></path>
+                                        <path fill="currentColor"
+                                              d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z"></path>
                                     </svg>
                                     Dashboard
                                 </a>
@@ -214,17 +220,65 @@
                             {% endwith %}
                             <!-- Shortener Form -->
                             <br><br>
-                            <div class="overlaylink">
-                                <div class="link-shared" id="modal">
-                                    <!-- close trigger -->
-                                    <div class="closelink">
-                                        <span><i class="zmdi zmdi-close"></i></span>
+                            {% with messages = get_flashed_messages(category_filter=["url-done"]) %}
+                                {% set messages = messages[0] %}
+                                {% if messages %}
+                                    <div class="overlaylink" style="display: block" id="url-done-modal">
+                                        <div class="link-shared" id="modal">
+                                            <div class="closelink">
+                                                <span><i class="zmdi zmdi-close" onclick="close_done_modal()"></i></span>
+                                            </div>
+                                            <div class="modal-contentlink">
+                                                <div class="panel-body">
+                                                    <div class="copy-link-block">
+                                                        <span class="short-url">{{ messages }}</span>
+                                                        <button class="btn btn-primary" id="copyurlmodal" type="button"
+                                                                data-clipboard-text="{{ messages }}">
+                                                            <i class="zmdi zmdi-copy"></i>
+                                                        </button>
+                                                    </div>
+                                                    <div class="qr">
+                                                        <img alt="URL Qr Code"
+                                                             src="https://api.qrserver.com/v1/create-qr-code/?data={{ messages }}&size=200x200">
+                                                        <a class="mdbtn btn btn-primary copy" href="{{ messages }}"
+                                                           target="_blank">Save QR Code</a>
+                                                    </div>
+                                                    <hr>
+                                                    <div class="share-message"><p>Share this on</p>
+                                                        <div class="share">
+                                                            <a title="Facebook" class="btn btn-facebook u_share"
+                                                               href="http://www.facebook.com/sharer.php?u={{ messages }}"
+                                                               target="_blank">
+                                                                <i class="zmdi zmdi-facebook"></i>
+                                                            </a>
+                                                            <a title="Twitter" class="btn btn-twitter u_share"
+                                                               href="https://twitter.com/share?url={{ messages }}"
+                                                               target="_blank">
+                                                                <i class="zmdi zmdi-twitter"></i>
+                                                            </a>
+                                                            <a title="Google Plus" class="btn btn-danger u_share"
+                                                               href="https://plus.google.com/share?url={{ messages }}"
+                                                               target="_blank">
+                                                                <i class="zmdi zmdi-google-plus"></i>
+                                                            </a>
+                                                            <a title="LinkedIn" class="btn btn-linkedin u_share"
+                                                               href="https://www.linkedin.com/shareArticle?mini=true&amp;url={{ messages }}"
+                                                               target="_blank">
+                                                                <i class="zmdi zmdi-linkedin"></i>
+                                                            </a>
+                                                            <a title="Pinterest" class="btn btn-pinterest u_share"
+                                                               href="https://pinterest.com/pin/create/button/?url={{ messages }}"
+                                                               target="_blank">
+                                                                <i class="zmdi zmdi-pinterest"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <!-- modal content -->
-                                    <div class="modal-contentlink">
-                                    </div>
-                                </div>
-                            </div>
+                                {% endif %}
+                            {% endwith %}
                             <div class="p-relative">
                                 <form action="{{ url_for('dashboardShorten') }}" id="main-form" role="form"
                                       method="post">
@@ -347,7 +401,8 @@
                                     <form action="#/user/search" id="search">
                                         <div class="search-group">
                                             <input type="text" name="q" class="form-control"
-                                                   placeholder="Enter keyword and press enter." id="filter_text" onkeyup="filterURL()">
+                                                   placeholder="Enter keyword and press enter." id="filter_text"
+                                                   onkeyup="filterURL()">
                                             <i class="zmdi zmdi-search"></i>
                                         </div>
                                     </form>
@@ -418,6 +473,9 @@
                                                                     {% endif %}
 
                                                                 </li>
+                                                                {% if each_link.password_protect %}
+                                                                    <li><i class="zmdi zmdi-lock"></i> Protected</li>
+                                                                {% endif %}
                                                             </ul>
                                                         </td>
                                                         <td class="center">
@@ -453,24 +511,29 @@
                                                                         <a href="{{ url_for('link_edit',short_url=each_link.short_url) }}">Edit</a>
                                                                     </li>
                                                                     <li>
-                                                                        <a class="delete_choice" href="#delete-modal" rel="modal:open" data-delete-short="{{ each_link.short_url }}">Delete</a>
+                                                                        <a class="delete_choice" href="#delete-modal"
+                                                                           rel="modal:open"
+                                                                           data-delete-short="{{ each_link.short_url }}">Delete</a>
                                                                     </li>
                                                                     <li>
-                                                                        <a class="ajax_call add-to-bundle-button" href="#add-to-bundle-modal"
+                                                                        <a class="ajax_call add-to-bundle-button"
+                                                                           href="#add-to-bundle-modal"
                                                                            rel="modal:open"
                                                                            data-action="url_bundle_add"
                                                                            data-short-url="{{ each_link.short_url }}"
                                                                            data-title="Add to bundle"
                                                                            data-content="Click to add to a bundle">
                                                                             {% if each_link.bundle %}
-                                                                                Transfer from Bundle: {{ each_link.bundle.name }}
+                                                                                Transfer from Bundle:
+                                                                                {{ each_link.bundle.name }}
                                                                             {% else %}
                                                                                 Add to bundle
                                                                             {% endif %}
                                                                         </a>
                                                                     </li>
                                                                     <li>
-                                                                        <a class="ajax_call" href="{{ url_for('archieve_url',short_url=each_link.short_url) }}"
+                                                                        <a class="ajax_call"
+                                                                           href="{{ url_for('archieve_url',short_url=each_link.short_url) }}"
                                                                            data-id="37450" data-class="return-ajax"
                                                                            data-action="archive">
                                                                             {% if each_link.archieved %}
@@ -481,13 +544,17 @@
                                                                         </a>
                                                                     </li>
                                                                     <li>
-                                                                        <a class="ajax_call" href="https://www.facebook.com/sharer.php?u={{ each_link.show_url() }}"
-                                                                           data-id="37450" data-class="return-ajax" target="_blank">Share
+                                                                        <a class="ajax_call"
+                                                                           href="https://www.facebook.com/sharer.php?u={{ each_link.show_url() }}"
+                                                                           data-id="37450" data-class="return-ajax"
+                                                                           target="_blank">Share
                                                                             on Facebook</a>
                                                                     </li>
                                                                     <li>
-                                                                        <a class="ajax_call" href="https://twitter.com/share?url={{ each_link.show_url() }}&text=Check+out+this+url"
-                                                                           data-id="37450" data-class="return-ajax" target="_blank">Share
+                                                                        <a class="ajax_call"
+                                                                           href="https://twitter.com/share?url={{ each_link.show_url() }}&text=Check+out+this+url"
+                                                                           data-id="37450" data-class="return-ajax"
+                                                                           target="_blank">Share
                                                                             on Twitter</a>
                                                                     </li>
                                                                 </ul>
@@ -673,8 +740,9 @@
             document.execCommand("copy");
             $temp.remove();
         }
+
         $('.delete_choice').click(function () {
-            console.log("SS",$(this).attr('data-delete-short'));
+            console.log("SS", $(this).attr('data-delete-short'));
             $('#delete_short_url').val($(this).attr('data-delete-short'))
         });
         $('.add-to-bundle-button').click(function () {
@@ -706,29 +774,32 @@
         })
 
         function filterURL() {
-              // Declare variables
-              var input, filter, table, tr, td, i, txtValue;
-              input = document.getElementById("filter_text");
-              filter = input.value.toUpperCase();
-              console.log("Filter",filter);
-              table = document.getElementById("urls-table");
-              tr = table.getElementsByTagName("tr");
-              // Loop through all table rows, and hide those who don't match the search query
-              console.log("Len=",tr.length);
-              for (i = 0; i < tr.length; i++) {
+            // Declare variables
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("filter_text");
+            filter = input.value.toUpperCase();
+            console.log("Filter", filter);
+            table = document.getElementById("urls-table");
+            tr = table.getElementsByTagName("tr");
+            // Loop through all table rows, and hide those who don't match the search query
+            console.log("Len=", tr.length);
+            for (i = 0; i < tr.length; i++) {
                 td = tr[i].getElementsByTagName("td")[1];
                 if (td) {
-                  txtValue = td.textContent || td.innerText || td.innerHTML;
-                  console.log("Txt",txtValue);
-                  console.log(txtValue);
-                  if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    tr[i].style.display = "";
-                  } else {
-                    tr[i].style.display = "none";
-                  }
+                    txtValue = td.textContent || td.innerText || td.innerHTML;
+                    console.log("Txt", txtValue);
+                    console.log(txtValue);
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
                 }
-              }
+            }
         }
+    function close_done_modal() {
+        $('#url-done-modal').hide();
+    }
     </script>
 {% endblock %}
 

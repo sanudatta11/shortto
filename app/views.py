@@ -165,18 +165,18 @@ def dashboard():
     announcement_to_publish = Announcement.query.filter(Announcement.end_date > datetime.datetime.utcnow()).order_by(
         Announcement.id.desc()).first()
     sort_method = request.args.get('sort')
-    top_urls = user_links = Links.query.filter(Links.user==current_user,Links.archieved==False).order_by(Links.clicks.desc()).all()
+    top_urls = user_links = Links.query.filter(Links.user==current_user,Links.archieved==False,Links.expiration_date > datetime.datetime.utcnow()).order_by(Links.clicks.desc()).all()
     bundles = Bundle.query.filter(Links.user==current_user,Links.archieved==False).all()
     if sort_method == "newest":
-        user_links = Links.query.filter(Links.user==current_user,Links.archieved==False).order_by(Links.created_at.desc()).all()
+        user_links = Links.query.filter(Links.user==current_user,Links.archieved==False,Links.expiration_date > datetime.datetime.utcnow()).order_by(Links.created_at.desc()).all()
     elif sort_method == "popular":
         user_links = top_urls
     elif sort_method == "expired":
-        user_links = Links.query.filter(Links.user==current_user,Links.expiration_date < datetime.datetime.utcnow()).order_by(Links.created_at.desc()).all()
+        user_links = Links.query.filter(Links.user==current_user,Links.expiration_date <= datetime.datetime.utcnow()).order_by(Links.created_at.desc()).all()
     elif sort_method == "archieve":
         user_links = Links.query.filter(Links.user==current_user,Links.archieved==True).all()
     else:
-        user_links = Links.query.filter(Links.user==current_user,Links.archieved==False).all()
+        user_links = Links.query.filter(Links.user==current_user,Links.archieved==False,Links.expiration_date > datetime.datetime.utcnow()).all()
     return render_template('dashboard.html', announcement=announcement_to_publish, user_links=user_links,
                            current_date=datetime.datetime.now(), top_urls=top_urls,base_url=BASE_URL,bundles=bundles)
 
@@ -257,6 +257,7 @@ def dashboardShorten():
             db.session.add(temp)
             db.session.commit()
             flash(u'URL created Successfully', 'success')
+            flash(temp.show_url(), 'url-done')
             return redirect(url_for('dashboard'))
         return redirect(url_for('dashboard'))
     except:
@@ -485,6 +486,7 @@ def logout():
     return redirect(url_for('index'))
 
 
+# noinspection PyArgumentList
 @app.route('/register', methods=['GET', 'POST'])
 @app.route('/register/', methods=['GET', 'POST'])
 def register():
@@ -538,17 +540,32 @@ def register():
 # End of Test Routes for new UI
 
 # Warning CRTICAL ROUTE
-@app.route('/<string:short_data>', methods=['GET'])
-@app.route('/<string:short_data>/', methods=['GET'])
-def routeit(short_data):
-    temp = Links.query.filter_by(short_url=short_data).first()
-    if temp is not None:
-        temp.clicks += 1
-        db.session.commit()
-        url = temp.big_url
-        if not validators.url(url):
-            return render_template('index.html', url_error=True)
-        return redirect(url, code=302)
+@app.route('/<string:short_url>', methods=['GET','POST'])
+@app.route('/<string:short_url>/', methods=['GET','POST'])
+def routeit(short_url):
+    if request.method == "GET":
+        temp = Links.query.filter_by(short_url=short_url).first()
+        if temp is not None:
+            if temp.password_protect:
+                return render_template('password_url.html')
+            else:
+                temp.clicks += 1
+                db.session.commit()
+                url = temp.big_url
+                if not validators.url(url):
+                    return render_template('index.html', url_error=True)
+                return redirect(url, code=302)
+    elif request.method == "POST":
+        password = request.form['password']
+        if password:
+            link = Links.query.filter_by(short_url=short_url).first()
+            if link and check_password_hash(link.password_hash,password):
+                return redirect(link.big_url,code=302)
+            else:
+                flash(u'Link or Password incorrect!','error')
+                return redirect(url_for('routeit',short_url=short_url))
+        flash(u'Password not appropriate!', 'error')
+        return redirect(url_for('routeit', short_url=short_url))
     return render_template('notfound.html')
 
 

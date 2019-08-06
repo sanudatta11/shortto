@@ -244,63 +244,67 @@
                             <div class="main-content col-md-5 url-bundle no-padding-right">
                                 <div class="panel panel-default panel-body">
                                     <ul class="list-group bundles">
-                                        {% for bundle in bundles %}
-                                            <li class="list-group-item">
-                                                <div class="dropdown In_dropdown pull-right">
-                                                    <a href="javascript:void(0)" id="bundleLabel"
-                                                       class="cusdropdown-toggle"
-                                                       type="button" data-toggle="dropdown" aria-haspopup="true"
-                                                       aria-expanded="false" title="Options">
-                                                        <i class="zmdi zmdi-more-vert"></i>
+                                        {% if bundles %}
+                                            {% for bundle in bundles %}
+                                                <li class="list-group-item">
+                                                    <div class="dropdown In_dropdown pull-right">
+                                                        <a href="javascript:void(0)" id="bundleLabel"
+                                                           class="cusdropdown-toggle"
+                                                           type="button" data-toggle="dropdown" aria-haspopup="true"
+                                                           aria-expanded="false" title="Options">
+                                                            <i class="zmdi zmdi-more-vert"></i>
+                                                        </a>
+                                                        <ul class="dropdown-menu dropdown-menu-right cusdropdown-menu"
+                                                            aria-labelledby="bundleLabel">
+                                                            <li>
+                                                                <a href='#bundle_edit_modal' class="bundle_edit_button"
+                                                                   rel="modal:open"
+                                                                   data-bundle-id="{{ bundle.id }}"
+                                                                   data-bundle-name="{{ bundle.name }}"
+                                                                   data-title="Edit Bundle" data-action='bundle_edit'>Edit</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href='#bundle_delete_modal' class="bundle_delete_button"
+                                                                   rel="modal:open"
+                                                                   data-bundle-id="{{ bundle.id }}"
+                                                                   data-title="Delete Bundle" data-action='bundle_delete'>Delete</a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <a href="{{ url_for('bundle',bundle=bundle.id) }}" class="ajax_call"
+                                                       data-class="return-ajax" data-id="94"
+                                                       data-active="active" data-action="bundle_urls">
+                                                        <h4 class="list-group-item-heading">{{ bundle.name }}</h4>
                                                     </a>
-                                                    <ul class="dropdown-menu dropdown-menu-right cusdropdown-menu"
-                                                        aria-labelledby="bundleLabel">
-                                                        <li>
-                                                            <a href='#bundle_edit_modal' class="bundle_edit_button"
-                                                               rel="modal:open"
-                                                               data-bundle-id="{{ bundle.id }}"
-                                                               data-bundle-name="{{ bundle.name }}"
-                                                               data-title="Edit Bundle" data-action='bundle_edit'>Edit</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href='#bundle_delete_modal' class="bundle_delete_button"
-                                                               rel="modal:open"
-                                                               data-bundle-id="{{ bundle.id }}"
-                                                               data-title="Delete Bundle" data-action='bundle_delete'>Delete</a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                                <a href="{{ url_for('bundle',bundle=bundle.id) }}" class="ajax_call"
-                                                   data-class="return-ajax" data-id="94"
-                                                   data-active="active" data-action="bundle_urls">
-                                                    <h4 class="list-group-item-heading">{{ bundle.name }}</h4>
-                                                </a>
+                                                    <br>
+                                                    <p class="list-group-item-text">
+                                                        {{ bundle.links | length }} URLs &nbsp;&nbsp;&bullet;&nbsp;&nbsp;
+                                                        {% if bundle.created_at %}
+                                                            {% set diff = (current_date - (bundle.created_at) ) %}
+                                                            <span><i
+                                                                    class="glyphicon glyphicon-time"></i>&nbsp;{{ diff.days }} days ago</span>
+                                                        {% else %}
+                                                            <span><i class="glyphicon glyphicon-time"></i>&nbsp;Data not present</span>
+                                                        {% endif %}
+                                                    </p>
+                                                </li>
+                                            {% endfor %}
+                                        {% else %}
+                                            <div class="center">
+                                                <span class="zmdi-hc-stack zmdi-hc-lg" style="-webkit-filter: drop-shadow(0px 9px 7px rgba(195, 116, 74, 0.49));filter: drop-shadow(0px 9px 7px rgba(195, 116, 74, 0.49));width: 5em;height: 5em;line-height: 5em;margin-bottom: 19px;">
+                                                    <i class="zmdi zmdi-circle zmdi-hc-stack-2x" style="color: #e06c2c;font-size: 5em;"></i>
+                                                    <i class="zmdi zmdi-layers-off zmdi-hc-stack-1x zmdi-hc-inverse" style="font-size: 33px;"></i>
+                                                </span>
                                                 <br>
-                                                <p class="list-group-item-text">
-                                                    {{ bundle.links | length }} URLs &nbsp;&nbsp;&bullet;&nbsp;&nbsp;
-                                                    {% if bundle.created_at %}
-                                                        {% set diff = (current_date - (bundle.created_at) ) %}
-                                                        <span><i
-                                                                class="glyphicon glyphicon-time"></i>&nbsp;{{ diff.days }} days ago</span>
-                                                    {% else %}
-                                                        <span><i class="glyphicon glyphicon-time"></i>&nbsp;Data not present</span>
-                                                    {% endif %}
-                                                </p>
-                                            </li>
-                                        {% endfor %}
+                                                <a class="btn btn-primary ajax_call" href="#bundle_modal" rel="modal:open" data-action="bundle_create" data-title="Create Bundle">Create Bundle</a>
+                                            </div>
+                                        {% endif %}
                                     </ul>
                                 </div>
                             </div>
                             <div class="main-content col-md-7">
                                 <div class="panel panel-default panel-body">
                                     <div id="data-container">
-                                        <div class="btn-group btn-group-sm pull-right">
-                                            <a href="#" class="btn" id="selectall">
-                                                <i class="zmdi zmdi-check-all"></i>&nbsp; &nbsp;Select
-                                                All</a>
-                                            <a href="#" class="btn btn-outline-danger" id="deleteall">
-                                                <i class="zmdi zmdi-delete"></i>&nbsp; &nbsp;Delete All</a>
-                                        </div>
                                         <form action="#/user/delete" method="post"
                                               id="delete-all-urls">
                                             <div class="url-container">
