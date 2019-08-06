@@ -544,14 +544,14 @@ def register():
 @app.route('/<string:short_url>/', methods=['GET','POST'])
 def routeit(short_url):
     if request.method == "GET":
-        temp = Links.query.filter_by(short_url=short_url).first()
-        if temp is not None:
-            if temp.password_protect:
+        link = Links.query.filter_by(short_url=short_url).first()
+        if link:
+            if link.password_protect:
                 return render_template('password_url.html')
             else:
-                temp.clicks += 1
+                link.clicks += 1
                 db.session.commit()
-                url = temp.big_url
+                url = link.big_url
                 if not validators.url(url):
                     return render_template('index.html', url_error=True)
                 return redirect(url, code=302)
