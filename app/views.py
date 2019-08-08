@@ -538,6 +538,10 @@ def register():
     return render_template("register.html")
 
 
+@app.route('/email',methods=['GET'])
+def email():
+    return render_template('email.html')
+
 # End of Test Routes for new UI
 
 # Warning CRTICAL ROUTE
