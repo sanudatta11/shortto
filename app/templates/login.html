@@ -122,8 +122,9 @@ button ~ button {
                   </a>
                   </div>
                   <input type="hidden" id="g-captcha-client-key" name="g-captcha-client-key">
+                   <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                </form>
             </div>
-            
+         </div>
       </section>
 {% endblock body %}

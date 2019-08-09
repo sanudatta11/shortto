@@ -2,22 +2,27 @@ import os
 import re
 import requests
 import validators
-import random
+import random, string
 import datetime
+from urllib.parse import unquote
 import hashlib
 from flask import json, flash
 from flask import render_template, flash, redirect, request, session, make_response, current_app, send_from_directory, \
     url_for
+from flask_wtf.csrf import CSRFError
 from werkzeug.security import safe_str_cmp
 from flask_bcrypt import generate_password_hash, check_password_hash
 
-from app import app, db, login_manager
+from app import app, db, login_manager , csrf
 from app.models import Links, User, Announcement, Bundle
-from config import BCRYPT_LOG_ROUNDS, Auth, blacklist, BASE_URL
+from config import BCRYPT_LOG_ROUNDS, Auth, blacklist, BASE_URL, SIGNUP_TEMPLATE_ID
 
 from flask_login import current_user, login_user, login_required, logout_user
 from functools import wraps
-from werkzeug.datastructures import MultiDict
+
+import json
+from sendgrid import SendGridAPIClient, Email, Content, Substitution
+from sendgrid.helpers.mail import Mail
 
 # Google Auth
 import functools
@@ -150,7 +155,8 @@ def changetomd5(long_url, count=0):
 
 # End of Short URL Def
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/', methods=['GET'])
+@app.errorhandler(CSRFError)
 def index():
     tot_users = User.query.count()
     tot_urls = Links.query.count()
@@ -162,6 +168,7 @@ def index():
 @app.route('/dashboard', methods=['GET'])
 @app.route('/dashboard/', methods=['GET'])
 @login_required
+@app.errorhandler(CSRFError)
 def dashboard():
     announcement_to_publish = Announcement.query.filter(Announcement.end_date > datetime.datetime.utcnow()).order_by(
         Announcement.id.desc()).first()
@@ -185,6 +192,7 @@ def dashboard():
 @app.route('/dashboard/shorten', methods=['POST'])
 @app.route('/dashboard/shorten/', methods=['POST'])
 @login_required_save_post
+@app.errorhandler(CSRFError)
 def dashboardShorten():
     try:
         if request.method == 'POST':
@@ -265,8 +273,8 @@ def dashboardShorten():
         flash(u'Something Went Wrong! Please try again!', 'error')
         return redirect(url_for('login'))
 
-
 @app.route('/link/edit/<short_url>', methods=['GET','POST'])
+@app.errorhandler(CSRFError)
 @login_required_save_post
 def link_edit(short_url):
     link = Links.query.filter(Links.short_url == short_url, Links.user == current_user).first()
@@ -285,6 +293,7 @@ def link_edit(short_url):
         return redirect(url_for('dashboard'))
 
 @app.route('/link/delete/', methods=['POST'])
+@app.errorhandler(CSRFError)
 @login_required_save_post
 def link_delete():
     short_url = request.form['short_url']
@@ -300,6 +309,7 @@ def link_delete():
 
 @app.route('/profile', methods=['GET', 'POST'])
 @app.route('/profile/', methods=['GET', 'POST'])
+@app.errorhandler(CSRFError)
 @login_required_save_post
 def profile():
     if request.method == "POST":
@@ -325,6 +335,7 @@ def profile():
 
 @app.route('/bundles', methods=['GET'])
 @app.route('/bundles/', methods=['GET'])
+@app.errorhandler(CSRFError)
 @login_required_save_post
 def bundle():
     bundle_data = Bundle.query.filter_by(user=current_user).all()
@@ -342,6 +353,7 @@ def bundle():
 
 @app.route('/bundle/add/url', methods=['POST'])
 @app.route('/bundle/add/url/', methods=['POST'])
+@app.errorhandler(CSRFError)
 @login_required_save_post
 def bundle_add_url():
     short_url = request.form.get('short_url')
@@ -358,6 +370,7 @@ def bundle_add_url():
     return redirect(url_for('dashboard'))
 
 @app.route('/archieve/<short_url>',methods=['GET'])
+@app.errorhandler(CSRFError)
 @login_required_save_post
 def archieve_url(short_url):
     if short_url:
@@ -379,6 +392,7 @@ def archieve_url(short_url):
 
 @app.route('/bundle/add', methods=['POST'])
 @app.route('/bundle/add/', methods=['POST'])
+@app.errorhandler(CSRFError)
 @login_required_save_post
 def bundle_add():
     bundle_name = request.form['bundle_name']
@@ -395,6 +409,7 @@ def bundle_add():
 
 @app.route('/bundle/edit', methods=['POST'])
 @app.route('/bundle/edit/', methods=['POST'])
+@app.errorhandler(CSRFError)
 @login_required_save_post
 def bundle_edit():
     new_bundle_name = request.form['new_bundle_name']
@@ -412,6 +427,7 @@ def bundle_edit():
 
 @app.route('/bundle/delete', methods=['POST'])
 @app.route('/bundle/delete/', methods=['POST'])
+@app.errorhandler(CSRFError)
 @login_required_save_post
 def bundle_delete():
     try:
@@ -464,6 +480,9 @@ def login():
             if (user.google_login):
                 flash(u'Your account is signed up via Google! Please use Google Sign In', 'error')
                 return redirect(url_for('login'))
+            elif (not user.confirmed):
+                flash(u'Please confirm your email by clicking on the link sent to you', 'error')
+                return redirect_dest(fallback=url_for('dashboard'))
             elif (check_password_hash(user.password_hash, password)):
                 # All cool
                 flash(u'You have been successfully logged in.', 'success')
@@ -530,19 +549,127 @@ def register():
         if error:
             return redirect(url_for("register"))
         passh = generate_password_hash(passw, BCRYPT_LOG_ROUNDS)
-        register = User(firstName=firstName, lastName=lastName, email=email, password_hash=passh, username=username)
+        confirmationHash = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
+        try:
+            sendgrid_client = SendGridAPIClient(os.environ.get('MAIL_SENDGRID_API_KEY'))
+            from_email = 'support@shortto.com'
+            mail = Mail(from_email=from_email, subject='Welcome!', to_emails=email)
+            URI = BASE_URL + 'email/verification/' + str(confirmationHash) + '/' + str(email)
+            mail.dynamic_template_data = {
+                'firstName' : firstName,
+                'redirect_url' : URI
+            }
+            mail.template_id = SIGNUP_TEMPLATE_ID
+            response = sendgrid_client.send(mail)
+            # print(response.status_code)
+            # print(response.body)
+            # print(response.headers)
+        except Exception as e:
+            print(e)
+            flash(u'Email Confirmation Error!','error')
+            return redirect(url_for('dashboard'))
+
+        register = User(firstName=firstName, lastName=lastName, email=email, password_hash=passh, username=username,confirmationHash=confirmationHash)
         db.session.add(register)
         db.session.commit()
-        flash(u'You were successfully registered', 'success')
+        flash(u'You were successfully registered! Please verify your email', 'success')
         return redirect(url_for("login"))
     return render_template("register.html")
 
+@app.route('/email/verification/<string:confirmationHash>/<string:email>',methods=['GET'])
+@app.route('/email/verification/<string:confirmationHash>/<string:email>/',methods=['GET'])
+def email(confirmationHash,email):
+    try:
+        email = unquote(email)
+        confirmationHash = unquote(confirmationHash)
+        user = User.query.filter_by(email=email, confirmed=False, confirmationHash=confirmationHash).first()
+        if user:
+            user.confirmed = True
+            user.confirmationHash = None
+            db.session.commit()
+            flash(u'Your email has been verified!', 'success')
+            return redirect(url_for('emailDone'))
+        else:
+            print("Not done")
+            flash(u'Code Invalid or expired', 'error')
+            return redirect(url_for('emailDone'))
+    except Exception as e:
+        print(e)
+        flash(u'Some Error Occured!', 'error')
+        return redirect(url_for('emailDone'))
 
-@app.route('/email',methods=['GET'])
-def email():
-    return render_template('email.html')
+@app.route('/email/done',methods=['GET'])
+@app.route('/email/done/',methods=['GET'])
+def emailDone():
+    return render_template('emailDone.html')
 
 # End of Test Routes for new UI
+
+
+# Google Auth Based Routes
+@app.route('/google/login')
+@no_cache
+def loginGoogle():
+    sessionObj = OAuth2Session(CLIENT_ID, CLIENT_SECRET,
+                               scope=AUTHORIZATION_SCOPE,
+                               redirect_uri=AUTH_REDIRECT_URI)
+
+    uri, state = sessionObj.authorization_url(AUTHORIZATION_URL)
+    session[AUTH_STATE_KEY] = state
+    session.permanent = True
+    return redirect(uri, code=302)
+
+
+# noinspection PyArgumentList
+@app.route('/google/auth')
+@no_cache
+def google_auth_redirect():
+    req_state = request.args.get('state', default=None, type=None)
+
+    if req_state != session[AUTH_STATE_KEY]:
+        response = make_response('Invalid state parameter', 401)
+        return response
+
+    sessionObj = OAuth2Session(CLIENT_ID, CLIENT_SECRET,
+                               scope=AUTHORIZATION_SCOPE,
+                               state=session[AUTH_STATE_KEY],
+                               redirect_uri=AUTH_REDIRECT_URI)
+
+    oauth2_tokens = sessionObj.fetch_access_token(
+        ACCESS_TOKEN_URI,
+        authorization_response=request.url)
+    session[AUTH_TOKEN_KEY] = oauth2_tokens
+    user_info = get_user_info()
+    user = User.query.filter_by(email=user_info['email']).first()
+    if (not user):
+        firstName = user_info['given_name']
+        lastName = user_info['family_name']
+        email = user_info['email']
+        picture = user_info['picture']
+        locale = user_info['locale']
+        newUser = User(firstName=firstName, lastName=lastName, email=email, picture=picture, google_login=True,locale=locale,confirmed=True)
+        db.session.add(newUser)
+        db.session.commit()
+        login_user(newUser)
+    else:
+        login_user(user)
+    flash(u'You have been successfully logged in.', 'success')
+    return redirect(url_for('dashboard'))
+
+
+@app.route('/google/logout')
+@no_cache
+def googleLogout():
+    session.pop(AUTH_TOKEN_KEY, None)
+    session.pop(AUTH_STATE_KEY, None)
+    return redirect(BASE_URI, code=302)
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'images/favicon.ico', mimetype='image/vnd.microsoft.icon')
+
 
 # Warning CRTICAL ROUTE
 @app.route('/<string:short_url>', methods=['GET','POST'])
@@ -576,70 +703,6 @@ def routeit(short_url):
 
 # END OF CRITICAL ROUTE
 
-# Google Auth Based Routes
-@app.route('/google/login')
-@no_cache
-def loginGoogle():
-    sessionObj = OAuth2Session(CLIENT_ID, CLIENT_SECRET,
-                               scope=AUTHORIZATION_SCOPE,
-                               redirect_uri=AUTH_REDIRECT_URI)
-
-    uri, state = sessionObj.authorization_url(AUTHORIZATION_URL)
-    session[AUTH_STATE_KEY] = state
-    session.permanent = True
-    return redirect(uri, code=302)
-
-
-@app.route('/google/auth')
-@no_cache
-def google_auth_redirect():
-    req_state = request.args.get('state', default=None, type=None)
-
-    if req_state != session[AUTH_STATE_KEY]:
-        response = make_response('Invalid state parameter', 401)
-        return response
-
-    sessionObj = OAuth2Session(CLIENT_ID, CLIENT_SECRET,
-                               scope=AUTHORIZATION_SCOPE,
-                               state=session[AUTH_STATE_KEY],
-                               redirect_uri=AUTH_REDIRECT_URI)
-
-    oauth2_tokens = sessionObj.fetch_access_token(
-        ACCESS_TOKEN_URI,
-        authorization_response=request.url)
-    session[AUTH_TOKEN_KEY] = oauth2_tokens
-    user_info = get_user_info()
-    user = User.query.filter_by(email=user_info['email']).first()
-    if (not user):
-        firstName = user_info['given_name']
-        lastName = user_info['family_name']
-        email = user_info['email']
-        picture = user_info['picture']
-        locale = user_info['locale']
-        newUser = User(firstName=firstName, lastName=lastName, email=email, picture=picture, google_login=True,locale=locale)
-        db.session.add(newUser)
-        db.session.commit()
-        login_user(newUser)
-    else:
-        login_user(user)
-    flash(u'You have been successfully logged in.', 'success')
-    return redirect(url_for('dashboard'))
-
-
-@app.route('/google/logout')
-@no_cache
-def googleLogout():
-    session.pop(AUTH_TOKEN_KEY, None)
-    session.pop(AUTH_STATE_KEY, None)
-    return redirect(BASE_URI, code=302)
-
-
-@app.route('/favicon.ico')
-def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static'),
-                               'images/favicon.ico', mimetype='image/vnd.microsoft.icon')
-
-
 @app.errorhandler(404)
 def not_found(error):
     return render_template('error404.html'), 404
@@ -648,3 +711,7 @@ def not_found(error):
 @app.errorhandler(500)
 def not_found(error):
     return render_template('error500.html'), 500
+
+@app.errorhandler(CSRFError)
+def csrf_error(reason):
+    return render_template('csrf_error.html', reason=reason), 400

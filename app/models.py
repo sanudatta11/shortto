@@ -37,6 +37,9 @@ class User(UserMixin,db.Model):
     birthday = db.Column(db.Date)
     personal_phone = db.Column(db.String(20))
 
+    confirmed = db.Column(db.Boolean, default=False)
+    confirmationHash = db.Column(db.String(1000))
+
     # Google Stuff
     google_login = db.Column(db.Boolean,default=False)
     locale = db.Column(db.String(30))

@@ -21,8 +21,13 @@ BCRYPT_LOG_ROUNDS = 12
 
 SQLALCHEMY_DATABASE_URI = RDS_PROTOCOL+'://'+RDS_USER+':'+RDS_PASS+'@'+RDS_HOST+':'+RDS_PORT+'/'+RDS_DBNAME
 # SQLALCHEMY_DATABASE_URI = 'mysql://root:mysql@127.0.0.1:3306/shortto'
-BASE_URL = 'https://www.shortto.com/'
+if os.environ.get('ENVIRONMENT') == 'DEVELOPEMENT':
+    BASE_URL = 'http://localhost:5000/'
+else:
+    BASE_URL = 'https://www.shortto.com/'
 SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
+
+SIGNUP_TEMPLATE_ID = "d-636a67c919f34360aadccd1b49ee2c67"
 
 blacklist = [
     'shortto.com',
