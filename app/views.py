@@ -651,11 +651,12 @@ def google_auth_redirect():
         db.session.add(newUser)
         db.session.commit()
         login_user(newUser)
+    elif(user.google_login == False):
+        flash(u'Your account is created via Password! Please login via Password!.', 'error')
     else:
         login_user(user)
     flash(u'You have been successfully logged in.', 'success')
     return redirect(url_for('dashboard'))
-
 
 @app.route('/google/logout')
 @no_cache
