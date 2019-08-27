@@ -15,7 +15,7 @@ from flask_bcrypt import generate_password_hash, check_password_hash
 
 from app import app, db, login_manager , csrf
 from app.models import Links, User, Announcement, Bundle
-from config import BCRYPT_LOG_ROUNDS, Auth, blacklist, BASE_URL, SIGNUP_TEMPLATE_ID
+from config import BCRYPT_LOG_ROUNDS, Auth, blacklist, BASE_URL, SIGNUP_TEMPLATE_ID, SIGNUP_COMPLETE_ID
 
 from flask_login import current_user, login_user, login_required, logout_user
 from functools import wraps
@@ -553,7 +553,7 @@ def register():
         try:
             sendgrid_client = SendGridAPIClient(os.environ.get('MAIL_SENDGRID_API_KEY'))
             from_email = 'support@shortto.com'
-            mail = Mail(from_email=from_email, subject='Welcome!', to_emails=email)
+            mail = Mail(from_email=from_email, subject='Welcome to Short To!', to_emails=email)
             URI = BASE_URL + 'email/verification/' + str(confirmationHash) + '/' + str(email)
             mail.dynamic_template_data = {
                 'firstName' : firstName,
@@ -572,7 +572,7 @@ def register():
         register = User(firstName=firstName, lastName=lastName, email=email, password_hash=passh, username=username,confirmationHash=confirmationHash)
         db.session.add(register)
         db.session.commit()
-        flash(u'You were successfully registered! Please verify your email', 'success')
+        flash(u'You were successfully registered! Please verify your email. Check your Spam Folders too!', 'success')
         return redirect(url_for("login"))
     return render_template("register.html")
 
@@ -651,6 +651,22 @@ def google_auth_redirect():
         db.session.add(newUser)
         db.session.commit()
         login_user(newUser)
+        try:
+            sendgrid_client = SendGridAPIClient(os.environ.get('MAIL_SENDGRID_API_KEY'))
+            from_email = 'support@shortto.com'
+            mail = Mail(from_email=from_email, subject='Welcome to ShortTo!', to_emails=email)
+            mail.dynamic_template_data = {
+                'firstName' : firstName
+            }
+            mail.template_id = SIGNUP_COMPLETE_ID
+            response = sendgrid_client.send(mail)
+            # print(response.status_code)
+            # print(response.body)
+            # print(response.headers)
+        except Exception as e:
+            print(e)
+            flash(u'Email Confirmation Error!','error')
+            return redirect(url_for('dashboard'))
     elif(user.google_login == False):
         flash(u'Your account is created via Password! Please login via Password!.', 'error')
     else:

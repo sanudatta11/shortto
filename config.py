@@ -28,6 +28,7 @@ else:
 SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
 
 SIGNUP_TEMPLATE_ID = "d-636a67c919f34360aadccd1b49ee2c67"
+SIGNUP_COMPLETE_ID = "d-e9e3012381a04bd382adc83e5042ca2e"
 
 blacklist = [
     'shortto.com',
@@ -74,9 +75,9 @@ blacklist = [
 class Auth:
     CLIENT_ID = os.environ['CLIENT_ID']
     CLIENT_SECRET = os.environ['CLIENT_SECRET']
-    BASE_URI = 'http://localhost:5000/checkLogin'
-    DASH_URI = 'http://localhost:5000/dashboard'
-    REDIRECT_URI = 'http://localhost:5000/google/auth'
+    BASE_URI = BASE_URL + 'checkLogin'
+    DASH_URI = BASE_URL + 'dashboard'
+    REDIRECT_URI = BASE_URL + 'google/auth'
     AUTH_URI = 'http://accounts.google.com/o/oauth2/auth'
     TOKEN_URI = 'http://accounts.google.com/o/oauth2/token'
     USER_INFO = 'http://www.googleapis.com/userinfo/v2/me'
