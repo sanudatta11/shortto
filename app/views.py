@@ -373,7 +373,6 @@ def bundle_add_url():
     return redirect(url_for('dashboard'))
 
 @app.route('/archieve/<short_url>',methods=['GET'])
-@app.errorhandler(CSRFError)
 @login_required_save_post
 def archieve_url(short_url):
     if short_url:
@@ -395,7 +394,6 @@ def archieve_url(short_url):
 
 @app.route('/bundle/add', methods=['POST'])
 @app.route('/bundle/add/', methods=['POST'])
-@app.errorhandler(CSRFError)
 @login_required_save_post
 def bundle_add():
     bundle_name = request.form['bundle_name']
@@ -412,7 +410,6 @@ def bundle_add():
 
 @app.route('/bundle/edit', methods=['POST'])
 @app.route('/bundle/edit/', methods=['POST'])
-@app.errorhandler(CSRFError)
 @login_required_save_post
 def bundle_edit():
     new_bundle_name = request.form['new_bundle_name']
@@ -430,7 +427,6 @@ def bundle_edit():
 
 @app.route('/bundle/delete', methods=['POST'])
 @app.route('/bundle/delete/', methods=['POST'])
-@app.errorhandler(CSRFError)
 @login_required_save_post
 def bundle_delete():
     try:
