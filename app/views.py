@@ -672,6 +672,7 @@ def google_auth_redirect():
             return redirect(url_for('dashboard'))
     elif(user.google_login == False):
         flash(u'Your account is created via Password! Please login via Password!.', 'error')
+        return redirect(url_for('login'))
     else:
         login_user(user)
     flash(u'You have been successfully logged in.', 'success')
