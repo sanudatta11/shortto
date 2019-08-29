@@ -5,9 +5,9 @@ import validators
 import random, string
 import datetime
 try:
-    from urllib.parse import urlparse
+    from urllib.parse import unquote
 except ImportError:
-     from urlparse import urlparse
+     from urlparse import unquote
 import hashlib
 from flask import json, flash
 from flask import render_template, flash, redirect, request, session, make_response, current_app, send_from_directory, \
