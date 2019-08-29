@@ -19,7 +19,7 @@ let statusMessages = {
 let statusCodes = [404,403,304,300,500];
 
 let api_key = "4VzBZpEtuk8gthQrqsp4k6AhsvtzfPjT6m2mERuk";
-let appurl = "https://api.shortto.com/v3";
+let appurl = "https://apiv2.shortto.com/v2";
 let qrAPI = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=";
 
 $(document).ready(function () {
