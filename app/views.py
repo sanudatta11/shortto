@@ -4,7 +4,10 @@ import requests
 import validators
 import random, string
 import datetime
-from urllib.parse import unquote
+try:
+    from urllib.parse import urlparse
+except ImportError:
+     from urlparse import urlparse
 import hashlib
 from flask import json, flash
 from flask import render_template, flash, redirect, request, session, make_response, current_app, send_from_directory, \
