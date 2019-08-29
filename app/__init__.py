@@ -5,7 +5,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
-from flask_wtf.csrf import CSRFProtect
 
 app = Flask(__name__)
 
@@ -18,7 +17,6 @@ app.config['JWT_SECRET_KEY'] = os.urandom(24)  # Change this!
 app.config['SECRET_KEY'] = os.urandom(24)  # Change this!
 
 application = app
-csrf = CSRFProtect(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.session_protection = "strong"

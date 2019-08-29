@@ -12,11 +12,10 @@ import hashlib
 from flask import json, flash
 from flask import render_template, flash, redirect, request, session, make_response, current_app, send_from_directory, \
     url_for
-from flask_wtf.csrf import CSRFError
 from werkzeug.security import safe_str_cmp
 from flask_bcrypt import generate_password_hash, check_password_hash
 
-from app import app, db, login_manager , csrf
+from app import app, db, login_manager
 from app.models import Links, User, Announcement, Bundle
 from config import BCRYPT_LOG_ROUNDS, Auth, blacklist, BASE_URL, SIGNUP_TEMPLATE_ID, SIGNUP_COMPLETE_ID
 
@@ -159,7 +158,6 @@ def changetomd5(long_url, count=0):
 # End of Short URL Def
 
 @app.route('/', methods=['GET'])
-@app.errorhandler(CSRFError)
 def index():
     tot_users = User.query.count()
     tot_urls = Links.query.count()
@@ -171,7 +169,6 @@ def index():
 @app.route('/dashboard', methods=['GET'])
 @app.route('/dashboard/', methods=['GET'])
 @login_required
-@app.errorhandler(CSRFError)
 def dashboard():
     announcement_to_publish = Announcement.query.filter(Announcement.end_date > datetime.datetime.utcnow()).order_by(
         Announcement.id.desc()).first()
@@ -195,7 +192,6 @@ def dashboard():
 @app.route('/dashboard/shorten', methods=['POST'])
 @app.route('/dashboard/shorten/', methods=['POST'])
 @login_required_save_post
-@app.errorhandler(CSRFError)
 def dashboardShorten():
     try:
         if request.method == 'POST':
@@ -277,7 +273,6 @@ def dashboardShorten():
         return redirect(url_for('login'))
 
 @app.route('/link/edit/<short_url>', methods=['GET','POST'])
-@app.errorhandler(CSRFError)
 @login_required_save_post
 def link_edit(short_url):
     link = Links.query.filter(Links.short_url == short_url, Links.user == current_user).first()
@@ -296,7 +291,6 @@ def link_edit(short_url):
         return redirect(url_for('dashboard'))
 
 @app.route('/link/delete/', methods=['POST'])
-@app.errorhandler(CSRFError)
 @login_required_save_post
 def link_delete():
     short_url = request.form['short_url']
@@ -312,7 +306,6 @@ def link_delete():
 
 @app.route('/profile', methods=['GET', 'POST'])
 @app.route('/profile/', methods=['GET', 'POST'])
-@app.errorhandler(CSRFError)
 @login_required_save_post
 def profile():
     if request.method == "POST":
@@ -338,7 +331,6 @@ def profile():
 
 @app.route('/bundles', methods=['GET'])
 @app.route('/bundles/', methods=['GET'])
-@app.errorhandler(CSRFError)
 @login_required_save_post
 def bundle():
     bundle_data = Bundle.query.filter_by(user=current_user).all()
@@ -356,7 +348,6 @@ def bundle():
 
 @app.route('/bundle/add/url', methods=['POST'])
 @app.route('/bundle/add/url/', methods=['POST'])
-@app.errorhandler(CSRFError)
 @login_required_save_post
 def bundle_add_url():
     short_url = request.form.get('short_url')
@@ -728,7 +719,3 @@ def not_found(error):
 @app.errorhandler(500)
 def not_found(error):
     return render_template('error500.html'), 500
-
-@app.errorhandler(CSRFError)
-def csrf_error(reason):
-    return render_template('csrf_error.html', reason=reason), 400
