@@ -1,7 +1,7 @@
 FROM ubuntu:16.04
 LABEL maintainer Soumyajit Dutta "sanudatta11@gmail.com"
 RUN apt-get update -y && \
-    apt-get install python-pip python-dev -y && \
+    apt-get install python3-pip python3-dev -y && \
     apt install libmysqlclient-dev -y && \
     apt install nginx -y && \
     apt install -y build-essential
@@ -11,7 +11,7 @@ COPY ./requirements-prod.txt /app/requirements.txt
 
 WORKDIR /app
 
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
 
 COPY nginx.conf /etc/nginx
 
