@@ -1,7 +1,7 @@
 FROM ubuntu:18.04
 LABEL maintainer Soumyajit Dutta "sanudatta11@gmail.com"
 RUN apt-get update -y && \
-    apt-get install python3-pip python3-dev && \
+    apt-get install -y python3-pip python3-dev && \
     apt install libmysqlclient-dev -y && \
     apt install nginx -y && \
     apt install -y build-essential
