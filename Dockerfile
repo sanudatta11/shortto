@@ -9,13 +9,14 @@ RUN apt-get update -y && \
 # We copy just the requirements.txt first to leverage Docker cache
 COPY ./requirements-prod.txt /app/requirements.txt
 
-#WORKDIR /app
+WORKDIR /app
+
+COPY . /app
 
 RUN pip3 install -r requirements.txt
 
 #COPY nginx.conf /etc/nginx
 #
-#COPY . /app
 
 CMD ["python3", "application.py" ]
 #RUN chmod +x ./start.sh
