@@ -628,7 +628,7 @@ def loginGoogle():
 @no_cache
 def google_auth_redirect():
     req_state = request.args.get('state', default=None, type=None)
-
+    print("Request State=",req_state)
     if req_state != session[AUTH_STATE_KEY]:
         response = make_response('Invalid state parameter', 401)
         return response
