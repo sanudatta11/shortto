@@ -13,12 +13,12 @@ WORKDIR /app
 
 RUN pip3 install -r requirements.txt
 
-COPY nginx.conf /etc/nginx
+#COPY nginx.conf /etc/nginx
+#
+#COPY . /app
 
-COPY . /app
-
-# CMD ["python", "application.py" ]
-RUN chmod +x ./start.sh
-CMD ["./start.sh"]
+CMD ["python3", "application.py" ]
+#RUN chmod +x ./start.sh
+#CMD ["./start.sh"]
 EXPOSE 80
 # EXPOSE 5000
