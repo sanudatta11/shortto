@@ -24,7 +24,7 @@ SQLALCHEMY_DATABASE_URI = RDS_PROTOCOL+'://'+RDS_USER+':'+RDS_PASS+'@'+RDS_HOST+
 if os.environ.get('ENVIRONMENT') == 'DEVELOPEMENT':
     BASE_URL = 'http://localhost:5000/'
 else:
-    BASE_URL = 'https://shortto.com/'
+    BASE_URL = 'http://shortto.com/'
 SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
 
 SIGNUP_TEMPLATE_ID = "d-636a67c919f34360aadccd1b49ee2c67"
