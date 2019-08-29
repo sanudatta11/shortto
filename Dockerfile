@@ -1,18 +1,17 @@
 FROM ubuntu:16.04
 LABEL maintainer Soumyajit Dutta "sanudatta11@gmail.com"
 RUN apt-get update -y && \
-    apt-get install python3-pip python3-dev -y && \
+    apt-get install python3-pip python3-dev python-pip python-dev -y && \
     apt install libmysqlclient-dev -y && \
     apt install nginx -y && \
-    apt install -y build-essential && \
-    apt install -y python3-venv
+    apt install -y build-essential
 
 # We copy just the requirements.txt first to leverage Docker cache
 COPY ./requirements-prod.txt /app/requirements.txt
 
 WORKDIR /app
-RUN python3 -m venv venv
 
+RUN pip install -r requirements.txt
 RUN pip3 install -r requirements.txt
 
 COPY nginx.conf /etc/nginx
