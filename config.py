@@ -75,9 +75,9 @@ blacklist = [
 class Auth:
     CLIENT_ID = os.environ['CLIENT_ID']
     CLIENT_SECRET = os.environ['CLIENT_SECRET']
-    BASE_URI = BASE_URL + 'checkLogin'
-    DASH_URI = BASE_URL + 'dashboard'
-    REDIRECT_URI = BASE_URL + 'google/auth'
+    BASE_URI = 'https://shortto.com/checkLogin'
+    DASH_URI = 'https://shortto.com/dashboard'
+    REDIRECT_URI = 'https://shortto.com/google/auth'
     AUTH_URI = 'http://accounts.google.com/o/oauth2/auth'
     TOKEN_URI = 'http://accounts.google.com/o/oauth2/token'
     USER_INFO = 'http://www.googleapis.com/userinfo/v2/me'

@@ -617,7 +617,7 @@ def loginGoogle():
                                scope=AUTHORIZATION_SCOPE,
                                redirect_uri=AUTH_REDIRECT_URI)
 
-    uri, state = sessionObj.authorization_url(AUTHORIZATION_URL)
+    uri, state = sessionObj.create_authorization_url(AUTHORIZATION_URL)
     session[AUTH_STATE_KEY] = state
     session.permanent = True
     return redirect(uri, code=302)
