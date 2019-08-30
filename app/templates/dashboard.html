@@ -232,9 +232,9 @@
                                             <div class="modal-contentlink">
                                                 <div class="panel-body">
                                                     <div class="copy-link-block">
-                                                        <span class="short-url">{{ messages }}</span>
+                                                        <span class="short-url" id="span-short-url">{{ messages }}</span>
                                                         <button class="btn btn-primary" id="copyurlmodal" type="button"
-                                                                data-clipboard-text="{{ messages }}">
+                                                                data-clipboard-text="{{ messages }}" onclick="copyToClipboard('#span-short-url')">
                                                             <i class="zmdi zmdi-copy"></i>
                                                         </button>
                                                     </div>
