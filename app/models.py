@@ -49,6 +49,7 @@ class User(UserMixin,db.Model):
     links = db.relationship("Links", backref="user", lazy=True)
     bundles = db.relationship("Bundle", backref="user", lazy=True)
     announcements = db.relationship('Announcement', backref='user', lazy=True)
+    forgotPassword = db.relationship('ForgotPassword', uselist=False, backref='user')
 
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow())
 
@@ -71,3 +72,9 @@ class Bundle(db.Model):
 
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow())
 
+class ForgotPassword(db.Model):
+    id = db.Column(db.Integer, primary_key=True,autoincrement=True)
+    resetHash = db.Column(db.String(1000))
+    expiration_date = db.Column(db.DateTime,default=datetime.datetime.now() + datetime.timedelta(days=1))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow())

@@ -16,8 +16,8 @@ from werkzeug.security import safe_str_cmp
 from flask_bcrypt import generate_password_hash, check_password_hash
 
 from app import app, db, login_manager
-from app.models import Links, User, Announcement, Bundle
-from config import BCRYPT_LOG_ROUNDS, Auth, blacklist, BASE_URL, SIGNUP_TEMPLATE_ID, SIGNUP_COMPLETE_ID
+from app.models import Links, User, Announcement, Bundle , ForgotPassword
+from config import BCRYPT_LOG_ROUNDS, Auth, blacklist, BASE_URL, SIGNUP_TEMPLATE_ID, SIGNUP_COMPLETE_ID, FORGOT_COMPLETE_ID , PASSWORD_RESET_SUCCESFULL_ID
 
 from flask_login import current_user, login_user, login_required, logout_user
 from functools import wraps
@@ -557,7 +557,7 @@ def register():
         except Exception as e:
             print(e)
             flash(u'Email Confirmation Error!','error')
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('login'))
 
         register = User(firstName=firstName, lastName=lastName, email=email, password_hash=passh, username=username,confirmationHash=confirmationHash)
         db.session.add(register)
@@ -710,6 +710,92 @@ def routeit(short_url):
 
 
 # END OF CRITICAL ROUTE
+
+@app.route('/forgotPassword',methods=['POST'])
+@app.route('/forgotPassword/',methods=['POST'])
+def forgotPassword():
+    g_captcha_response = request.form['g-captcha-client-key-2']
+    resp = recaptcha_validate(g_captcha_response, request.remote_addr)
+    email = request.form['email']
+    if not resp['status']:
+        print(resp)
+        flash(u'Recaptcha Validation Error', 'error')
+    elif not(email and validators.email(email)):
+        flash(u'Email Invalid!','error')
+    else:
+        resetHash = ''.join(random.choices(string.ascii_letters + string.digits, k=50))
+        user = User.query.filter_by(email=email).first()
+        if user:
+            if user.google_login == True:
+                flash(u'Your account is created via Google Login! Password reset not possible.','error')
+                return redirect(url_for('login'))
+            newForgot = ForgotPassword(resetHash=resetHash)
+            newForgot.user = user
+            try:
+                sendgrid_client = SendGridAPIClient(os.environ.get('MAIL_SENDGRID_API_KEY'))
+                from_email = 'support@shortto.com'
+                mail = Mail(from_email=from_email,to_emails=email)
+                URI = BASE_URL + 'user/forgot/' + str(resetHash) + '/' + str(email) + '/'
+                mail.dynamic_template_data = {
+                    'firstName' : user.firstName,
+                    'resetLink' : URI
+                }
+                mail.template_id = FORGOT_COMPLETE_ID
+                response = sendgrid_client.send(mail)
+                db.session.add(newForgot)
+                db.session.commit()
+                # print(response.status_code)
+                # print(response.body)
+                # print(response.headers)
+            except Exception as e:
+                print(e)
+                flash(u'Forgot Email Error!','error')
+                return redirect(url_for('login'))
+        flash(u'If an active account is associated with this email, you should receive a reset email shortly.','success')
+    return redirect(url_for('login'))
+
+@app.route('/user/forgot/<reset_hash>/<email>',methods=['GET','POST'])
+@app.route('/user/forgot/<reset_hash>/<email>/',methods=['GET','POST'])
+def forgotPasswordConfirm(reset_hash,email):
+    newForgot = ForgotPassword.query.filter_by(resetHash=reset_hash).first()
+    if newForgot and newForgot.user.email == email:
+        if request.method == 'GET':
+            return render_template('forgotPassword.html')
+        else:
+            password = request.form['password']
+            cpassword = request.form['cpassword']
+            if password != cpassword:
+                flash(u'Password Donot Match','warning')
+                return redirect(request.url)
+            else:
+                user = newForgot.user
+                if check_password_hash(user.password_hash,password):
+                    flash(u'Your current password matches with your old! Please provide a different Password.','error')
+                    return redirect(request.url)
+                user.password_hash = hash
+                db.session.delete(newForgot)
+                try:
+                    sendgrid_client = SendGridAPIClient(os.environ.get('MAIL_SENDGRID_API_KEY'))
+                    from_email = 'support@shortto.com'
+                    mail = Mail(from_email=from_email, to_emails=email,subject="Password Reset Successful")
+                    mail.dynamic_template_data = {
+                        'firstName': user.firstName
+                    }
+                    mail.template_id = PASSWORD_RESET_SUCCESFULL_ID
+                    response = sendgrid_client.send(mail)
+                    db.session.commit()
+                    flash(u'Password Reset Successful', 'success')
+                    return redirect(url_for('login'))
+                    # print(response.status_code)
+                    # print(response.body)
+                    # print(response.headers)
+                except Exception as e:
+                    print(e)
+                    flash(u'Forgot Email Error!', 'error')
+                    return redirect(url_for('login'))
+    else:
+        flash(u'Invalid Link! Please reset your password again','error')
+        return redirect(url_for('login'))
 
 @app.errorhandler(404)
 def not_found(error):

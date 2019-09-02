@@ -28,6 +28,8 @@ SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
 
 SIGNUP_TEMPLATE_ID = "d-636a67c919f34360aadccd1b49ee2c67"
 SIGNUP_COMPLETE_ID = "d-e9e3012381a04bd382adc83e5042ca2e"
+FORGOT_COMPLETE_ID = "d-6f540c2634e945928f5b6294111bd7ed"
+PASSWORD_RESET_SUCCESFULL_ID = "d-2bb9ac40f87542a1a27196aba7774acb"
 
 blacklist = [
     'shortto.com',

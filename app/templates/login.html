@@ -123,6 +123,16 @@ button ~ button {
                   </div>
                   <input type="hidden" id="g-captcha-client-key" name="g-captcha-client-key">
                </form>
+               <form class="live_form" id="forgot_form" role="form" action="{{ url_for('forgotPassword') }}" method="post">
+                    <div class="form-group">
+                        <input name="email" class="form-control" id="email1" type="email" placeholder="Email address">
+                        <i class="zmdi zmdi-email"></i>
+                    </div>
+                    <p></p>
+                    <button class="mdbtn btn btn-primary margin0" type="submit">Reset Password</button>
+                    <input type="hidden" id="g-captcha-client-key-2" name="g-captcha-client-key-2">
+                    <a class="pull-right" style="margin: 6px 0;" href="{{ url_for('login') }}">Back to login</a>
+			   </form>
             </div>
          </div>
       </section>

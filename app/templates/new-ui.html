@@ -138,6 +138,7 @@
     grecaptcha.ready(function () {
         grecaptcha.execute('6LdMyawUAAAAAL5rvA7qwC-5F2MfrXy0G2GwgWXU', {action: '/'}).then(function (token) {
             $('#g-captcha-client-key').val(token);
+            $('#g-captcha-client-key-2').val(token);
         });
     });
 </script>
@@ -250,6 +251,15 @@
             showAction: false
         });
     }
+</script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-108877136-1"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', 'UA-108877136-1', { 'optimize_id': 'GTM-TJQX55W'});
 </script>
 </body>
 </html>
