@@ -16,7 +16,7 @@
                             <button type="button" class="navbar-toggle pull-left quicklinks-toggle__btn">
                                 <i class="zmdi zmdi-menu"></i>
                             </button>
-                            <a class="navbar-brand" href="#">
+                            <a class="navbar-brand" href="{{ url_for('dashboard') }}">
                                 <img src="https://cdn.shortto.com/img/shortto-logo-transp.png"
                                      alt="ShortTo - Making Links Smarter">
                             </a>
@@ -500,11 +500,11 @@
                                 <p>To change the dimension of the QR code, add the size parameter to the url and then
                                     your
                                     desired dimension after copying. <br>(Max 500x500) e.g. ?size=300x300</p></div>
-                            <div class="panel panel-default panel-body" id="widget_export"><h3>Upgrade to export
-                                data</h3>
-                                <p>You can upgrade to export your URLs along with a summary of the stats as CSV.</p><a
-                                        class='btn btn-secondary' href='#/pricing'
-                                        rel='nofollow'>Upgrade</a></div>
+{#                            <div class="panel panel-default panel-body" id="widget_export"><h3>Upgrade to export#}
+{#                                data</h3>#}
+{#                                <p>You can upgrade to export your URLs along with a summary of the stats as CSV.</p><a#}
+{#                                        class='btn btn-secondary' href='#/pricing'#}
+{#                                        rel='nofollow'>Upgrade</a></div>#}
                         </div><!--/#widgets-->
                     </div><!--/.row-->
                     {% block footer %}
