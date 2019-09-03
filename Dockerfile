@@ -6,8 +6,8 @@ RUN apt-get update -y && \
     apt install nginx -y && \
     apt install -y build-essential
 
-RUN echo "deb https://repo.logdna.com stable main" | sudo tee /etc/apt/sources.list.d/logdna.list
-RUN wget -O- https://repo.logdna.com/logdna.gpg | sudo apt-key add -
+RUN echo "deb https://repo.logdna.com stable main" | tee /etc/apt/sources.list.d/logdna.list
+RUN wget -O- https://repo.logdna.com/logdna.gpg | apt-key add -
 RUN apt-get update
 RUN apt-get install logdna-agent < "/dev/null" # this line needed for copy/paste
 RUN logdna-agent -k b323e705204ab084acd3844a648ae13b # this is your unique Ingestion Key
