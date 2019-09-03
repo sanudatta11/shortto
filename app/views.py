@@ -255,7 +255,7 @@ def dashboardShorten():
             temp.user = current_user
             if password:
                 temp.password_protect = True
-                temp.password_hash = generate_password_hash(password, BCRYPT_LOG_ROUNDS).decode('utf-8')
+                temp.password_hash = generate_password_hash(password, BCRYPT_LOG_ROUNDS)
             if description:
                 temp.description = description
             if expiration_date:
@@ -282,7 +282,7 @@ def link_edit(short_url):
         else:
             new_password = request.form['password']
             link.password_protect = True
-            link.password_hash = generate_password_hash(new_password, BCRYPT_LOG_ROUNDS).decode('utf-8')
+            link.password_hash = generate_password_hash(new_password, BCRYPT_LOG_ROUNDS)
             db.session.commit()
             flash(u'Password has been successfully updated for the Link!', 'success')
         return redirect(url_for('link_edit', short_url=short_url))
@@ -320,7 +320,7 @@ def profile():
         elif len(password) < 5:
             flash(u"Password length less than 5 characters!", "warning")
         else:
-            passh = generate_password_hash(password, BCRYPT_LOG_ROUNDS).decode('utf-8')
+            passh = generate_password_hash(password, BCRYPT_LOG_ROUNDS)
             current_user.password_hash = passh
             db.session.commit()
             flash(u'Password updated successfully!', 'success')
@@ -538,7 +538,7 @@ def register():
             flash(u"Email is already registered!", "error")
         if error:
             return redirect(url_for("register"))
-        passh = generate_password_hash(passw, BCRYPT_LOG_ROUNDS).decode('utf-8')
+        passh = generate_password_hash(passw, BCRYPT_LOG_ROUNDS)
         confirmationHash = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
         try:
             sendgrid_client = SendGridAPIClient(os.environ.get('MAIL_SENDGRID_API_KEY'))
@@ -772,7 +772,7 @@ def forgotPasswordConfirm(reset_hash,email):
                 if check_password_hash(user.password_hash,password):
                     flash(u'Your current password matches with your old! Please provide a different Password.','error')
                     return redirect(request.url)
-                user.password_hash = hash
+                user.password_hash = generate_password_hash(password,BCRYPT_LOG_ROUNDS)
                 db.session.delete(newForgot)
                 try:
                     sendgrid_client = SendGridAPIClient(os.environ.get('MAIL_SENDGRID_API_KEY'))
@@ -785,14 +785,10 @@ def forgotPasswordConfirm(reset_hash,email):
                     response = sendgrid_client.send(mail)
                     db.session.commit()
                     flash(u'Password Reset Successful', 'success')
-                    return redirect(url_for('login'))
-                    # print(response.status_code)
-                    # print(response.body)
-                    # print(response.headers)
                 except Exception as e:
                     print(e)
                     flash(u'Forgot Email Error!', 'error')
-                    return redirect(url_for('login'))
+                return redirect(url_for('login'))
     else:
         flash(u'Invalid Link! Please reset your password again','error')
         return redirect(url_for('login'))
