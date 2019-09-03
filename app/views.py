@@ -678,38 +678,10 @@ def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'images/favicon.ico', mimetype='image/vnd.microsoft.icon')
 
+@app.route('/debug-sentry')
+def trigger_error():
+    division_by_zero = 1 / 0
 
-# Warning CRTICAL ROUTE
-@app.route('/<string:short_url>', methods=['GET','POST'])
-@app.route('/<string:short_url>/', methods=['GET','POST'])
-def routeit(short_url):
-    if request.method == "GET":
-        link = Links.query.filter_by(short_url=short_url).first()
-        if link:
-            if link.password_protect:
-                return render_template('password_url.html')
-            else:
-                link.clicks += 1
-                db.session.commit()
-                url = link.big_url
-                if not validators.url(url):
-                    return render_template('index.html', url_error=True)
-                return redirect(url, code=302)
-    elif request.method == "POST":
-        password = request.form['password']
-        if password:
-            link = Links.query.filter_by(short_url=short_url).first()
-            if link and check_password_hash(link.password_hash,password):
-                return redirect(link.big_url,code=302)
-            else:
-                flash(u'Link or Password incorrect!','error')
-                return redirect(url_for('routeit',short_url=short_url))
-        flash(u'Password not appropriate!', 'error')
-        return redirect(url_for('routeit', short_url=short_url))
-    return render_template('notfound.html')
-
-
-# END OF CRITICAL ROUTE
 
 @app.route('/forgotPassword',methods=['POST'])
 @app.route('/forgotPassword/',methods=['POST'])
@@ -794,6 +766,39 @@ def forgotPasswordConfirm(reset_hash,email):
     else:
         flash(u'Invalid Link! Please reset your password again','error')
         return redirect(url_for('login'))
+
+
+# Warning CRTICAL ROUTE
+@app.route('/<string:short_url>', methods=['GET','POST'])
+@app.route('/<string:short_url>/', methods=['GET','POST'])
+def routeit(short_url):
+    if request.method == "GET":
+        link = Links.query.filter_by(short_url=short_url).first()
+        if link:
+            if link.password_protect:
+                return render_template('password_url.html')
+            else:
+                link.clicks += 1
+                db.session.commit()
+                url = link.big_url
+                if not validators.url(url):
+                    return render_template('index.html', url_error=True)
+                return redirect(url, code=302)
+    elif request.method == "POST":
+        password = request.form['password']
+        if password:
+            link = Links.query.filter_by(short_url=short_url).first()
+            if link and check_password_hash(link.password_hash,password):
+                return redirect(link.big_url,code=302)
+            else:
+                flash(u'Link or Password incorrect!','error')
+                return redirect(url_for('routeit',short_url=short_url))
+        flash(u'Password not appropriate!', 'error')
+        return redirect(url_for('routeit', short_url=short_url))
+    return render_template('notfound.html')
+
+
+# END OF CRITICAL ROUTE
 
 @app.errorhandler(404)
 def not_found(error):

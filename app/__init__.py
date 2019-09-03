@@ -5,6 +5,13 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
+import sentry_sdk
+from sentry_sdk.integrations.flask import FlaskIntegration
+
+sentry_sdk.init(
+    dsn="https://8cfab95e9e164c649ad16f0e9ca70f32@sentry.io/1550025",
+    integrations=[FlaskIntegration()]
+)
 
 app = Flask(__name__)
 
