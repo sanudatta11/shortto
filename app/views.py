@@ -678,10 +678,6 @@ def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'images/favicon.ico', mimetype='image/vnd.microsoft.icon')
 
-@app.route('/debug-sentry')
-def trigger_error():
-    division_by_zero = 1 / 0
-
 
 @app.route('/forgotPassword',methods=['POST'])
 @app.route('/forgotPassword/',methods=['POST'])
