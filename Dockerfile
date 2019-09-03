@@ -7,18 +7,6 @@ RUN apt-get update -y && \
     apt-get install -y build-essential && \
     apt-get install -y wget
 
-RUN echo "deb https://repo.logdna.com stable main" | tee /etc/apt/sources.list.d/logdna.list
-RUN wget -O- https://repo.logdna.com/logdna.gpg | apt-key add -
-RUN apt-get update
-RUN apt-get install logdna-agent < "/dev/null" # this line needed for copy/paste
-RUN logdna-agent -k b323e705204ab084acd3844a648ae13b
-# /var/log is monitored/added by default (recursively), optionally add more dirs with:
-# sudo logdna-agent -d /path/to/log/folders
-# You can configure the agent to tag your hosts with:
-# sudo logdna-agent -t mytag,myothertag
-RUN update-rc.d logdna-agent defaults
-RUN /etc/init.d/logdna-agent start
-
 # We copy just the requirements.txt first to leverage Docker cache
 COPY ./requirements-prod.txt /app/requirements.txt
 
