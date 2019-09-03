@@ -4,13 +4,14 @@ RUN apt-get update -y && \
     apt-get install -y python3-pip python3-dev && \
     apt install libmysqlclient-dev -y && \
     apt install nginx -y && \
-    apt install -y build-essential
+    apt install -y build-essential && \
+    apt install -y wget
 
 RUN echo "deb https://repo.logdna.com stable main" | tee /etc/apt/sources.list.d/logdna.list
 RUN wget -O- https://repo.logdna.com/logdna.gpg | apt-key add -
 RUN apt-get update
 RUN apt-get install logdna-agent < "/dev/null" # this line needed for copy/paste
-RUN logdna-agent -k b323e705204ab084acd3844a648ae13b # this is your unique Ingestion Key
+RUN logdna-agent -k b323e705204ab084acd3844a648ae13b
 # /var/log is monitored/added by default (recursively), optionally add more dirs with:
 # sudo logdna-agent -d /path/to/log/folders
 # You can configure the agent to tag your hosts with:
