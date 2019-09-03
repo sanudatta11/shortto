@@ -255,7 +255,7 @@ def dashboardShorten():
             temp.user = current_user
             if password:
                 temp.password_protect = True
-                temp.password_hash = generate_password_hash(password, BCRYPT_LOG_ROUNDS)
+                temp.password_hash = generate_password_hash(password, BCRYPT_LOG_ROUNDS).decode('utf-8')
             if description:
                 temp.description = description
             if expiration_date:
@@ -282,7 +282,7 @@ def link_edit(short_url):
         else:
             new_password = request.form['password']
             link.password_protect = True
-            link.password_hash = generate_password_hash(new_password, BCRYPT_LOG_ROUNDS)
+            link.password_hash = generate_password_hash(new_password, BCRYPT_LOG_ROUNDS).decode('utf-8')
             db.session.commit()
             flash(u'Password has been successfully updated for the Link!', 'success')
         return redirect(url_for('link_edit', short_url=short_url))
@@ -320,7 +320,7 @@ def profile():
         elif len(password) < 5:
             flash(u"Password length less than 5 characters!", "warning")
         else:
-            passh = generate_password_hash(password, BCRYPT_LOG_ROUNDS)
+            passh = generate_password_hash(password, BCRYPT_LOG_ROUNDS).decode('utf-8')
             current_user.password_hash = passh
             db.session.commit()
             flash(u'Password updated successfully!', 'success')
@@ -538,7 +538,7 @@ def register():
             flash(u"Email is already registered!", "error")
         if error:
             return redirect(url_for("register"))
-        passh = generate_password_hash(passw, BCRYPT_LOG_ROUNDS)
+        passh = generate_password_hash(passw, BCRYPT_LOG_ROUNDS).decode('utf-8')
         confirmationHash = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
         try:
             sendgrid_client = SendGridAPIClient(os.environ.get('MAIL_SENDGRID_API_KEY'))
