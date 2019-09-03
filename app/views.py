@@ -757,6 +757,8 @@ def forgotPassword():
 @app.route('/user/forgot/<reset_hash>/<email>',methods=['GET','POST'])
 @app.route('/user/forgot/<reset_hash>/<email>/',methods=['GET','POST'])
 def forgotPasswordConfirm(reset_hash,email):
+    reset_hash = unquote(reset_hash)
+    email = unquote(email)
     newForgot = ForgotPassword.query.filter_by(resetHash=reset_hash).first()
     if newForgot and newForgot.user.email == email:
         if request.method == 'GET':
