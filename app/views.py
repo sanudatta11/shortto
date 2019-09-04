@@ -616,9 +616,10 @@ def loginGoogle():
 def google_auth_redirect():
     req_state = request.args.get('state', default=None, type=None)
     print("Request State=",req_state)
-    if req_state != session[AUTH_STATE_KEY]:
-        response = make_response('Invalid state parameter', 401)
-        return response
+    print("Request State 2=",session.get(AUTH_STATE_KEY,'not set'))
+    if req_state != session.get(AUTH_STATE_KEY,'not set'):
+        flash(u'Some Error Occured! Please try again','error')
+        redirect(url_for('login'))
 
     sessionObj = OAuth2Session(CLIENT_ID, CLIENT_SECRET,
                                scope=AUTHORIZATION_SCOPE,
@@ -769,6 +770,7 @@ def forgotPasswordConfirm(reset_hash,email):
 @app.route('/<string:short_url>/', methods=['GET','POST'])
 def routeit(short_url):
     if request.method == "GET":
+        short_url = re.sub('[^0-9a-zA-Z-_]+', '', short_url)
         link = Links.query.filter_by(short_url=short_url).first()
         if link:
             if link.password_protect:
