@@ -174,7 +174,7 @@ def dashboard():
         Announcement.id.desc()).first()
     sort_method = request.args.get('sort')
     top_urls = user_links = Links.query.filter(Links.user==current_user,Links.archieved==False).order_by(Links.clicks.desc()).all()
-    bundles = Bundle.query.filter(Links.user==current_user,Links.archieved==False).all()
+    bundles = Bundle.query.filter(Bundle.user==current_user).all()
     if sort_method == "newest":
         user_links = Links.query.filter(Links.user==current_user,Links.archieved==False).order_by(Links.created_at.desc()).all()
     elif sort_method == "popular":
