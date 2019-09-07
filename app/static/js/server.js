@@ -15,7 +15,7 @@ let statusMessages = {
   300 : "Short URL is already Used",
   500 : "Create Loop has occured! Contact Admin.",
   501 : "Maximum Length of 50 Characters Exceeded in Custom URL!",
-  502 : "Long URL is not Deceptive,Phising or Malicious! Cannot short. For dispute email at support@shortto.com"
+  502 : "Long URL is Deceptive,Phising or Malicious! Cannot short. For dispute email at support@shortto.com"
 };
 let statusCodes = [404,403,304,300,500,501,502];
 
@@ -87,7 +87,7 @@ $(document).ready(function () {
           $('.shortbtnz').find('#spinner-remove').fadeOut("fast");
           $('#spinner-remove').remove();
           console.log(xhr.status);
-          if(parseInt(xhr.status) == 500 || parseInt(xhr.status) == 501){
+          if(parseInt(xhr.status) >= 500 && parseInt(xhr.status) <= 599){
             Snackbar.show({
               text: statusMessages[parseInt(xhr.status)],
               backgroundColor: '#cc3300',
