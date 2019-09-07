@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <title>URL Threat Detected</title>
+
+    <!-- Google font -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:700,900" rel="stylesheet">
+
+    <!-- Font Awesome Icon -->
+    <link type="text/css" rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/fontawesome.min.css"/>
+
+    <!-- Custom stlylesheet -->
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static',filename='css/threat.css') }}"/>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+		  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+</head>
+
+<body>
+
+<div id="notfound">
+    <div class="notfound-bg"></div>
+    <div class="notfound">
+        <div class="notfound-404">
+            <h1>Deceptive site!</h1>
+        </div>
+        <h2>The Page you were trying to shorten contains malicious code.If its not your website, Attackers can trick you into doing something dangerous
+            like installing software or revealing your personal information.</h2>
+        <h2>
+            Threats detected:<br>
+            {% with messages = get_flashed_messages(category_filter=["error"]) %}
+                {% if messages %}
+                        {% for message in messages %}
+                            <span>{{ message }}</span> <br>
+                        {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </h2>
+
+        <a href="{{ url_for('dashboard') }}" class="home-btn">Go Home</a>
+        <a href="mailto:support@shortto.com?Subject=URL%20False%20Positive" class="contact-btn">Report False</a>
+{#        <div class="notfound-social">#}
+{#            <a href="#"><i class="fa fa-facebook"></i></a>#}
+{#            <a href="#"><i class="fa fa-twitter"></i></a>#}
+{#            <a href="#"><i class="fa fa-pinterest"></i></a>#}
+{#            <a href="#"><i class="fa fa-google-plus"></i></a>#}
+{#        </div>#}
+        <footer>If you think this is an error. Please email us to <a href="mailto:support@shortto.com?Subject=URL%20False%20Positive">support@shortto.com</a>  and we will whitelist your website after proper check!</footer>
+    </div>
+</div>
+
+</body><!-- This templates was made by Colorlib (https://colorlib.com) -->
+
+</html>

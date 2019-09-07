@@ -14,10 +14,10 @@ from flask import render_template, flash, redirect, request, session, make_respo
     url_for
 from werkzeug.security import safe_str_cmp
 from flask_bcrypt import generate_password_hash, check_password_hash
-
+from pysafebrowsing import SafeBrowsing
 from app import app, db, login_manager
 from app.models import Links, User, Announcement, Bundle , ForgotPassword
-from config import BCRYPT_LOG_ROUNDS, Auth, blacklist, BASE_URL, SIGNUP_TEMPLATE_ID, SIGNUP_COMPLETE_ID, FORGOT_COMPLETE_ID , PASSWORD_RESET_SUCCESFULL_ID
+from config import BCRYPT_LOG_ROUNDS, Auth, blacklist, BASE_URL, SIGNUP_TEMPLATE_ID, SIGNUP_COMPLETE_ID, FORGOT_COMPLETE_ID , PASSWORD_RESET_SUCCESFULL_ID, SAFE_BROWSING_KEY
 
 from flask_login import current_user, login_user, login_required, logout_user
 from functools import wraps
@@ -157,6 +157,28 @@ def changetomd5(long_url, count=0):
 
 # End of Short URL Def
 
+# Safe Browsing Functions
+
+def isSafeURL(url):
+    result = {}
+    if not validators.url(url):
+        result['status'] = False
+        result['reason'] = 'INVALID'
+        return result
+    safeBrowsingClient = SafeBrowsing(SAFE_BROWSING_KEY)
+    rawDict = safeBrowsingClient.lookup_urls([url])
+    json_str = json.dumps(rawDict)
+    result = json.loads(json_str)
+    if(result[url]['malicious'] == False):
+        result['status'] = True
+        return result
+    else:
+        result['status'] = False
+        result['reason'] = 'THREAT'
+        result['threats'] = result[url]['threats']
+        return result
+# End of Safe Browsing Functions
+
 @app.route('/', methods=['GET'])
 def index():
     tot_users = User.query.count()
@@ -188,10 +210,17 @@ def dashboard():
     return render_template('dashboard.html', announcement=announcement_to_publish, user_links=user_links,
                            current_date=datetime.datetime.now(), top_urls=top_urls,base_url=BASE_URL,bundles=bundles)
 
+@app.route('/error/url', methods=['GET'])
+@app.route('/error/url/', methods=['GET'])
+@login_required
+@no_cache
+def errorURL():
+    return render_template('threat.html')
 
 @app.route('/dashboard/shorten', methods=['POST'])
 @app.route('/dashboard/shorten/', methods=['POST'])
 @login_required_save_post
+@no_cache
 def dashboardShorten():
     try:
         if request.method == 'POST':
@@ -227,6 +256,13 @@ def dashboardShorten():
             if not validators.url(long_url):
                 flash(u'URL Provided is Invalid', 'error')
                 return redirect(url_for('dashboard'))
+
+            safeResult = isSafeURL(long_url)
+            if not safeResult['status']:
+                for threat in safeResult['threats']:
+                    print(threat)
+                    flash(u''+threat,'error')
+                return redirect(url_for('errorURL'))
 
             if short_url:
                 if not re.match("^[a-zA-Z]{4}[A-Za-z0-9-]+$", short_url):
