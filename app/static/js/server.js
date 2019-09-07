@@ -14,9 +14,10 @@ let statusMessages = {
   304 : "Short URL is Invalid",
   300 : "Short URL is already Used",
   500 : "Create Loop has occured! Contact Admin.",
-  501 : "Maximum Length of 50 Characters Exceeded in Custom URL!"
-}
-let statusCodes = [404,403,304,300,500];
+  501 : "Maximum Length of 50 Characters Exceeded in Custom URL!",
+  502 : "Long URL is not Deceptive,Phising or Malicious! Cannot short. For dispute email at support@shortto.com"
+};
+let statusCodes = [404,403,304,300,500,501,502];
 
 let api_key = "4VzBZpEtuk8gthQrqsp4k6AhsvtzfPjT6m2mERuk";
 let appurl = "https://apiv2.shortto.com/v2";
