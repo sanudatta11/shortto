@@ -45,6 +45,7 @@ CLIENT_SECRET = os.environ.get("CLIENT_SECRET") or Auth.CLIENT_SECRET
 
 AUTH_TOKEN_KEY = 'auth_token'
 AUTH_STATE_KEY = 'auth_state'
+AUTH_STATE_KEY_T = 'auth_state_2'
 
 random_length = 7
 max_url_length = 50
@@ -641,7 +642,9 @@ def loginGoogle():
                                redirect_uri=AUTH_REDIRECT_URI)
 
     uri, state = sessionObj.create_authorization_url(AUTHORIZATION_URL)
+    print("State before adding=",state)
     session[AUTH_STATE_KEY] = state
+    print("State after adding=",session[AUTH_STATE_KEY])
     session.permanent = True
     return redirect(uri, code=302)
 
@@ -654,8 +657,8 @@ def google_auth_redirect():
     print("Request State=",req_state)
     print("Request State 2=",session.get(AUTH_STATE_KEY,'not set'))
     if req_state != session.get(AUTH_STATE_KEY,'not set'):
-        flash(u'Some Error Occured! Please try again','error')
-        redirect(url_for('login'))
+        flash(u'Mobile Login Error! Try again in a Laptop/Computer!','error')
+        return redirect(url_for('login'))
 
     sessionObj = OAuth2Session(CLIENT_ID, CLIENT_SECRET,
                                scope=AUTHORIZATION_SCOPE,
