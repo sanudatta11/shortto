@@ -718,6 +718,16 @@ def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'images/favicon.ico', mimetype='image/vnd.microsoft.icon')
 
+@app.route('/pushbots-push-manifest.json')
+def pushbotManifest():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'pushbots-push-manifest.json')
+@app.route('/pushbots-worker.js')
+def pushBotWorker():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'pushbots-worker.js')
+
+
 
 @app.route('/forgotPassword',methods=['POST'])
 @app.route('/forgotPassword/',methods=['POST'])
