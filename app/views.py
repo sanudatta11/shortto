@@ -727,7 +727,11 @@ def pushBotWorker():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'pushbots-worker.js')
 
-
+@app.route('/robots.txt',methods=['GET'])
+@app.route('/robots.txt/',methods=['GET'])
+def robots():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'robots.txt')
 
 @app.route('/forgotPassword',methods=['POST'])
 @app.route('/forgotPassword/',methods=['POST'])
