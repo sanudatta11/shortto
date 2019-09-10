@@ -732,6 +732,11 @@ def pushBotWorker():
 def robots():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'robots.txt')
+@app.route('/sitemap.xml',methods=['GET'])
+@app.route('/sitemap.xml/',methods=['GET'])
+def sitemap():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'sitemap.xml')
 
 @app.route('/forgotPassword',methods=['POST'])
 @app.route('/forgotPassword/',methods=['POST'])

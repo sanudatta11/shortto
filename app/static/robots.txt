@@ -1,4 +1,5 @@
 # Welcome to ShortTo =)
 # robots welcome;
+Sitemap: https://www.shortto.com/sitemap.xml
 User-Agent: *
 Disallow:
