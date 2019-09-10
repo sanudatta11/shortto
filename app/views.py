@@ -9,7 +9,7 @@ try:
 except ImportError:
      from urlparse import unquote
 import hashlib
-from flask import json, flash
+from flask import json, flash, abort
 from flask import render_template, flash, redirect, request, session, make_response, current_app, send_from_directory, \
     url_for
 from werkzeug.security import safe_str_cmp
@@ -831,6 +831,8 @@ def routeit(short_url):
                 if not validators.url(url):
                     return render_template('index.html', url_error=True)
                 return redirect(url, code=302)
+        else:
+            abort(404)
     elif request.method == "POST":
         password = request.form['password']
         if password:
@@ -844,14 +846,21 @@ def routeit(short_url):
         return redirect(url_for('routeit', short_url=short_url))
     return render_template('notfound.html')
 
-
 # END OF CRITICAL ROUTE
 
 @app.errorhandler(404)
 def not_found(error):
-    return render_template('error404.html'), 404
+    return render_template('404.html'), 404
 
 
 @app.errorhandler(500)
-def not_found(error):
-    return render_template('error500.html'), 500
+def error500(error):
+    return render_template('500.html'), 500
+
+@app.errorhandler(501)
+def error501(error):
+    return render_template('501.html'), 501
+
+@app.errorhandler(502)
+def error502(error):
+    return render_template('502.html'), 502
