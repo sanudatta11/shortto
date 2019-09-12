@@ -861,6 +861,10 @@ def routeit(short_url):
 def not_found(error):
     return render_template('404.html'), 404
 
+@app.errorhandler(400)
+def not_received(error):
+    return render_template('400.html'), 400
+
 
 @app.errorhandler(500)
 def error500(error):
