@@ -69,7 +69,11 @@ blacklist = [
     'v.gd',
     'tr.im',
     'link.zip.net',
-    'tinyarrows.com'
+    'tinyarrows.com',
+    'bitly.su',
+    'bitly.in',
+    'bitly.su',
+    'shortl.link'
 ]
 
 
