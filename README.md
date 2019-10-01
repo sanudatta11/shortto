@@ -1,5 +1,8 @@
 # Welcome to ShortTo!
 
+[![Build Status](https://travis-ci.com/sanudatta11/shortto.svg?token=gPcP2zUgk4NKAqSZbKJG&branch=master)](https://travis-ci.com/sanudatta11/shortto)
+
+
 Using Flask to build a URL Shortening Service ShortTo
 
 Integration with  Flask-Cors, Flask-Testing, Flask-SQLalchemy,and Flask-OAuth and other extensions
