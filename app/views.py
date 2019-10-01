@@ -313,7 +313,7 @@ def dashboardShorten():
 @login_required_save_post
 def link_edit(short_url):
     link = Links.query.filter(Links.short_url == short_url, Links.user == current_user).first()
-    if link:
+    if link and request.form['password']:
         if request.method == 'GET':
             return render_template('edit_link.html',link=link)
         else:
@@ -324,7 +324,7 @@ def link_edit(short_url):
             flash(u'Password has been successfully updated for the Link!', 'success')
         return redirect(url_for('link_edit', short_url=short_url))
     else:
-        flash(u'Link is invalid or not present', 'error')
+        flash(u'Link or Password is invalid or not present', 'error')
         return redirect(url_for('dashboard'))
 
 @app.route('/link/delete/', methods=['POST'])
