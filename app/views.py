@@ -31,6 +31,7 @@ import functools
 from authlib.client import OAuth2Session
 import google.oauth2.credentials
 import googleapiclient.discovery
+from sentry_sdk import last_event_id
 
 ACCESS_TOKEN_URI = 'https://www.googleapis.com/oauth2/v4/token'
 AUTHORIZATION_URL = 'https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent'
@@ -864,17 +865,17 @@ def not_found(error):
 
 @app.errorhandler(400)
 def not_received(error):
-    return render_template('400.html'), 400
+    return render_template('400.html',sentry_event_id=last_event_id()), 400
 
 
 @app.errorhandler(500)
 def error500(error):
-    return render_template('500.html'), 500
+    return render_template('500.html',sentry_event_id=last_event_id()), 500
 
 @app.errorhandler(501)
 def error501(error):
-    return render_template('501.html'), 501
+    return render_template('501.html',sentry_event_id=last_event_id()), 501
 
 @app.errorhandler(502)
 def error502(error):
-    return render_template('502.html'), 502
+    return render_template('502.html',sentry_event_id=last_event_id()), 502
