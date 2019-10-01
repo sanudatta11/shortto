@@ -19,4 +19,4 @@ deploy:
 
 notifications:
   email:
-    - build@shortto.com
+    - support@shortto.com
