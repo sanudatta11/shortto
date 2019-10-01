@@ -1,0 +1,22 @@
+# Config file for automatic testing at travis-ci.org
+sudo: required  # http://docs.travis-ci.com/user/migrating-from-legacy/
+language: python
+services:
+  - docker
+before_install:
+  - pip install awscli
+  - export PATH=$PATH:$HOME/.local/bin
+  - pip install -r requirements-prod.txt
+
+script:
+  - docker build -t $DOCKER_REPO .
+
+deploy:
+  provider: script
+  script: bash deploy/ecr.sh
+  on:
+    branch: master
+
+notifications:
+  email:
+    - build@shortto.com
