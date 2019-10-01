@@ -19,5 +19,7 @@ deploy:
 
 notifications:
   email:
-    if: branch = master
+    recipients:
       - support@shortto.com
+    on:
+      branch: master
