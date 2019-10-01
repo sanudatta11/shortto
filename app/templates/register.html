@@ -1,0 +1,77 @@
+{% extends "new-ui.html" %}
+{% block title %}
+   Register : ShortTo - Making Links Smarter
+{% endblock %}
+
+{% block body %}
+<section class="under-head-cont">
+	<div class="container">
+	
+		<div class="centered form">      
+				{% with messages = get_flashed_messages(category_filter=["success"]) %}
+                  {% if messages %}
+                    <div class="alert alert-success no-round">
+                      {% for message in messages %}
+                          <span>{{ message }}</span>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                {% endwith %}
+                {% with messages = get_flashed_messages(category_filter=["warning"]) %}
+                  {% if messages %}
+                  <div class="alert alert-warning no-round" style="color: white">
+                     {% for message in messages %}
+                     <span>{{ message }}</span>
+                     {% endfor %}
+                  </div>
+                  {% endif %}
+                {% endwith %}
+                {% with messages = get_flashed_messages(category_filter=["error"]) %}
+                  {% if messages %}
+                    <div class="alert alert-danger no-round">
+                      {% for message in messages %}
+                          <span>{{ message }}</span>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                {% endwith %}
+
+			<form role="form" class="live_form" id="login_form" method="post" action={{url_for('register')}}>
+				<p class="title">Get Started</p>
+				<div class="form-group">
+					<input type="text" class="form-control" id="firstName" placeholder="First Name" name="firstName" autofocus required>
+					<i class="zmdi zmdi-account"></i>
+				</div>
+				<div class="form-group">
+					<input type="text" class="form-control" id="lastName" placeholder="Last Name" name="lastName" autofocus required>
+					<i class="zmdi zmdi-account"></i>
+				</div>
+                <div class="form-group">
+					<input type="text" class="form-control" id="username" placeholder="Username" name="username" autofocus required>
+					<i class="zmdi zmdi-account"></i>
+				</div>
+				<div class="form-group">
+					<input type="email" class="form-control" id="email" placeholder="Email address" name="email" required>
+					<i class="zmdi zmdi-email"></i>
+				</div>
+				<div class="form-group">
+					<input type="password" class="form-control" id="pass" placeholder="Password" name="password" required>
+					<i class="zmdi zmdi-dialpad"></i>
+				</div>     
+				<div class="form-group">
+					<input type="password" class="form-control" id="pass2" placeholder="Confirm Password" name="cpassword" required>
+					<i class="zmdi zmdi-dialpad"></i>
+				</div>  
+				            
+				<div class="form-group">
+					<div class="round-check">
+						<input type="checkbox" name="terms" value="1" id="round-checkbox" required>
+                        <label for="round-checkbox">I agree to the <a href="{{ url_for('terms') }}" target="_blank"><b>Terms and Conditions</b></a>.</label>
+					</div>
+				</div>
+				<button type="submit" class="mdbtn btn btn-primary width100">Create account</button>
+			</form>        
+		</div>
+	</div>
+</section>           
+{% endblock %}

@@ -1,36 +1,38 @@
 import os
-
 from flask import Flask
-from flask_jwt_extended import (
-    JWTManager, jwt_required, create_access_token,
-    get_jwt_identity
-)
 from flask_cors import CORS, cross_origin
-from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
+from flask_migrate import Migrate
+from flask_bcrypt import Bcrypt
+from flask_login import LoginManager
+import sentry_sdk
+from sentry_sdk.integrations.flask import FlaskIntegration
+from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
+
+if os.environ.get('ENVIRONMENT') != 'DEVELOPEMENT':
+    sentry_sdk.init(
+        dsn="https://8cfab95e9e164c649ad16f0e9ca70f32@sentry.io/1550025",
+        integrations=[FlaskIntegration(),SqlalchemyIntegration()]
+    )
 
 app = Flask(__name__)
-limiter = Limiter(
-    app,
-    key_func=get_remote_address,
-    default_limits=["500 per day", "50 per hour"]
-)
+
+# LoginManager.login_view = "login"
+# LoginManager.login_message = u"Please Log in again!"
+# LoginManager.login_message_category = "error"
 
 # Setup the Flask-JWT-Extended extension
 app.config['JWT_SECRET_KEY'] = os.urandom(24)  # Change this!
-jwt = JWTManager(app)
+app.config['SECRET_KEY'] = os.urandom(24)  # Change this!
 
 application = app
 login_manager = LoginManager()
-
 login_manager.init_app(app)
-login_manager.login_view = "login"
 login_manager.session_protection = "strong"
-
 app.config.from_object('config')
 db = SQLAlchemy(app)
 cors = CORS(app)
+bcrypt = Bcrypt(app)
+migrate = Migrate(app, db)
 app.config['CORS_HEADERS'] = 'Content-Type'
 from app import views

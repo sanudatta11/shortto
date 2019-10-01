@@ -1,0 +1,818 @@
+{% extends "new-ui.html" %}
+{% block title %}
+    ShortTo - Dashboard
+{% endblock %}
+{% block navbar %}
+    <header class="app activeheadmenu">
+        <div class="navbar" role="navigation">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                                    data-target=".navbar-collapse">
+                                <i class="zmdi zmdi-more-vert"></i>
+                            </button>
+                            <button type="button" class="navbar-toggle pull-left quicklinks-toggle__btn">
+                                <i class="zmdi zmdi-menu"></i>
+                            </button>
+                            <a class="navbar-brand" href="#">
+                                <img src="https://cdn.shortto.com/img/shortto-logo-transp.png"
+                                     alt="ShortTo - Making Links Smarter">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="navbar-collapse collapse">
+                        <ul class="nav navbar-nav navbar-right">
+                            <li><a href="#/pricing" class="active">Support</a></li>
+                            <li><a href='{{ url_for('profile') }}'>My Account</a></li>
+                            <li><a href={{ url_for('logout') }}>Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+{% endblock %}
+{% block body %}
+    <div id="delete-modal" class="modal">
+        <form action="{{ url_for('link_delete') }}" method="post">
+            <div class="title">
+                <h4>Are you sure you want to proceed?</h4>
+            </div>
+            <input type="text" class="hidden" value="" name="short_url" id="delete_short_url" required readonly>
+            <p>Note that this action is permanent. Once you click proceed, you <strong>may not undo</strong> this. Click
+                anywhere outside this modal or click <a class="close-modal" href="#" rel="modal:close">close</a> to
+                close this.</p>
+            <button class="matbtn btn btn-success pull-right delete_modal_button" style="margin-left: 15px;"
+                    type="submit">Proceed
+            </button>
+        </form>
+    </div>
+    <div id="add-to-bundle-modal" class="modal" style="overflow: unset">
+        {% if bundles %}
+            <div class="title">
+                <h4>Add to bundle</h4>
+            </div>
+            <p style="display: block;">
+            <form role="form" action="{{ url_for('bundle_add_url') }}" method="post">
+                <div class="form-group">
+                    <label>URL</label>
+                    <input class="form-control" type="text" value="" id="url_to_add" readonly disabled>
+                    <input class="form-control hidden" type="text" value="" id="short_to_add" name="short_url" readonly
+                           required>
+                </div>
+                <div class="form-group">
+                    <label class="label-block">Choose Bundle
+                        <a class="btn btn-xs btn-primary pull-right" href="{{ url_for('bundle') }}">Create Bundle</a>
+                    </label>
+                    <select name="bundle_id" id="bundle_select_id">
+                        {% for bundle in bundles %}
+                            <option value="{{ bundle.id }}">{{ bundle.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button class="btn btn-primary" type="submit">Add to bundle</button>
+            </form>
+        {% else %}
+            <div class="title">Please create a Bundle First</div>
+            <a class="btn btn-xs btn-primary pull-right" href="{{ url_for('bundle') }}">Create Bundle</a>
+        {% endif %}
+    </div>
+    <section class="under-head-cont">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-2 sidebar" style="height: 1470px;">
+                    <div id="offnavmenu">
+                        <ul class="nav nav-sidebar nav-sidebarz">
+                            <li>
+                                <a href="{{ url_for('dashboard') }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                        <path fill="currentColor"
+                                              d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z"></path>
+                                    </svg>
+                                    Dashboard
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ url_for('bundle') }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                        <path fill="currentColor"
+                                              d="M12,16L19.36,10.27L21,9L12,2L3,9L4.63,10.27M12,18.54L4.62,12.81L3,14.07L12,21.07L21,14.07L19.37,12.8L12,18.54Z"/>
+                                    </svg>
+                                    Bundles
+                                </a>
+                            </li>
+                            <hr>
+                            <li class="locked">
+                                <a href="#/user/splash">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                        <path fill="currentColor"
+                                              d="M12,10L8,14H11V20H13V14H16M19,4H5C3.89,4 3,4.9 3,6V18A2,2 0 0,0 5,20H9V18H5V8H19V18H15V20H19A2,2 0 0,0 21,18V6A2,2 0 0,0 19,4Z"/>
+                                    </svg>
+                                    Splash Pages <span class="label label-secondary pull-right">Offline</span>
+                                </a>
+                            </li>
+                            <li class="locked">
+                                <a href="#/user/overlay">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                        <path fill="currentColor"
+                                              d="M5,2H19A1,1 0 0,1 20,3V13A1,1 0 0,1 19,14H5A1,1 0 0,1 4,13V3A1,1 0 0,1 5,2M6,4V12H18V4H6M20,17A1,1 0 0,1 19,18H5A1,1 0 0,1 4,17V16H20V17M20,21A1,1 0 0,1 19,22H5A1,1 0 0,1 4,21V20H20V21Z"/>
+                                    </svg>
+                                    Overlay Pages <span class="label label-secondary pull-right">Offline</span>
+                                </a>
+                            </li>
+                            <li class="locked">
+                                <a href="#/user/pixels">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                        <path fill="currentColor"
+                                              d="M14,8.5A1.5,1.5 0 0,0 12.5,10A1.5,1.5 0 0,0 14,11.5A1.5,1.5 0 0,0 15.5,10A1.5,1.5 0 0,0 14,8.5M14,12.5A1.5,1.5 0 0,0 12.5,14A1.5,1.5 0 0,0 14,15.5A1.5,1.5 0 0,0 15.5,14A1.5,1.5 0 0,0 14,12.5M10,17A1,1 0 0,0 9,18A1,1 0 0,0 10,19A1,1 0 0,0 11,18A1,1 0 0,0 10,17M10,8.5A1.5,1.5 0 0,0 8.5,10A1.5,1.5 0 0,0 10,11.5A1.5,1.5 0 0,0 11.5,10A1.5,1.5 0 0,0 10,8.5M14,20.5A0.5,0.5 0 0,0 13.5,21A0.5,0.5 0 0,0 14,21.5A0.5,0.5 0 0,0 14.5,21A0.5,0.5 0 0,0 14,20.5M14,17A1,1 0 0,0 13,18A1,1 0 0,0 14,19A1,1 0 0,0 15,18A1,1 0 0,0 14,17M21,13.5A0.5,0.5 0 0,0 20.5,14A0.5,0.5 0 0,0 21,14.5A0.5,0.5 0 0,0 21.5,14A0.5,0.5 0 0,0 21,13.5M18,5A1,1 0 0,0 17,6A1,1 0 0,0 18,7A1,1 0 0,0 19,6A1,1 0 0,0 18,5M18,9A1,1 0 0,0 17,10A1,1 0 0,0 18,11A1,1 0 0,0 19,10A1,1 0 0,0 18,9M18,17A1,1 0 0,0 17,18A1,1 0 0,0 18,19A1,1 0 0,0 19,18A1,1 0 0,0 18,17M18,13A1,1 0 0,0 17,14A1,1 0 0,0 18,15A1,1 0 0,0 19,14A1,1 0 0,0 18,13M10,12.5A1.5,1.5 0 0,0 8.5,14A1.5,1.5 0 0,0 10,15.5A1.5,1.5 0 0,0 11.5,14A1.5,1.5 0 0,0 10,12.5M10,7A1,1 0 0,0 11,6A1,1 0 0,0 10,5A1,1 0 0,0 9,6A1,1 0 0,0 10,7M10,3.5A0.5,0.5 0 0,0 10.5,3A0.5,0.5 0 0,0 10,2.5A0.5,0.5 0 0,0 9.5,3A0.5,0.5 0 0,0 10,3.5M10,20.5A0.5,0.5 0 0,0 9.5,21A0.5,0.5 0 0,0 10,21.5A0.5,0.5 0 0,0 10.5,21A0.5,0.5 0 0,0 10,20.5M3,13.5A0.5,0.5 0 0,0 2.5,14A0.5,0.5 0 0,0 3,14.5A0.5,0.5 0 0,0 3.5,14A0.5,0.5 0 0,0 3,13.5M14,3.5A0.5,0.5 0 0,0 14.5,3A0.5,0.5 0 0,0 14,2.5A0.5,0.5 0 0,0 13.5,3A0.5,0.5 0 0,0 14,3.5M14,7A1,1 0 0,0 15,6A1,1 0 0,0 14,5A1,1 0 0,0 13,6A1,1 0 0,0 14,7M21,10.5A0.5,0.5 0 0,0 21.5,10A0.5,0.5 0 0,0 21,9.5A0.5,0.5 0 0,0 20.5,10A0.5,0.5 0 0,0 21,10.5M6,5A1,1 0 0,0 5,6A1,1 0 0,0 6,7A1,1 0 0,0 7,6A1,1 0 0,0 6,5M3,9.5A0.5,0.5 0 0,0 2.5,10A0.5,0.5 0 0,0 3,10.5A0.5,0.5 0 0,0 3.5,10A0.5,0.5 0 0,0 3,9.5M6,9A1,1 0 0,0 5,10A1,1 0 0,0 6,11A1,1 0 0,0 7,10A1,1 0 0,0 6,9M6,17A1,1 0 0,0 5,18A1,1 0 0,0 6,19A1,1 0 0,0 7,18A1,1 0 0,0 6,17M6,13A1,1 0 0,0 5,14A1,1 0 0,0 6,15A1,1 0 0,0 7,14A1,1 0 0,0 6,13Z"/>
+                                    </svg>
+                                    Tracking Pixels <span class="label label-secondary pull-right">Offline</span>
+                                </a>
+                            </li>
+                            <li class="locked">
+                                <a href="#">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                        <path fill="currentColor"
+                                              d="M16.36,14C16.44,13.34 16.5,12.68 16.5,12C16.5,11.32 16.44,10.66 16.36,10H19.74C19.9,10.64 20,11.31 20,12C20,12.69 19.9,13.36 19.74,14M14.59,19.56C15.19,18.45 15.65,17.25 15.97,16H18.92C17.96,17.65 16.43,18.93 14.59,19.56M14.34,14H9.66C9.56,13.34 9.5,12.68 9.5,12C9.5,11.32 9.56,10.65 9.66,10H14.34C14.43,10.65 14.5,11.32 14.5,12C14.5,12.68 14.43,13.34 14.34,14M12,19.96C11.17,18.76 10.5,17.43 10.09,16H13.91C13.5,17.43 12.83,18.76 12,19.96M8,8H5.08C6.03,6.34 7.57,5.06 9.4,4.44C8.8,5.55 8.35,6.75 8,8M5.08,16H8C8.35,17.25 8.8,18.45 9.4,19.56C7.57,18.93 6.03,17.65 5.08,16M4.26,14C4.1,13.36 4,12.69 4,12C4,11.31 4.1,10.64 4.26,10H7.64C7.56,10.66 7.5,11.32 7.5,12C7.5,12.68 7.56,13.34 7.64,14M12,4.03C12.83,5.23 13.5,6.57 13.91,8H10.09C10.5,6.57 11.17,5.23 12,4.03M18.92,8H15.97C15.65,6.75 15.19,5.55 14.59,4.44C16.43,5.07 17.96,6.34 18.92,8M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
+                                    </svg>
+                                    Custom Domain <span class="label label-secondary pull-right">Offline</span>
+                                </a>
+                            </li>
+                            <hr>
+                            <li>
+                                <a href="#">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                        <path fill="currentColor"
+                                              d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>
+                                    </svg>
+                                    Public Profile<span class='label label-danger pull-right'>Offline</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                        <path fill="currentColor"
+                                              d="M20,8H4V6H20M20,18H4V12H20M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4Z"></path>
+                                    </svg>
+                                    Membership<span class='label label-danger pull-right'>Offline</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ url_for('profile') }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                        <path fill="currentColor"
+                                              d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z"></path>
+                                    </svg>
+                                    Settings
+                                </a>
+                            </li>
+                            <hr>
+                        </ul>
+                        <h3>Membership <span class="label label-primary pull-right">Offline</span>
+                        </h3>
+                        <div class="side-stats side-statz">
+                            <div>
+                                <p><i class="zmdi zmdi-link"></i> <span>0</span> <br>URLs</p>
+                            </div>
+                            <div>
+                                <p><i class="zmdi zmdi-mouse"></i> <span>0</span> <br>Clicks</p>
+                            </div>
+                            <div>
+                                <p><i class="zmdi zmdi-layers"></i> <span>0</span> <br>Bundles</p>
+                            </div>
+                            <div>
+                                <p><i class="zmdi zmdi-eye"></i> <span>0</span> <br>Bundles Views</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-10 content">
+                    <div class="row">
+                        <div id="user-content" class="col-md-8 no-padding-right">
+                            {% with messages = get_flashed_messages(category_filter=["success"]) %}
+                                {% if messages %}
+                                    <div class="alert alert-success no-round" style="color: white">
+                                        {% for message in messages %}
+                                            <span>{{ message }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            {% endwith %}
+                            {% with messages = get_flashed_messages(category_filter=["warning"]) %}
+                                {% if messages %}
+                                    <div class="alert alert-warning no-round" style="color: white">
+                                        {% for message in messages %}
+                                            <span>{{ message }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            {% endwith %}
+                            {% with messages = get_flashed_messages(category_filter=["error"]) %}
+                                {% if messages %}
+                                    <div class="alert alert-danger no-round" style="color: white">
+                                        {% for message in messages %}
+                                            <span>{{ message }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            {% endwith %}
+                            <!-- Shortener Form -->
+                            <br><br>
+                            {% with messages = get_flashed_messages(category_filter=["url-done"]) %}
+                                {% set messages = messages[0] %}
+                                {% if messages %}
+                                    <div class="overlaylink" style="display: block" id="url-done-modal">
+                                        <div class="link-shared" id="modal">
+                                            <div class="closelink">
+                                                <span><i class="zmdi zmdi-close"
+                                                         onclick="close_done_modal()"></i></span>
+                                            </div>
+                                            <div class="modal-contentlink">
+                                                <div class="panel-body">
+                                                    <div class="copy-link-block">
+                                                        <span class="short-url" id="span-short-url">{{ messages }}</span>
+                                                        <button class="btn btn-primary" id="copyurlmodal" type="button"
+                                                                data-clipboard-text="{{ messages }}" onclick="copyToClipboard('#span-short-url')">
+                                                            <i class="zmdi zmdi-copy"></i>
+                                                        </button>
+                                                    </div>
+                                                    <div class="qr">
+                                                        <img alt="URL Qr Code"
+                                                             src="https://api.qrserver.com/v1/create-qr-code/?data={{ messages }}&size=200x200">
+                                                        <a class="mdbtn btn btn-primary copy" href="{{ messages }}"
+                                                           target="_blank">Save QR Code</a>
+                                                    </div>
+                                                    <hr>
+                                                    <div class="share-message"><p>Share this on</p>
+                                                        <div class="share">
+                                                            <a title="Facebook" class="btn btn-facebook u_share"
+                                                               href="http://www.facebook.com/sharer.php?u={{ messages }}"
+                                                               target="_blank">
+                                                                <i class="zmdi zmdi-facebook"></i>
+                                                            </a>
+                                                            <a title="Twitter" class="btn btn-twitter u_share"
+                                                               href="https://twitter.com/share?url={{ messages }}"
+                                                               target="_blank">
+                                                                <i class="zmdi zmdi-twitter"></i>
+                                                            </a>
+                                                            <a title="Google Plus" class="btn btn-danger u_share"
+                                                               href="https://plus.google.com/share?url={{ messages }}"
+                                                               target="_blank">
+                                                                <i class="zmdi zmdi-google-plus"></i>
+                                                            </a>
+                                                            <a title="LinkedIn" class="btn btn-linkedin u_share"
+                                                               href="https://www.linkedin.com/shareArticle?mini=true&amp;url={{ messages }}"
+                                                               target="_blank">
+                                                                <i class="zmdi zmdi-linkedin"></i>
+                                                            </a>
+                                                            <a title="Pinterest" class="btn btn-pinterest u_share"
+                                                               href="https://pinterest.com/pin/create/button/?url={{ messages }}"
+                                                               target="_blank">
+                                                                <i class="zmdi zmdi-pinterest"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endwith %}
+                            <div class="p-relative">
+                                <form action="{{ url_for('dashboardShorten') }}" id="main-form" role="form"
+                                      method="post">
+                                    <div class="main-form">
+                                        <div class="row" id="single">
+                                            <div class="col-md-9 shortfieldz">
+                                                <i class="zmdi zmdi-link"></i>
+                                                <input type="text" class="form-control main-input"
+                                                       onclick="In_ShowPosInfo()" name="long_url" value=""
+                                                       placeholder="Paste a long url" autocomplete="off" required/>
+                                                <a href="#" class="advanced short-adv-sett" data-toggle="tooltip"
+                                                   title="Advanced Options"><i class="zmdi zmdi-settings"></i></a>
+                                            </div>
+                                            <div class="col-md-3 shortbtnz">
+                                                <button class="btn btn-default btn-block main-button"
+                                                        style="color:white" id="shortenurl" type="submit">Shorten
+                                                </button>
+                                                <!--<button class="btn btn-primary btn-block main-button" id="copyurl" type="button">Copy</button>-->
+                                            </div>
+                                        </div>
+                                        <div id="multiple" style="display: none">
+                                            <div class="form-group">
+                                                <textarea class="form-control main-textarea" name="urls" rows="5"
+                                                          placeholder="Paste up to 10 long urls. One URL per line."
+                                                          style="resize: vertical;" disabled></textarea>
+                                            </div>
+                                            <div class="shortbtnz" style="width: 100%;max-width: 150px;">
+                                                <button class="btn btn-primary btn-block main-button" id="shortenurl"
+                                                        type="button" style="border-radius: 0;" disabled>NA
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /.main-form -->
+                                    <div class="main-options clearfix" style="min-height:34px;position:relative;">
+                                        <select name="type" class="form-control">
+                                            <optgroup label="Redirection">
+                                                <option value="direct" selected>Direct</option>
+                                                {#                                 <option value="frame">Frame</option>#}
+                                                {#                                 <option value="splash">Splash</option>#}
+                                            </optgroup>
+                                        </select>
+                                        <ul class="form_opt short-multi-option" data-id="multiple-form"
+                                            data-callback="form_switch">
+                                            <li><a href="" class="last" data-value="1" disabled>Multiple - Coming
+                                                Soon</a></li>
+                                            <li><a href="" class="first current" data-value="0">Single</a></li>
+                                        </ul>
+                                    </div>
+                                    <!-- /.main-options -->
+                                    <div class="main-advanced slideup" style="display: block">
+                                        <div class="row">
+                                            <div class="col-md-6 col-sm-6">
+                                                <h3>Custom Alias</h3>
+                                                <p>If you need a custom alias, you can enter it below.(3-15
+                                                    Characters)</p>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon"><i
+                                                            class="zmdi zmdi-edit"></i></span>
+                                                    <input type="text" class="form-control" name="short_url"
+                                                           placeholder="Type your custom alias here" name="short_url"
+                                                           maxlength="15" autocomplete="off">
+                                                </div>
+                                            </div>
+                                            <!-- /.col-md-6 -->
+                                            <div class="col-md-6 col-sm-6">
+                                                <h3>Link Expiration</h3>
+                                                <p>Set an expiration date to disable the URL after this date.</p>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon"><i
+                                                            class="zmdi zmdi-calendar"></i></span>
+                                                    <input type="text" class="form-control" data-toggle="datepicker"
+                                                           name="expiration_date" id="expiry" name="expiration_date"
+                                                           autocomplete="off" placeholder="MM/DD/YYYY">
+                                                </div>
+                                            </div>
+                                            <!-- /.col-md-6 -->
+                                            <div class="col-md-6 col-sm-6" style="margin-top: 20px;">
+                                                <h3>Password Protect</h3>
+                                                <p>By adding a password, you can restrict the access of statistics.(4-16
+                                                    characters)</p>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon"><i
+                                                            class="zmdi zmdi-dialpad"></i></span>
+                                                    <input type="text" class="form-control" name="password" id="pass"
+                                                           name="password" placeholder="Type your password here"
+                                                           autocomplete="off" maxlength="16">
+                                                </div>
+                                            </div>
+                                            <!-- /.col-md-6 -->
+                                            <div class="col-md-6 col-sm-6" style="margin-top: 20px;">
+                                                <h3>Description</h3>
+                                                <p>This can be used to identify URLs on your account. (20 Chars max)</p>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon"><i
+                                                            class="zmdi zmdi-info"></i></span>
+                                                    <input type="text" class="form-control" name="description"
+                                                           name="description" placeholder="Type your description here"
+                                                           maxlength="20" autocomplete="off">
+                                                </div>
+                                            </div>
+                                            <!-- /.col-md-6 -->
+                                        </div>
+                                        <!--/.row -->
+                                        <!-- /.row -->
+                                        <hr>
+                                        <!-- /.row -->
+                                    </div>
+                                    <!-- /.main-advanced -->
+                                    <!-- recaptcha hidden token -->
+                                    <input type="hidden" id="g-captcha-client-key" name="g-captcha-client-key">
+                                </form>
+                                <!--/.form-->
+                            </div>
+                            <div class="main-content panel panel-default">
+                                <div class="toolbox">
+                                    <div class="postprogress" id="loading_indicator">
+                                        <div class="indeterminate"></div>
+                                    </div>
+                                    <form action="#/user/search" id="search">
+                                        <div class="search-group">
+                                            <input type="text" name="q" class="form-control"
+                                                   placeholder="Enter keyword and press enter." id="filter_text"
+                                                   onkeyup="filterURL()">
+                                            <i class="zmdi zmdi-search"></i>
+                                        </div>
+                                    </form>
+                                    <select name="sort" class="filter" data-key="sort">
+                                        <option selected>Select from below</option>
+                                        <option value="oldest">Oldest</option>
+                                        <option value="newest">Newest</option>
+                                        <option value="expired">Expired</option>
+                                        <option value="archieve">Archieve</option>
+                                        <option value="popular">Popular</option>
+                                    </select>
+
+                                </div>
+                                <!-- /.toolbox -->
+                                <div id="data-container">
+                                    <form action="#/user/delete" method="post" id="delete-all-urls">
+                                        <!-- /.return-ajax -->
+                                        <div class="url-container">
+                                            <table class="table urls-table table-striped table-bordered table-advance table-hover"
+                                                   id="urls-table">
+                                                <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th class="hidden-xs">Link</th>
+                                                    <th>Description</th>
+                                                    <th>Short link</th>
+                                                    <th>Clicks</th>
+                                                    <th></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {% for each_link in user_links %}
+                                                    <!--URL Repeat# -->
+                                                    <tr class="url-list" id="url-container-37450" data-id="37450">
+                                                        <td class="center">
+                                                            <div class="round-check toggle">
+                                                                <input name="delete-id[]" id="url-select-cbox37450"
+                                                                       type="checkbox" value="7xIT6">
+                                                                <label for="url-select-cbox37450">&nbsp;</label>
+                                                            </div>
+                                                        </td>
+                                                        <td class="hidden-xs">
+                                                            <h3 class="title">
+                                                                <img alt="Favicon"
+                                                                     src="https://www.google.com/s2/favicons?domain={{ each_link.big_url }}">
+                                                                {% if each_link.big_url|length>50 %}
+                                                                    <a href=""
+                                                                       target="_blank">{{ each_link.big_url[:50] }}....</a>
+                                                                {% else %}
+                                                                    <a href=""
+                                                                       target="_blank">{{ each_link.big_url }}</a>
+                                                                {% endif %}
+                                                            </h3>
+                                                            <p>
+                                                            </p>
+                                                            <ul class="toggle">
+                                                                <li class="lock-url-37450">
+                                                                    <a class="ajax_call" data-id="37450"
+                                                                       data-class="lock-url-37450" data-action="unlock">
+                                                                        <i class="glyphicon glyphicon-eye-close"></i>&nbsp;Private</a>
+                                                                </li>
+                                                                <li>
+                                                                    {% if each_link.created_at %}
+                                                                        {% set diff = (current_date - (each_link.created_at) ) %}
+                                                                        <a class="tooltip" href="#" data-content="Created {{ diff.days }} days ago"><span><i class="glyphicon glyphicon-calendar"></i></span></a>
+                                                                        <span><i class="glyphicon glyphicon-time"></i>&nbsp;{{ diff.days }} days ago</span>
+                                                                    {% else %}
+                                                                        <span><i class="glyphicon glyphicon-time"></i>&nbsp;Data not present</span>
+                                                                    {% endif %}
+
+                                                                </li>
+                                                                {% if  each_link.expiration %}
+                                                                    <li>
+                                                                        <a class="tooltip" href="#" data-content="Expiry on {{ each_link.expiration_date.strftime('%d-%m-%Y') }}"><span><i class="glyphicon glyphicon-calendar"></i></span></a>
+                                                                        <i class="zmdi zmdi-calendar"></i>&nbsp;&nbsp;{{ each_link.expiration_date.strftime('%d-%m-%Y') }}&nbsp;&nbsp;
+                                                                    </li>
+                                                                {% endif %}
+                                                                {% if each_link.password_protect %}
+                                                                    <li>
+                                                                        <a class="tooltip" href="#" data-content="Password Protected URL"><span><i class="glyphicon glyphicon-calendar"></i></span></a>
+                                                                        <i class="zmdi zmdi-lock"></i> Protected
+                                                                    </li>
+                                                                {% endif %}
+                                                            </ul>
+                                                        </td>
+                                                        <td class="center">
+                                                            <p class="link-description">{{ each_link.description }}</p>
+                                                        </td>
+                                                        <td class="va-middle">
+                                                            <div class="short-url">
+                                                                <a href="" target="_blank">
+                                                                    <p id="copyid{{ loop.index }}"><span
+                                                                            class="url-first-part">{{ config.BASE_URL }}</span><span
+                                                                            class="url-last-part">{{ each_link.short_url }}</span>
+                                                                </a>
+                                                                <p class="copy matbtn" data-clipboard-text=""
+                                                                   onclick='copyToClipboard("#copyid{{ loop.index }}")'>
+                                                                    Copy</p>
+                                                            </div>
+                                                        </td>
+                                                        <td class="center">
+                                                            <a class="link-clickz"
+                                                               target="_blank">{{ each_link.clicks }}</a>
+                                                        </td>
+                                                        <td class="center">
+                                                            <div class="dropdown In_dropdown">
+                                                                <a title="Options" class="cusdropdown-toggle"
+                                                                   id="urlLabel" aria-expanded="false"
+                                                                   aria-haspopup="true" href="javascript:void(0)"
+                                                                   type="button" data-toggle="dropdown">
+                                                                    <i class="zmdi zmdi-more-vert"></i>
+                                                                </a>
+                                                                <ul class="dropdown-menu dropdown-menu-right cusdropdown-menu"
+                                                                    aria-labelledby="urlLabel">
+                                                                    <li>
+                                                                        <a href="{{ url_for('link_edit',short_url=each_link.short_url) }}">Edit</a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a class="delete_choice" href="#delete-modal"
+                                                                           rel="modal:open"
+                                                                           data-delete-short="{{ each_link.short_url }}">Delete</a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a class="ajax_call add-to-bundle-button"
+                                                                           href="#add-to-bundle-modal"
+                                                                           rel="modal:open"
+                                                                           data-action="url_bundle_add"
+                                                                           data-short-url="{{ each_link.short_url }}"
+                                                                           data-title="Add to bundle"
+                                                                           data-content="Click to add to a bundle">
+                                                                            {% if each_link.bundle %}
+                                                                                Transfer from Bundle:
+                                                                                {{ each_link.bundle.name }}
+                                                                            {% else %}
+                                                                                Add to bundle
+                                                                            {% endif %}
+                                                                        </a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a class="ajax_call"
+                                                                           href="{{ url_for('archieve_url',short_url=each_link.short_url) }}"
+                                                                           data-id="37450" data-class="return-ajax"
+                                                                           data-action="archive">
+                                                                            {% if each_link.archieved %}
+                                                                                UnArchive
+                                                                            {% else %}
+                                                                                Archive
+                                                                            {% endif %}
+                                                                        </a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a class="ajax_call"
+                                                                           href="https://www.facebook.com/sharer.php?u={{ each_link.show_url() }}"
+                                                                           data-id="37450" data-class="return-ajax"
+                                                                           target="_blank">Share
+                                                                            on Facebook</a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a class="ajax_call"
+                                                                           href="https://twitter.com/share?url={{ each_link.show_url() }}&text=Check+out+this+url"
+                                                                           data-id="37450" data-class="return-ajax"
+                                                                           target="_blank">Share
+                                                                            on Twitter</a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <!-- /.url-list -->
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <!-- /.url-conainer -->
+                                    </form>
+                                </div>
+                                <!-- /#data-container -->
+                            </div>
+                            <!-- /.main-content -->
+                        </div>
+                        <!--/#user-content-->
+                        <div id="widgets" class="col-md-4">
+                            <div class='panel panel-default panel-body' id='widget_news'>
+                                <h3>Announcement</h3>
+                                {% if announcement %}
+                                    {{ announcement.text }}
+                                {% else %}
+                                    <p class='center'>No Announcement found...</p>
+                                {% endif %}
+                            </div>
+                            <div class='panel panel-dark panel-body' id='widget_countries'>
+                                <div id='country-map' style='width:100%;height:300px;'></div>
+                            </div>
+                            <div class='panel panel-default panel-body activities' id='widget_activities'
+                                 data-refresh='10000'>
+                                <h3>Recent Activities
+                                    <small class='pull-right'>Realtime</small>
+                                </h3>
+                                <p class='center'>No activities yet...</p>
+                            </div>
+                            <div class='panel panel-default panel-body' id='widget_top_urls'>
+                                <h3>Top URLs</h3>
+                                {% if top_urls %}
+                                    <ul>
+                                        {% for url in top_urls %}
+                                            <li>
+                                                <a href="" target="_blank">&nbsp;<img alt="favicon"
+                                                                                      src="https://www.google.com/s2/favicons?domain={{ url.big_url }}">
+                                                    {{ url.big_url[:30] }}{% if url.big_url | length > 30 %}
+                                                        ...{% endif %}
+                                                </a> -
+                                                <strong>{{ url.clicks }} Click</strong>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <p class='center'>No URLs found...</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <!--/#widgets-->
+                    </div>
+                    <!--/.row-->
+                    {% block footer %}
+                        <span></span>
+                    {% endblock %}
+                    <footer class="main nousrfoot" style="margin: 0px -15px;padding: 55px 20px 80px;">
+                        <div class="row">
+                            <div class="col-md-5">
+                                2019 &copy; ShortTo - Making Links Smarter.
+                            </div>
+                            <div class="col-md-7 text-right">
+                                <a href="{{ url_for('terms') }}" title='Terms and Conditions'>Terms and Conditions</a>
+                                <a href='{{ url_for('policy') }}' title='Developer'>GDPR Policy</a>
+                                <a href='#' title='Developer'>Developer</a>
+                                <a href='#' title='Contact'>Contact</a>
+                                <div class="languages">
+                                    <a class="active" id="show-language"><i class="zmdi zmdi-globe"></i> Language</a>
+                                    <div class="langs">
+                                        <a href='#'>English</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+                <!--/.content-->
+            </div>
+            <!--/.row-->
+        </div>
+        <!--/.container-->
+    </section>
+{% endblock %}
+{% block customjs %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+    <script type="text/javascript">
+        var lang = {
+            "del": "Delete",
+            "url": "URL",
+            "count": "Country",
+            "copied": "Copied",
+            "geo": "Geotargeting data for",
+            "error": "Please enter a valid URL.",
+            "success": "URL has been successfully shortened. Click Copy or CRTL+C to Copy it.",
+            "stats": "You can access the statistic page via this link",
+            "copy": "Copied to clipboard.",
+            "from": "Redirect from",
+            "to": "Redirect to",
+            "share": "Share this on",
+            "congrats": "Congratulation! Your URL has been successfully shortened. You can share it on Facebook or Twitter by clicking the links below.",
+            "qr": "Save QR Code",
+            "continue": "Continue",
+            "cookie": "This website uses cookies to ensure you get the best experience on our website.",
+            "cookieok": "Got it!",
+            "cookiemore": "Learn more"
+        };
+    </script>
+    <script src="http://cdn.shortto.com/js/jvector.js"></script>
+    <script type="text/javascript" src="http://cdn.shortto.com/js/jvector.world.js"></script>
+    <script type='text/javascript'>
+        var data = [];
+        $('#country-map').vectorMap({
+            map: 'world_mill_en',
+            backgroundColor: 'transparent',
+            series: {
+                regions: [{
+                    values: data,
+                    scale: ['#74CBFA', '#0da1f5'],
+                    normalizeFunction: 'polynomial'
+                }]
+            },
+            onRegionLabelShow: function (e, el, code) {
+                if (typeof data[code] != 'undefined') el.html(el.html() + ' (' + data[code] + ' Clicks)');
+            }
+        });
+    </script>
+    <script type="text/javascript">
+        $(window).on("scroll", function () {
+            if ($(window).scrollTop() > 50) {
+                $("header").addClass("activehead");
+            } else {
+                //remove the background property so it comes transparent again (defined in your css)
+                $("header").removeClass("activehead");
+            }
+        });
+
+        function In_headerFunction() {
+            var element = $("header");
+            element.toggleClass("activeheadmenu2");
+        }
+
+        function In_ShowPosInfo() {
+            $(".short-adv-sett").fadeIn(100);
+            $(".main-index-top #main-form .main-options").slideDown(100);
+        }
+
+        //Custom Link Modal
+        var $modallink = $('.link-shared'),
+            $overlaylink = $('.overlaylink'),
+            $showModallink = $('.show-modal'),
+            $closelink = $('.closelink');
+
+        function In_ShowLinkModal() {
+            e.preventDefault();
+            var windowHeight = $(window).height(),
+                windowWidth = $(window).width(),
+                modalWidth = windowWidth / 2; //50% of window
+            $overlaylink.show();
+            $modallink.css({
+                'width': modalWidth,
+                'margin-left': -modalWidth / 2
+            });
+        }
+
+        $closelink.on('click', function () {
+            $overlaylink.hide();
+        });
+
+        function copyToClipboard(element) {
+            var $temp = $("<input>");
+            $("body").append($temp);
+            $temp.val($(element).text()).select();
+            document.execCommand("copy");
+            $temp.remove();
+        }
+
+        $('.delete_choice').click(function () {
+            console.log("SS", $(this).attr('data-delete-short'));
+            $('#delete_short_url').val($(this).attr('data-delete-short'))
+        });
+        $('.add-to-bundle-button').click(function () {
+            short_url = $(this).attr('data-short-url');
+            console.log(short_url);
+            let base_url = "{{ base_url }}";
+            $('#url_to_add').val(base_url + short_url);
+            $('#short_to_add').val(short_url);
+        });
+        //Sidebar Menu
+        $(document).on('click', '.quicklinks-toggle__btn', function () {
+            $('body').addClass('menu_active');
+        });
+        $('#focus-overlay').on('click', function () {
+            $('body').removeClass('menu_active');
+        });
+        //Smooth Scroll
+        $('a[href*="#"]').not('[href="#"]').not('[href="#0"]').click(function (t) {
+            if (location.pathname.replace(/^\//, "") === this.pathname.replace(/^\//, "") && location.hostname == this.hostname) {
+                var e = $(this.hash);
+                (e = e.length ? e : $("[name=" + this.hash.slice(1) + "]")).length && (t.preventDefault(), $("html, body").animate({
+                    scrollTop: e.offset().top
+                }, 1e3, function () {
+                    var t = $(e);
+                    if (t.focus(), t.is(":focus")) return !1;
+                    t.attr("tabindex", "-1"), t.focus()
+                }))
+            }
+        })
+
+        function filterURL() {
+            // Declare variables
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("filter_text");
+            filter = input.value.toUpperCase();
+            console.log("Filter", filter);
+            table = document.getElementById("urls-table");
+            tr = table.getElementsByTagName("tr");
+            // Loop through all table rows, and hide those who don't match the search query
+            console.log("Len=", tr.length);
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[1];
+                if (td) {
+                    txtValue = td.textContent || td.innerText || td.innerHTML;
+                    console.log("Txt", txtValue);
+                    console.log(txtValue);
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+
+        function close_done_modal() {
+            $('#url-done-modal').hide();
+        }
+    </script>
+{% endblock %}
+
+{% block customcss %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css"/>
+{% endblock %}

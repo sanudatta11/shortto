@@ -1,0 +1,214 @@
+body{
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+nav{
+    font-family: Helvetica;
+    display: flex;
+    justify-content: flex-end;
+    font-size: 16px;
+    position: absolute;
+    width: 100vw;
+    z-index: 99999;
+    a{
+        text-decoration: none;
+        color: black;
+    }
+
+    span{
+        margin: 2em 0em;
+    }
+    #contact{
+        margin: 2em 3em;
+        padding: 0 20px;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        border-radius: 20px;
+        background: linear-gradient(to right, #4E79C8, #6299F0);
+        
+        a{
+            color: rgba(255,255,255,0.8);
+        }
+    }
+
+    @media only screen and (max-width: 620px){
+        #contact{
+            margin: 2em 1em;
+        }
+        &{
+            font-size: 16px;
+        }
+    }
+
+}
+
+main{
+    .text{
+        width: 30vw;
+        height: 50vh;
+        background-size: 100% 100%;
+        position: absolute;
+        top: 15%;
+        left: 50%;
+        transform: translate(-50%,0%);
+        z-index: 1;
+        animation: view 4s ease;
+        
+        @media only screen and ( max-width: 1000px){
+            &{  
+                top: -12%;
+                width: 50vw;
+                height: 70vw;
+            }
+        }
+        @media only screen and ( max-width: 750px){
+            &{  
+                top: 2%;
+                width: 50vw;
+                height: 70vw;
+            }
+        }
+        @media only screen and ( max-width: 500px){
+            &{  
+                top: 15%;
+                width: 50vw;
+                height: 70vw;
+            }
+        }
+        @media only screen and ( max-width: 400px){
+            &{  
+                top: 2%;
+                width: 70vw;
+                height: 90vw;
+            }
+        }
+    }
+    .textBack{
+        width: 100vw;
+        height: 100vh;
+        background: url('../svg/404Back.svg') no-repeat center;
+        background-size: 100% 100%;
+        position: absolute;
+        top: 0%;
+        left: 50%;
+        z-index: -999999;
+        transform: translate(-50%,0%);
+    }
+    .caption{
+        // position: absolute;
+        // top: 55%;
+        // left: 50%;
+        // z-index: 2;
+        // transform: translate(-60%,0%);
+        
+        .captionText{
+            text-align: center;
+            font-family: Helvetica;
+            position: absolute;
+            width: 100%;
+            top: 55%;
+            font-size: 2em;  
+            font-weight: 100;
+            transform: translateX(0);
+            letter-spacing: 3px;
+            animation: view 5s ease;
+        }
+        @media only screen and (max-width: 620px){
+            &{
+                .captionText{
+                    top: 50%;
+                    font-size: 1.5em;
+                }
+            }
+        }
+    }
+    // caption ends
+    .buildings{
+        width: 100%;
+        height: 100vh;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        z-index: 0;
+        .vec1{
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            background: url('../svg/Vector1.svg') no-repeat;
+            background-position: bottom;
+            background-size: 100% 10%;
+            z-index: -1;
+            animation: animate 2s ease;
+        }
+        .vec2{
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            background: url('../svg/Vector2.svg') no-repeat;
+            background-position: bottom;
+            background-size: 100% 20%;
+            z-index: -2;
+            animation: animate 1.5s ease;
+        }
+        .vec3{
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            background: url('../svg/Vector3.svg') no-repeat;
+            background-position: bottom;
+            background-size: 100% 45%; 
+            z-index: -3;
+            animation: animate 1s ease;
+        }
+        .vec4{
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            background: url('../svg/Vector4.svg') no-repeat;
+            background-position: bottom;
+            background-size: 100% 40%;
+            z-index: -4;
+            animation: animate .6s ease;
+        }
+        @media only screen and (max-width: 786px){
+            .vec1{
+                background-size: 100% 10%;
+            }
+            .vec2{
+                background-size: 100% 20%;
+            }
+            .vec3{
+                background-size: 100% 45%;
+            }
+            .vec4{
+                background-size: 100% 40%;
+            }
+        }
+    }
+    // building ends
+}
+
+// animations
+@keyframes animate{
+    from{
+        transform: translateY(100%);
+    }
+    to{
+        transform: translateY(0%);
+    }
+}
+@keyframes view{
+    0%{
+        opacity: 0;
+    }
+    50%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+}

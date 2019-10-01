@@ -1,0 +1,5 @@
+404 - No LONG URL
+403 - URL Blacklisted
+304 - Short URL is invalid
+300 - URL Already Used
+500 - Create loop Occured
