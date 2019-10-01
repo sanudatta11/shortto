@@ -310,13 +310,14 @@ def dashboardShorten():
         return redirect(url_for('login'))
 
 @app.route('/link/edit/<short_url>', methods=['GET','POST'])
+@app.route('/link/edit/<short_url>/', methods=['GET','POST'])
 @login_required_save_post
 def link_edit(short_url):
     link = Links.query.filter(Links.short_url == short_url, Links.user == current_user).first()
-    if link and request.form['password']:
+    if link:
         if request.method == 'GET':
             return render_template('edit_link.html',link=link)
-        else:
+        elif request.form['password']:
             new_password = request.form['password']
             link.password_protect = True
             link.password_hash = generate_password_hash(new_password, BCRYPT_LOG_ROUNDS)
