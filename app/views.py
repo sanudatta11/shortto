@@ -206,10 +206,11 @@ def isSafeURL(url):
 
 @app.route('/', methods=['GET'])
 def index():
-    tot_users = User.query.count()
-    tot_urls = Links.query.count()
-    tot_clicks_obj = db.session.query(Links, db.func.sum(Links.clicks))
-    tot_clicks = tot_clicks_obj[0][1]
+    stat_obj = Stats.query.filter_by(id=1).first()
+    tot_users = stat_obj.tot_users
+    tot_urls = stat_obj.total_urls
+#     tot_clicks_obj = db.session.query(Links, db.func.sum(Links.clicks))
+    tot_clicks = stat_obj.total_clicks
     return render_template('index.html', tot_clicks=tot_clicks, tot_urls=tot_urls,tot_users=tot_users)
 
 
