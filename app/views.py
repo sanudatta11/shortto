@@ -16,7 +16,7 @@ from werkzeug.security import safe_str_cmp
 from flask_bcrypt import generate_password_hash, check_password_hash
 from pysafebrowsing import SafeBrowsing
 from app import app, db, login_manager
-from app.models import Links, User, Announcement, Bundle , ForgotPassword
+from app.models import Links, User, Announcement, Bundle , ForgotPassword , Stats
 from config import BCRYPT_LOG_ROUNDS, Auth, blacklist, BASE_URL, SIGNUP_TEMPLATE_ID, SIGNUP_COMPLETE_ID, FORGOT_COMPLETE_ID , PASSWORD_RESET_SUCCESFULL_ID, SAFE_BROWSING_KEY
 
 from flask_login import current_user, login_user, login_required, logout_user
@@ -31,6 +31,7 @@ import functools
 from authlib.client import OAuth2Session
 import google.oauth2.credentials
 import googleapiclient.discovery
+from sentry_sdk import last_event_id
 
 ACCESS_TOKEN_URI = 'https://www.googleapis.com/oauth2/v4/token'
 AUTHORIZATION_URL = 'https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent'
@@ -158,6 +159,29 @@ def changetomd5(long_url, count=0):
 
 # End of Short URL Def
 
+#Update Stats Functions
+
+def increase_urls():
+    stat_obj = Stats.query.filter_by(id=1).first()
+    stat_obj.total_urls = stat_obj.total_urls + 1
+    db.session.commit()
+    return 1
+
+def increase_clicks():
+    stat_obj = Stats.query.filter_by(id=1).first()
+    stat_obj.total_clicks = stat_obj.total_clicks + 1
+    db.session.commit()
+    return 1
+
+def increase_users():
+    stat_obj = Stats.query.filter_by(id=1).first()
+    stat_obj.total_users = stat_obj.total_users + 1
+    db.session.commit()
+    return 1
+
+#End of Update Stats Functions
+
+
 # Safe Browsing Functions
 
 def isSafeURL(url):
@@ -182,10 +206,18 @@ def isSafeURL(url):
 
 @app.route('/', methods=['GET'])
 def index():
-    tot_users = User.query.count()
-    tot_urls = Links.query.count()
-    tot_clicks_obj = db.session.query(Links, db.func.sum(Links.clicks))
-    tot_clicks = tot_clicks_obj[0][1]
+    stat_obj = Stats.query.filter_by(id=1).first()
+    if(stat_obj == null or stat_obj == None):
+        tot_users = User.query.count()
+        tot_urls = Links.query.count()
+        tot_clicks_obj = db.session.query(Links, db.func.sum(Links.clicks))
+        tot_clicks = tot_clicks_obj[0][1]
+        stat_obj = Stats(total_clicks=tot_clicks,total_urls=tot_urls,total_users=tot_users)
+        db.session.add(stat_obj)
+        db,session.commit()
+    tot_users = stat_obj.total_users
+    tot_urls = stat_obj.total_urls
+    tot_clicks = stat_obj.total_clicks
     return render_template('index.html', tot_clicks=tot_clicks, tot_urls=tot_urls,tot_users=tot_users)
 
 
@@ -301,6 +333,7 @@ def dashboardShorten():
                 temp.expiration_date = expiration_date
             db.session.add(temp)
             db.session.commit()
+            increase_urls()
             flash(u'URL created Successfully', 'success')
             flash(temp.show_url(), 'url-done')
             return redirect(url_for('dashboard'))
@@ -600,6 +633,7 @@ def register():
         register = User(firstName=firstName, lastName=lastName, email=email, password_hash=passh, username=username,confirmationHash=confirmationHash)
         db.session.add(register)
         db.session.commit()
+        increase_users()
         flash(u'You were successfully registered! Please verify your email. Check your Spam Folders too!', 'success')
         return redirect(url_for("login"))
     return render_template("register.html")
@@ -691,9 +725,6 @@ def google_auth_redirect():
             }
             mail.template_id = SIGNUP_COMPLETE_ID
             response = sendgrid_client.send(mail)
-            # print(response.status_code)
-            # print(response.body)
-            # print(response.headers)
         except Exception as e:
             print(e)
             flash(u'Email Confirmation Error!','error')
@@ -772,9 +803,6 @@ def forgotPassword():
                 response = sendgrid_client.send(mail)
                 db.session.add(newForgot)
                 db.session.commit()
-                # print(response.status_code)
-                # print(response.body)
-                # print(response.headers)
             except Exception as e:
                 print(e)
                 flash(u'Forgot Email Error!','error')
@@ -838,6 +866,7 @@ def routeit(short_url):
                 link.clicks += 1
                 db.session.commit()
                 url = link.big_url
+                increase_clicks()
                 if not validators.url(url):
                     return render_template('index.html', url_error=True)
                 return redirect(url, code=302)
@@ -864,17 +893,17 @@ def not_found(error):
 
 @app.errorhandler(400)
 def not_received(error):
-    return render_template('400.html'), 400
+    return render_template('400.html',sentry_event_id=last_event_id()), 400
 
 
 @app.errorhandler(500)
 def error500(error):
-    return render_template('500.html'), 500
+    return render_template('500.html',sentry_event_id=last_event_id()), 500
 
 @app.errorhandler(501)
 def error501(error):
-    return render_template('501.html'), 501
+    return render_template('501.html',sentry_event_id=last_event_id()), 501
 
 @app.errorhandler(502)
 def error502(error):
-    return render_template('502.html'), 502
+    return render_template('502.html',sentry_event_id=last_event_id()), 502

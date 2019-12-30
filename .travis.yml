@@ -6,7 +6,6 @@ services:
 before_install:
   - pip install awscli
   - export PATH=$PATH:$HOME/.local/bin
-  - pip install -r requirements-prod.txt
 
 script:
   - docker build -t $DOCKER_REPO .

@@ -78,3 +78,9 @@ class ForgotPassword(db.Model):
     expiration_date = db.Column(db.DateTime,default=datetime.datetime.now() + datetime.timedelta(days=1))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow())
+
+class Stats(db.Model):
+    id = db.Column(db.Integer, primary_key=True,autoincrement=True)
+    total_clicks = db.Column(db.Integer)
+    total_urls = db.Column(db.Integer)
+    total_users = db.Column(db.Integer)
