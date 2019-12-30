@@ -9,6 +9,7 @@ before_install:
 
 script:
   - docker build -t $DOCKER_REPO .
+  - sed -i 's/\r$//' deploy/ecr.sh
 
 deploy:
   provider: script
