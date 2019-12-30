@@ -207,14 +207,14 @@ def isSafeURL(url):
 @app.route('/', methods=['GET'])
 def index():
     stat_obj = Stats.query.filter_by(id=1).first()
-    if(stat_obj == null or stat_obj == None):
+    if(not stat_obj):
         tot_users = User.query.count()
         tot_urls = Links.query.count()
         tot_clicks_obj = db.session.query(Links, db.func.sum(Links.clicks))
         tot_clicks = tot_clicks_obj[0][1]
         stat_obj = Stats(total_clicks=tot_clicks,total_urls=tot_urls,total_users=tot_users)
         db.session.add(stat_obj)
-        db,session.commit()
+        db.session.commit()
     tot_users = stat_obj.total_users
     tot_urls = stat_obj.total_urls
     tot_clicks = stat_obj.total_clicks
