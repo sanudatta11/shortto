@@ -12,7 +12,6 @@ __pycache__/
 node_modules/
 venv/*
 zappa*
-env.*
 shortto-*
 .serverless/
 *.pyc
