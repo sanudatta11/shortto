@@ -19,10 +19,10 @@ click
 itsdangerous
 MarkupSafe
 Werkzeug
-authlib==0.11
+authlib
 google-api-python-client
 google-auth
 flask-login
 sendgrid
-sentry-sdk[flask]==0.11.2
+sentry-sdk
 pysafebrowsing
