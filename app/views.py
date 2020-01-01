@@ -162,19 +162,19 @@ def changetomd5(long_url, count=0):
 #Update Stats Functions
 
 def increase_urls():
-    stat_obj = Stats.query.filter_by(id=1).first()
+    stat_obj = Stats.query.get(1)
     stat_obj.total_urls = stat_obj.total_urls + 1
     db.session.commit()
     return 1
 
 def increase_clicks():
-    stat_obj = Stats.query.filter_by(id=1).first()
+    stat_obj = Stats.query.get(1)
     stat_obj.total_clicks = stat_obj.total_clicks + 1
     db.session.commit()
     return 1
 
 def increase_users():
-    stat_obj = Stats.query.filter_by(id=1).first()
+    stat_obj = Stats.query.get(1)
     stat_obj.total_users = stat_obj.total_users + 1
     db.session.commit()
     return 1
@@ -206,7 +206,7 @@ def isSafeURL(url):
 
 @app.route('/', methods=['GET'])
 def index():
-    stat_obj = Stats.query.filter_by(id=1).first()
+    stat_obj = Stats.query.get(1)
     if(not stat_obj):
         tot_users = User.query.count()
         tot_urls = Links.query.count()
@@ -715,6 +715,7 @@ def google_auth_redirect():
         newUser = User(firstName=firstName, lastName=lastName, email=email, picture=picture, google_login=True,locale=locale,confirmed=True)
         db.session.add(newUser)
         db.session.commit()
+        increase_users()
         login_user(newUser)
         try:
             sendgrid_client = SendGridAPIClient(os.environ.get('MAIL_SENDGRID_API_KEY'))
