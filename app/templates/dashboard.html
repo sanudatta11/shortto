@@ -58,8 +58,8 @@
             <form role="form" action="{{ url_for('bundle_add_url') }}" method="post">
                 <div class="form-group">
                     <label>URL</label>
-                    <input class="form-control" type="text" value="" id="url_to_add" readonly disabled>
-                    <input class="form-control hidden" type="text" value="" id="short_to_add" name="short_url" readonly
+                    <input class="form-control data-hj-whitelist" type="text" value="" id="url_to_add" readonly disabled>
+                    <input class="form-control data-hj-whitelist hidden" type="text" value="" id="short_to_add" name="short_url" readonly
                            required>
                 </div>
                 <div class="form-group">
@@ -287,7 +287,7 @@
                                         <div class="row" id="single">
                                             <div class="col-md-9 shortfieldz">
                                                 <i class="zmdi zmdi-link"></i>
-                                                <input type="text" class="form-control main-input"
+                                                <input type="text" class="form-control main-input data-hj-whitelist"
                                                        onclick="In_ShowPosInfo()" name="long_url" value=""
                                                        placeholder="Paste a long url" autocomplete="off" required/>
                                                 <a href="#" class="advanced short-adv-sett" data-toggle="tooltip"
@@ -339,7 +339,7 @@
                                                 <div class="input-group">
                                                     <span class="input-group-addon"><i
                                                             class="zmdi zmdi-edit"></i></span>
-                                                    <input type="text" class="form-control" name="short_url"
+                                                    <input type="text" class="form-control data-hj-whitelist" name="short_url"
                                                            placeholder="Type your custom alias here" name="short_url"
                                                            maxlength="15" autocomplete="off">
                                                 </div>
@@ -376,7 +376,7 @@
                                                 <div class="input-group">
                                                     <span class="input-group-addon"><i
                                                             class="zmdi zmdi-info"></i></span>
-                                                    <input type="text" class="form-control" name="description"
+                                                    <input type="text" class="form-control data-hj-whitelist" name="description"
                                                            name="description" placeholder="Type your description here"
                                                            maxlength="20" autocomplete="off">
                                                 </div>

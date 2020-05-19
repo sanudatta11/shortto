@@ -9,8 +9,15 @@ import sentry_sdk
 from sentry_sdk.integrations.flask import FlaskIntegration
 from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 
-if os.environ.get('ENVIRONMENT') != 'DEVELOPEMENT':
+if os.environ.get('ENVIRONMENT') == 'DEVELOPEMENT':
     sentry_sdk.init(
+        environment='developement',
+        dsn="https://8cfab95e9e164c649ad16f0e9ca70f32@sentry.io/1550025",
+        integrations=[FlaskIntegration(), SqlalchemyIntegration()]
+    )
+else:
+    sentry_sdk.init(
+        environment='production',
         dsn="https://8cfab95e9e164c649ad16f0e9ca70f32@sentry.io/1550025",
         integrations=[FlaskIntegration(),SqlalchemyIntegration()]
     )
