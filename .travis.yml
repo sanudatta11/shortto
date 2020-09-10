@@ -1,5 +1,3 @@
-# Config file for automatic testing at travis-ci.org
-sudo: required  # http://docs.travis-ci.com/user/migrating-from-legacy/
 language: python
 services:
   - docker
@@ -10,17 +8,10 @@ before_install:
   - dos2unix -R ./*
 
 script:
-  - docker build -t $DOCKER_REPO .
+  - docker build -t $DOCKER_REPO_NEW .
 
 deploy:
   provider: script
   script: bash deploy/ecr.sh
   on:
-    branch: master
-
-notifications:
-  email:
-    recipients:
-      - support@shortto.com
-    on:
-      branch: master
+    branch: aws2
