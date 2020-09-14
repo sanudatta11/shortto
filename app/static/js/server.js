@@ -12,10 +12,10 @@ function validURL(str)
 }
 
 let statusMessages = {
-  404 : "Long URL not found!",
+  400 : "Short URL is Invalid",
   403 : "URL Provided is Blacklisted!",
+  404 : "Long URL not found or invalid!",
   412 : "Recaptcha Expired, Refresh Page!",
-  304 : "Short URL is Invalid",
   300 : "Short URL is already Used",
   500 : "Create Loop has occured! Contact Admin.",
   501 : "Maximum Length of 50 Characters Exceeded in Custom URL!",
@@ -126,7 +126,7 @@ $(document).ready(function () {
           //   textColor: '#fff',
           //   showAction: false
           // });
-          if (data.error) {
+          if (data && data.error) {
             Snackbar.show({
               text: "Error Creating URL!",
               backgroundColor: '#e22e40',
@@ -134,7 +134,7 @@ $(document).ready(function () {
               showAction: false
             });
             $('.text-input').addClass('error');
-          } else {
+          } else if(data) {
             $('.text-input').removeClass('error');
             $('.main-advanced').fadeOut('slow');
             if (data.body) {
