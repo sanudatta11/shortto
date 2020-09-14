@@ -14,6 +14,7 @@ function validURL(str)
 let statusMessages = {
   404 : "Long URL not found!",
   403 : "URL Provided is Blacklisted!",
+  412 : "Recaptcha Expired, Refresh Page!",
   304 : "Short URL is Invalid",
   300 : "Short URL is already Used",
   500 : "Create Loop has occured! Contact Admin.",
