@@ -192,6 +192,15 @@ main .buildings .vec4 {
 }
 
 @media only screen and (max-width: 786px) {
+
+  .shortto-getter {
+    margin-top: 1%;
+  }
+
+  #main-form .main-form .main-button{
+    margin-top: 1%;
+  }
+
   main .buildings .vec1 {
     background-size: 100% 10%;
   }
