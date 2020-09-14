@@ -21,7 +21,7 @@ let statusMessages = {
   501 : "Maximum Length of 50 Characters Exceeded in Custom URL!",
   502 : "Long URL is Deceptive,Phising or Malicious! Cannot short. For dispute email at support@shortto.com"
 };
-let statusCodes = [404,403,304,300,500,501,502];
+let statusCodes = [400,404,403,412,300,500,501,502];
 
 let api_key = "4VzBZpEtuk8gthQrqsp4k6AhsvtzfPjT6m2mERuk";
 let appurl = "https://api.shortto.com/v2";
