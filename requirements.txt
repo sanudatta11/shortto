@@ -24,5 +24,6 @@ google-api-python-client
 google-auth
 flask-login
 sendgrid
-sentry-sdk[flask]
+sentry-sdk[flask]==0.11.2
 pysafebrowsing
+six==1.15.0
